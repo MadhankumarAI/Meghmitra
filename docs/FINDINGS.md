@@ -152,7 +152,7 @@ It made the forecasts worse.
 | heavy rain | week 1 | +0.0313 | **+0.0317** |
 
 Every dry-spell cell lost skill; the best the IOD bought anywhere was +0.0005 on heavy rain, which is noise.
-Mean change across all sixteen cells: **-0.0026 BSS**. The reason is visible in the importances: the trees
+Mean change across all sixteen cells: **-0.0039 BSS**. The reason is visible in the importances: the trees
 spent 5-8% of their gain on the dipole. With ~35 independent seasons the index barely moves inside a
 held-out 7-year block, so a split on it is mostly a split on *which years this fold contains* - it fits the
 fold, not the monsoon. ENSO survives the same test because we feed it as a weekly Nino 3.4 value that does

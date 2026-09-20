@@ -1,0 +1,14 @@
+import { chromium } from "playwright";
+const out = process.argv[2];
+const b = await chromium.launch();
+const p = await b.newPage({ viewport: { width: 1400, height: 1000 } });
+const errs = []; p.on("pageerror", (e) => errs.push(e.message));
+await p.goto("http://localhost:3100/science", { waitUntil: "load" });
+await p.waitForTimeout(3000);
+await p.getByRole("tab", { name: /honest/i }).click().catch(() => p.getByText(/Is it honest/i).first().click());
+await p.waitForTimeout(1200);
+await p.evaluate(() => document.querySelector("#tried-h")?.scrollIntoView({ block: "start" }));
+await p.waitForTimeout(1800);
+await p.screenshot({ path: `${out}/tried.png` });
+console.log(errs.join("\n") || "no errors");
+await b.close();

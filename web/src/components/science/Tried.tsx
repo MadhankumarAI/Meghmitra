@@ -53,7 +53,7 @@ function Card({ x }: { x: Tried }) {
           const frac = (d / span) * 0.5;                      // -0.5 .. 0.5 of the track
           return (
             <div key={`${c.event}${c.week}`} className="flex items-center gap-2">
-              <span className="w-[112px] shrink-0 truncate text-[10.5px] text-text-3">{c.label} · wk {c.week}</span>
+              <span className="w-[132px] shrink-0 truncate text-[10.5px] text-text-3">{c.label} · wk {c.week}</span>
               <span className="relative h-3 flex-1 rounded-sm bg-white/[0.04]">
                 <span aria-hidden className="absolute inset-y-0 left-1/2 w-px bg-white/20" />
                 <motion.span

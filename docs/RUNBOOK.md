@@ -116,4 +116,6 @@ node scripts/shot_understand.mjs OUT    # the weather animation
 node scripts/shot_delivery.mjs OUT      # Review -> Approve -> Track
 node scripts/shot_dispatch.mjs OUT      # Delivery Centre
 node scripts/shot_labels.mjs OUT        # map labels + model card
+node scripts/shot_tried.mjs OUT         # Evidence: tried, measured, not shipped
+node scripts/shot_toggle.mjs OUT        # atmosphere layers off, streaks coloured by moisture
 ```
