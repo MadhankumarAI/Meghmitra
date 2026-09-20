@@ -1,0 +1,20 @@
+{
+  "advisory_id": "7132399B62927069207149_2026-07-12_greengram_heavyrain",
+  "issued_at": "2026-07-12T06:00:00+05:30",
+  "valid_from": "2026-07-12",
+  "valid_to": "2026-08-08",
+  "product": "CMRI v1.0",
+  "block": { "block_id": "7132399B62927069207149", "name": "Navalgund", "district": "Dharwad", "state": "Karnataka" },
+  "cmri_class": "alert",
+  "crop": "greengram",
+  "template_id": "HEAVY_RAIN_PROTECT",
+  "params": { "p_event": 0.64, "p_clim": 0.12, "event": "heavy_rain", "lead_week": 1 },
+  "weeks": [
+    { "week": 1, "onset": 0.04, "dry_spell": 0.06, "heavy_rain": 0.64, "confidence": "high" },
+    { "week": 2, "onset": 0.03, "dry_spell": 0.14, "heavy_rain": 0.36, "confidence": "high" },
+    { "week": 3, "onset": 0.02, "dry_spell": 0.26, "heavy_rain": 0.15, "confidence": "medium" },
+    { "week": 4, "onset": 0.02, "dry_spell": 0.31, "heavy_rain": 0.11, "confidence": "low" }
+  ],
+  "officer": { "name": "Assistant Director of Agriculture, Navalgund", "phone": "+910000000002" },
+  "requires_approval": true
+}

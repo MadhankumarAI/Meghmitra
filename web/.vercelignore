@@ -1,0 +1,9 @@
+# Keep the upload small (Hobby CLI limit: 100 MB). Vercel installs and builds itself.
+node_modules
+.next
+# local screenshot / debug scripts (keep copy-maplibre-worker.mjs: postinstall needs it)
+scripts/shot_*.mjs
+scripts/debug*.mjs
+scripts/check_prod.mjs
+# local secrets (Vercel OIDC token etc.)
+.env*.local

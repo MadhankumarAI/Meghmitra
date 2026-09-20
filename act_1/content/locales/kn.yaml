@@ -1,0 +1,622 @@
+meta:
+  code: kn
+  name: ಕನ್ನಡ
+  english_name: Kannada
+  order: 1
+  babel: kn_IN
+  indictrans: kan_Knda
+  font: Anek Kannada
+  tts_speaker: Anu
+  number_words:
+  - ಸೊನ್ನೆ
+  - ಒಂದು
+  - ಎರಡು
+  - ಮೂರು
+  - ನಾಲ್ಕು
+  - ಐದು
+  - ಆರು
+  - ಏಳು
+  - ಎಂಟು
+  - ಒಂಬತ್ತು
+  - ಹತ್ತು
+  - ಹನ್ನೊಂದು
+  - ಹನ್ನೆರಡು
+  - ಹದಿಮೂರು
+  - ಹದಿನಾಲ್ಕು
+  - ಹದಿನೈದು
+  - ಹದಿನಾರು
+  - ಹದಿನೇಳು
+  - ಹದಿನೆಂಟು
+  - ಹತ್ತೊಂಬತ್ತು
+  - ಇಪ್ಪತ್ತು
+  - ಇಪ್ಪತ್ತೊಂದು
+  - ಇಪ್ಪತ್ತೆರಡು
+  - ಇಪ್ಪತ್ಮೂರು
+  - ಇಪ್ಪತ್ನಾಲ್ಕು
+  - ಇಪ್ಪತ್ತೈದು
+  - ಇಪ್ಪತ್ತಾರು
+  - ಇಪ್ಪತ್ತೇಳು
+  - ಇಪ್ಪತ್ತೆಂಟು
+  - ಇಪ್ಪತ್ತೊಂಬತ್ತು
+  - ಮೂವತ್ತು
+  - ಮೂವತ್ತೊಂದು
+  number_words_note: 0-31 spoken in voice notes instead of digits; hand-entered, needs native review
+  speech_replace:
+    ಹತ್ತುರಲ್ಲಿ: ಹತ್ತರಲ್ಲಿ
+    ಒಂದುಕ್ಕಿಂತ: ಒಂದಕ್ಕಿಂತ
+keywords:
+  menu:
+  - ಮೆನು
+  - ನಮಸ್ಕಾರ
+  - ನಮಸ್ತೆ
+  - ಹಾಯ್
+  - ಸಹಾಯ
+  - namaskara
+  - namaskar
+  stop:
+  - ನಿಲ್ಲಿಸಿ
+  - ನಿಲ್ಲಿಸು
+  - ಬೇಡ
+  start:
+  - ಪ್ರಾರಂಭ
+  - ಶುರು
+  language:
+  - ಭಾಷೆ
+  - bhashe
+glossary:
+  crops:
+    ragi: ರಾಗಿ
+    tur: ತೊಗರಿ
+    maize: ಮೆಕ್ಕೆಜೋಳ
+    cotton: ಹತ್ತಿ
+    groundnut: ಶೇಂಗಾ
+    soybean: ಸೋಯಾಬೀನ್
+    jowar: ಜೋಳ
+    paddy: ಭತ್ತ
+    greengram: ಹೆಸರು
+    horsegram: ಹುರುಳಿ
+    cowpea: ಅಲಸಂದೆ
+    bajra: ಸಜ್ಜೆ
+    sunflower: ಸೂರ್ಯಕಾಂತಿ
+    all: ಎಲ್ಲಾ ಬೆಳೆಗಳು
+    chilli: ಮೆಣಸಿನಕಾಯಿ
+    onion: ಈರುಳ್ಳಿ
+    tomato: ಟೊಮೆಟೊ
+    chickpea: ಕಡಲೆ
+    wheat: ಗೋಧಿ
+    castor: ಹರಳು
+    safflower: ಕುಸುಬೆ
+    sesamum: ಎಳ್ಳು
+    blackgram: ಉದ್ದು
+    fieldbean: ಅವರೆ
+    niger: ಗುರೆಳ್ಳು
+    sugarcane: ಕಬ್ಬು
+    mustard: ಸಾಸಿವೆ
+    potato: ಆಲೂಗಡ್ಡೆ
+  strings:
+    btn_officer: ಅಧಿಕಾರಿಗೆ ಕರೆ
+entries:
+  strings.service:
+    source: Mungaru monsoon advisories
+    text: ಮುಂಗಾರು ಸಲಹೆ
+    status: checked
+  strings.welcome_word:
+    source: Welcome
+    text: ಸ್ವಾಗತ
+    status: checked
+  strings.tagline:
+    source: Monsoon advice for your farm
+    text: ನಿಮ್ಮ ಕೃಷಿಗೆ ಮುಂಗಾರು ಸಲಹೆಗಳು
+    status: checked
+  strings.your_block:
+    source: Your block
+    text: ನಿಮ್ಮ ಬ್ಲಾಕ್
+    status: checked
+  strings.subscribed_title:
+    source: You are subscribed
+    text: ನೀವು ಚಂದಾದಾರರಾಗಿದ್ದೀರಿ
+    status: checked
+  strings.outlook_usual:
+    source: usually {usual}
+    text: ಸಾಮಾನ್ಯವಾಗಿ {usual}
+    status: checked
+  strings.lang_word:
+    source: Language
+    text: ಭಾಷೆ
+    status: checked
+  strings.lang_list_button:
+    source: Languages
+    text: ಭಾಷೆಗಳು
+    status: checked
+  strings.welcome:
+    source: Welcome to Mungaru. We send free weather advice for your crops, approved by your agriculture officer.
+    text: ಮುಂಗಾರು ಸೇವೆಗೆ ಸ್ವಾಗತ. ನಿಮ್ಮ ಬೆಳೆಗಳಿಗೆ ಉಚಿತ ಹವಾಮಾನ ಸಲಹೆಯನ್ನು ನಾವು ಕಳುಹಿಸುತ್ತೇವೆ; ಪ್ರತಿ ಸಲಹೆಗೂ ನಿಮ್ಮ ಕೃಷಿ ಅಧಿಕಾರಿಯ ಅನುಮೋದನೆ ಇರುತ್ತದೆ.
+    status: checked
+  strings.location_prompt:
+    source: Share your farm location so we can find your block. Tap the button below, or type your 6-digit PIN code.
+    text: ನಿಮ್ಮ ಜಮೀನಿನ ಸ್ಥಳವನ್ನು ಹಂಚಿಕೊಳ್ಳಿ, ಆಗ ನಿಮ್ಮ ಬ್ಲಾಕ್ ಯಾವುದೆಂದು ತಿಳಿಯುತ್ತದೆ. ಕೆಳಗಿನ ಗುಂಡಿಯನ್ನು ಒತ್ತಿ, ಅಥವಾ ನಿಮ್ಮ 6 ಅಂಕಿಯ ಪಿನ್ ಕೋಡ್ ಟೈಪ್ ಮಾಡಿ.
+    status: checked
+  strings.block_found:
+    source: Your block is {block}, {district} district. Is this correct?
+    text: ನಿಮ್ಮ ಬ್ಲಾಕ್ {block}, {district} ಜಿಲ್ಲೆ. ಇದು ಸರಿಯೇ?
+    status: checked
+  strings.btn_yes:
+    source: Yes, correct
+    text: ಹೌದು, ಸರಿಯಾಗಿದೆ
+    status: checked
+  strings.btn_no:
+    source: No, change it
+    text: ಇಲ್ಲ, ಬದಲಾಯಿಸಿ
+    status: checked
+  strings.block_not_found:
+    source: We could not find a block for this location. Please share your location again, or type your 6-digit PIN code.
+    text: ಈ ಸ್ಥಳಕ್ಕೆ ಬ್ಲಾಕ್ ಸಿಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಸ್ಥಳವನ್ನು ಮತ್ತೊಮ್ಮೆ ಹಂಚಿಕೊಳ್ಳಿ, ಅಥವಾ ನಿಮ್ಮ 6 ಅಂಕಿಯ ಪಿನ್ ಕೋಡ್ ಟೈಪ್ ಮಾಡಿ.
+    status: checked
+  strings.pin_not_found:
+    source: We could not find the PIN code {pin}. Please check it, or share your location.
+    text: ಪಿನ್ ಕೋಡ್ {pin} ಸಿಗಲಿಲ್ಲ. ದಯವಿಟ್ಟು ಪರಿಶೀಲಿಸಿ, ಅಥವಾ ನಿಮ್ಮ ಸ್ಥಳವನ್ನು ಹಂಚಿಕೊಳ್ಳಿ.
+    status: checked
+  strings.pick_block:
+    source: Choose your block from the list.
+    text: ಪಟ್ಟಿಯಿಂದ ನಿಮ್ಮ ಬ್ಲಾಕ್ ಅನ್ನು ಆಯ್ಕೆ ಮಾಡಿ.
+    status: checked
+  strings.pick_block_button:
+    source: Blocks
+    text: ಬ್ಲಾಕ್‌ಗಳು
+    status: checked
+  strings.share_again:
+    source: Share location again
+    text: ಸ್ಥಳ ಮತ್ತೆ ಕಳುಹಿಸಿ
+    status: checked
+  strings.crop_prompt:
+    source: Which crop do you grow? Choose one. You can add more after this.
+    text: ನೀವು ಯಾವ ಬೆಳೆ ಬೆಳೆಯುತ್ತೀರಿ? ಒಂದನ್ನು ಆಯ್ಕೆ ಮಾಡಿ. ನಂತರ ಇನ್ನಷ್ಟು ಸೇರಿಸಬಹುದು.
+    status: checked
+  strings.crop_list_button:
+    source: Crops
+    text: ಬೆಳೆಗಳು
+    status: checked
+  strings.crop_added:
+    source: 'Selected: {crops}. Add another crop, or tap Done.'
+    text: 'ಆಯ್ಕೆ: {crops}. ಇನ್ನೊಂದು ಬೆಳೆ ಸೇರಿಸಿ, ಅಥವಾ ''ಮುಗಿಸಿ'' ಒತ್ತಿ.'
+    status: checked
+  strings.btn_add_crop:
+    source: Add another crop
+    text: ಇನ್ನೊಂದು ಬೆಳೆ ಸೇರಿಸಿ
+    status: checked
+  strings.other_crop:
+    source: Other crop
+    text: ಇತರ ಬೆಳೆ
+    status: checked
+  strings.crop_type_prompt:
+    source: Type the name of your crop.
+    text: ನಿಮ್ಮ ಬೆಳೆಯ ಹೆಸರನ್ನು ಟೈಪ್ ಮಾಡಿ.
+    status: checked
+  strings.crop_done:
+    source: Done
+    text: ಮುಗಿಸಿ
+    status: checked
+  strings.crop_need_one:
+    source: Please choose at least one crop.
+    text: ದಯವಿಟ್ಟು ಕನಿಷ್ಠ ಒಂದು ಬೆಳೆಯನ್ನಾದರೂ ಆಯ್ಕೆ ಮಾಡಿ.
+    status: checked
+  strings.subscribed:
+    source: You are subscribed. We will send advice for {crops} in {block} when there is something you need to know. Send STOP at any time to stop.
+    text: ನೀವು ಚಂದಾದಾರರಾಗಿದ್ದೀರಿ. {block} ನಲ್ಲಿ {crops} ಬೆಳೆಗೆ ಮುಖ್ಯ ಮಾಹಿತಿ ಇದ್ದಾಗ ನಾವು ಸಲಹೆ ಕಳುಹಿಸುತ್ತೇವೆ. ನಿಲ್ಲಿಸಲು ಯಾವಾಗ ಬೇಕಾದರೂ STOP ಎಂದು ಕಳುಹಿಸಿ.
+    status: checked
+  strings.crops_updated:
+    source: 'Your crops are now: {crops}.'
+    text: 'ನಿಮ್ಮ ಬೆಳೆಗಳು ಈಗ: {crops}.'
+    status: checked
+  strings.menu_prompt:
+    source: What would you like to do?
+    text: ನೀವು ಏನು ಮಾಡಲು ಬಯಸುತ್ತೀರಿ?
+    status: checked
+  strings.menu_footer:
+    source: Send STOP to unsubscribe
+    text: ಚಂದಾದಾರಿಕೆಯನ್ನು ತೆಗೆದುಹಾಕಲು STOP ಅನ್ನು ಕಳುಹಿಸಿ
+    status: checked
+  strings.btn_outlook:
+    source: 4-week outlook
+    text: ಮುಂದಿನ 4 ವಾರಗಳು
+    status: checked
+  strings.btn_change_crop:
+    source: Change crop
+    text: ಬೆಳೆ ಬದಲಾಯಿಸಿ
+    status: checked
+  strings.btn_officer:
+    source: Talk to officer
+    text: ಅಧಿಕಾರಿಗೆ ಕರೆ
+    status: glossary
+  strings.btn_menu:
+    source: Main menu
+    text: ಮುಖ್ಯ ಮೆನು
+    status: checked
+  strings.officer_intro:
+    source: Here is your agriculture officer. Tap the contact to call.
+    text: ಇವರು ನಿಮ್ಮ ಕೃಷಿ ಅಧಿಕಾರಿ. ಕರೆ ಮಾಡಲು ಸಂಪರ್ಕವನ್ನು ಒತ್ತಿ.
+    status: checked
+  strings.officer_kcc:
+    source: 'Kisan Call Centre, free call: {kcc}'
+    text: 'ಕಿಸಾನ್ ಕಾಲ್ ಸೆಂಟರ್, ಉಚಿತ ಕರೆ: {kcc}'
+    status: checked
+  strings.officer_notified:
+    source: We have also asked the officer to call you.
+    text: ನಿಮಗೆ ಕರೆ ಮಾಡುವಂತೆ ನಾವು ಅಧಿಕಾರಿಯನ್ನೂ ಕೇಳಿದ್ದೇವೆ.
+    status: checked
+  strings.officer_alert:
+    source: 'A farmer in {block} asked to talk. Phone: {phone}. Crops: {crops}.'
+    text: '{block} ನ ರೈತರೊಬ್ಬರು ಮಾತನಾಡಲು ಕೇಳಿದ್ದಾರೆ. ದೂರವಾಣಿ: {phone}. ಬೆಳೆಗಳು: {crops}.'
+    status: checked
+  strings.no_officer:
+    source: No officer is listed for your block yet. Please call the Kisan Call Centre.
+    text: ನಿಮ್ಮ ಬ್ಲಾಕ್‌ಗೆ ಇನ್ನೂ ಅಧಿಕಾರಿಯ ಮಾಹಿತಿ ಇಲ್ಲ. ದಯವಿಟ್ಟು ಕಿಸಾನ್ ಕಾಲ್ ಸೆಂಟರ್‌ಗೆ ಕರೆ ಮಾಡಿ.
+    status: checked
+  strings.stop_confirm:
+    source: You are unsubscribed. You will not get any more messages. Send START to subscribe again.
+    text: ನಿಮ್ಮ ಚಂದಾದಾರಿಕೆ ರದ್ದಾಗಿದೆ. ಇನ್ನು ಸಂದೇಶಗಳು ಬರುವುದಿಲ್ಲ. ಮತ್ತೆ ಪಡೆಯಲು START ಎಂದು ಕಳುಹಿಸಿ.
+    status: checked
+  strings.start_confirm:
+    source: Welcome back. You are subscribed again.
+    text: ಮತ್ತೆ ಸ್ವಾಗತ. ನೀವು ಮತ್ತೆ ಚಂದಾದಾರರಾಗಿದ್ದೀರಿ.
+    status: checked
+  strings.opted_out_hint:
+    source: You are unsubscribed. Send START to subscribe again.
+    text: ನಿಮ್ಮ ಚಂದಾದಾರಿಕೆ ರದ್ದಾಗಿದೆ. ಮತ್ತೆ ಪಡೆಯಲು START ಎಂದು ಕಳುಹಿಸಿ.
+    status: checked
+  strings.tap_hint:
+    source: Please tap one of the buttons below.
+    text: ದಯವಿಟ್ಟು ಕೆಳಗಿನ ಗುಂಡಿಗಳಲ್ಲಿ ಒಂದನ್ನು ಒತ್ತಿ.
+    status: checked
+  strings.language_changed:
+    source: Language changed.
+    text: ಭಾಷೆ ಬದಲಾಗಿದೆ.
+    status: checked
+  strings.outlook_title:
+    source: Weather forecast for {block}, next 4 weeks
+    text: '{block} — ಮುಂದಿನ 4 ವಾರಗಳ ಹವಾಮಾನ ಮುನ್ಸೂಚನೆ'
+    status: checked
+  strings.outlook_unavailable:
+    source: The forecast for {block} is not available right now. Please try again later.
+    text: '{block} ಗೆ ಮುನ್ಸೂಚನೆ ಸದ್ಯಕ್ಕೆ ಲಭ್ಯವಿಲ್ಲ. ದಯವಿಟ್ಟು ನಂತರ ಪ್ರಯತ್ನಿಸಿ.'
+    status: checked
+  strings.outlook_line:
+    source: '{event}: {chance} (usually {usual})'
+    text: '{event}: {chance} (ಸಾಮಾನ್ಯವಾಗಿ {usual})'
+    status: checked
+  strings.outlook_footer:
+    source: The forecast for week 4 is less certain than for week 1.
+    text: 4ನೇ ವಾರದ ಮುನ್ಸೂಚನೆಯು 1ನೇ ವಾರಕ್ಕಿಂತ ಕಡಿಮೆ ಖಚಿತವಾಗಿದೆ.
+    status: checked
+  strings.outlook_normal:
+    source: Close to normal
+    text: ಸಾಮಾನ್ಯ ಸ್ಥಿತಿಗೆ ಹತ್ತಿರ
+    status: checked
+  strings.week_label:
+    source: Week {n}
+    text: ವಾರ {n}
+    status: checked
+  strings.chance:
+    source: '{n} in 10'
+    text: 10ರಲ್ಲಿ {n}
+    status: checked
+  strings.chance_lt1:
+    source: less than 1 in 10
+    text: 10ರಲ್ಲಿ 1ಕ್ಕಿಂತ ಕಡಿಮೆ
+    status: checked
+  strings.reason:
+    source: Between {start} and {end}, the chance of {event} is {chance}. The usual chance is {usual}.
+    text: '{start} ಮತ್ತು {end} ನಡುವೆ {event} ಸಾಧ್ಯತೆ {chance}. ಸಾಮಾನ್ಯ ಸಾಧ್ಯತೆ {usual}.'
+    status: checked
+  strings.valid:
+    source: Valid {valid_from} to {valid_to}
+    text: '{valid_from} ರಿಂದ {valid_to} ವರೆಗೆ ಮಾನ್ಯ'
+    status: checked
+  strings.source:
+    source: Based on IMD data · {product}
+    text: IMD ದತ್ತಾಂಶದ ಆಧಾರದ ಮೇಲೆ · {product}
+    status: checked
+  strings.next_weeks:
+    source: Next 4 weeks
+    text: ಮುಂದಿನ 4 ವಾರಗಳು
+    status: checked
+  strings.what_to_do:
+    source: What to do
+    text: ಏನು ಮಾಡಬೇಕು
+    status: checked
+  strings.confidence_high:
+    source: High certainty
+    text: ಹೆಚ್ಚಿನ ಖಚಿತತೆ
+    status: checked
+  strings.confidence_medium:
+    source: Medium certainty
+    text: ಮಧ್ಯಮ ಖಚಿತತೆ
+    status: checked
+  strings.confidence_low:
+    source: Low certainty
+    text: ಕಡಿಮೆ ಖಚಿತತೆ
+    status: checked
+  strings.cmri_normal:
+    source: Normal
+    text: ಹಸಿರು ಎಚ್ಚರಿಕೆ
+    status: checked
+  strings.cmri_watch:
+    source: Watch
+    text: ಹಳದಿ ಎಚ್ಚರಿಕೆ
+    status: checked
+  strings.cmri_warning:
+    source: Warning
+    text: ಕಿತ್ತಳೆ ಎಚ್ಚರಿಕೆ
+    status: checked
+  strings.cmri_alert:
+    source: Alert
+    text: ಕೆಂಪು ಎಚ್ಚರಿಕೆ
+    status: checked
+  strings.imd_normal:
+    source: No action needed
+    text: ಯಾವುದೇ ಕ್ರಮದ ಅಗತ್ಯವಿಲ್ಲ
+    status: checked
+  strings.imd_watch:
+    source: Be aware
+    text: ಜಾಗೃತರಾಗಿರಿ
+    status: checked
+  strings.imd_warning:
+    source: Be prepared
+    text: ಸಿದ್ಧರಾಗಿರಿ
+    status: checked
+  strings.imd_alert:
+    source: Take action
+    text: ಕ್ರಮ ಕೈಗೊಳ್ಳಿ
+    status: checked
+  strings.ev_onset:
+    source: Rain starts
+    text: ಮುಂಗಾರು ಮಳೆ ಆರಂಭ
+    status: checked
+  strings.ev_dry_spell:
+    source: Dry period
+    text: ಒಣ ಅವಧಿ
+    status: checked
+  strings.ev_heavy_rain:
+    source: Heavy rain
+    text: ಭಾರೀ ಮಳೆ
+    status: checked
+  strings.event_onset:
+    source: the start of steady monsoon rain
+    text: ನಿರಂತರ ಮುಂಗಾರು ಮಳೆಯ ಆರಂಭ
+    status: checked
+  strings.event_false_onset:
+    source: early rain followed by a long dry period
+    text: ಮೊದಲು ಮಳೆ, ನಂತರ ದೀರ್ಘ ಒಣ ಅವಧಿ
+    status: checked
+  strings.event_dry_spell_7d:
+    source: a dry period of 7 days or more without rain
+    text: ಮಳೆ ಇಲ್ಲದೆ 7 ಅಥವಾ ಹೆಚ್ಚು ದಿನಗಳ ಒಣ ಅವಧಿ
+    status: checked
+  strings.event_dry_spell_10d:
+    source: a dry period of 10 days or more without rain
+    text: ಮಳೆ ಇಲ್ಲದೆ 10 ಅಥವಾ ಹೆಚ್ಚು ದಿನಗಳ ಒಣ ಅವಧಿ
+    status: checked
+  strings.event_heavy_rain:
+    source: heavy rain of more than 6 cm in a day
+    text: ಒಂದು ದಿನದಲ್ಲಿ 6 ಸೆಂ.ಮೀ.ಗಿಂತ ಹೆಚ್ಚು ಭಾರೀ ಮಳೆ
+    status: checked
+  templates.DELAY_SOWING.verdict:
+    source: Wait to sow
+    text: ಬಿತ್ತಲು ಕಾಯಿರಿ
+    status: checked
+  templates.DELAY_SOWING.verdict_sub:
+    source: '{crop}: sow after {wait_until}'
+    text: '{crop}: {wait_until} ನಂತರ ಬಿತ್ತಿರಿ'
+    status: checked
+  templates.DELAY_SOWING.headline:
+    source: Do not sow {crop} before {wait_until}.
+    text: '{wait_until} ಮೊದಲು {crop} ಬಿತ್ತಬೇಡಿ.'
+    status: checked
+  templates.DELAY_SOWING.actions.0:
+    source: Do not sow now, even if it rains this week. The seed may dry out and die.
+    text: ಈ ವಾರ ಮಳೆ ಬಂದರೂ ಈಗ ಬಿತ್ತಬೇಡಿ. ಬೀಜವು ಒಣಗಿ ಸಾಯಬಹುದು.
+    status: checked
+  templates.DELAY_SOWING.actions.1:
+    source: Keep your seed and fertiliser ready.
+    text: ನಿಮ್ಮ ಬೀಜ ಮತ್ತು ರಸಗೊಬ್ಬರವನ್ನು ಸಿದ್ಧವಾಗಿರಿಸಿಕೊಳ್ಳಿ.
+    status: checked
+  templates.DELAY_SOWING.actions.2:
+    source: When the soil is moist 15 cm deep, sow after {wait_until}.
+    text: ಮಣ್ಣು 15 ಸೆಂ.ಮೀ. ಆಳದವರೆಗೆ ತೇವವಾದಾಗ, {wait_until} ನಂತರ ಬಿತ್ತಿ.
+    status: checked
+  templates.SOW_NOW.verdict:
+    source: Sow now
+    text: ಈಗ ಬಿತ್ತಿ
+    status: checked
+  templates.SOW_NOW.verdict_sub:
+    source: '{crop}: sow before {sow_by}'
+    text: '{crop}: {sow_by} ಮೊದಲು ಬಿತ್ತಿರಿ'
+    status: checked
+  templates.SOW_NOW.headline:
+    source: This is a good time to sow {crop}. Sow before {sow_by}.
+    text: ಇದು {crop} ಬಿತ್ತಲು ಒಳ್ಳೆಯ ಸಮಯ. {sow_by} ಮೊದಲು ಬಿತ್ತಿ.
+    status: checked
+  templates.SOW_NOW.actions.0:
+    source: The soil has enough moisture and steady rain is expected.
+    text: ಮಣ್ಣಿನಲ್ಲಿ ಸಾಕಷ್ಟು ತೇವಾಂಶವಿದ್ದು, ಸ್ಥಿರವಾದ ಮಳೆಯಾಗುವ ನಿರೀಕ್ಷೆಯಿದೆ.
+    status: checked
+  templates.SOW_NOW.actions.1:
+    source: Use treated seed of a recommended variety.
+    text: ಶಿಫಾರಸು ಮಾಡಿದ ತಳಿಯ, ಬೀಜೋಪಚಾರ ಮಾಡಿದ ಬೀಜವನ್ನು ಬಳಸಿ.
+    status: checked
+  templates.SOW_NOW.actions.2:
+    source: Apply basal fertiliser at sowing.
+    text: ಬಿತ್ತನೆ ಸಮಯದಲ್ಲಿ ಮೂಲ ಗೊಬ್ಬರವನ್ನು ಹಾಕಿ.
+    status: checked
+  templates.PREPARE_IRRIGATION.verdict:
+    source: Get irrigation ready
+    text: ನೀರಾವರಿ ಸಿದ್ಧಗೊಳಿಸಿ
+    status: checked
+  templates.PREPARE_IRRIGATION.verdict_sub:
+    source: '{crop}'
+    text: '{crop}'
+    status: checked
+  templates.PREPARE_IRRIGATION.headline:
+    source: A dry period may affect your {crop}. Get ready to irrigate.
+    text: ಒಣ ಅವಧಿಯು ನಿಮ್ಮ {crop} ಮೇಲೆ ಪರಿಣಾಮ ಬೀರಬಹುದು. ನೀರಾವರಿ ಮಾಡಲು ಸಿದ್ಧರಾಗಿರಿ.
+    status: checked
+  templates.PREPARE_IRRIGATION.actions.0:
+    source: Check your pump, pipes and water source now.
+    text: ಈಗ ನಿಮ್ಮ ಪಂಪ್, ಕೊಳವೆಗಳು ಮತ್ತು ನೀರಿನ ಮೂಲವನ್ನು ಪರಿಶೀಲಿಸಿ.
+    status: checked
+  templates.PREPARE_IRRIGATION.actions.1:
+    source: If there is no rain for a week, irrigate the crop once.
+    text: ಒಂದು ವಾರ ಮಳೆ ಬಾರದಿದ್ದರೆ ಬೆಳೆಗೆ ಒಮ್ಮೆ ನೀರು ಕೊಡಿ.
+    status: checked
+  templates.PREPARE_IRRIGATION.actions.2:
+    source: Irrigate in the evening or early morning to save water.
+    text: ನೀರು ಉಳಿಸಲು ಸಂಜೆ ಅಥವಾ ಮುಂಜಾನೆ ನೀರು ಕೊಡಿ.
+    status: checked
+  templates.SWITCH_CROP.verdict:
+    source: Switch to {alternative}
+    text: '{alternative} ಬಿತ್ತಿ'
+    status: checked
+  templates.SWITCH_CROP.verdict_sub:
+    source: instead of {crop}
+    text: '{crop} ಬದಲಿಗೆ'
+    status: checked
+  templates.SWITCH_CROP.headline:
+    source: It is too risky to sow {crop} now. Sow {alternative} instead, before {sow_by}.
+    text: ಈಗ {crop} ಬಿತ್ತುವುದು ತುಂಬಾ ಅಪಾಯ. ಬದಲಿಗೆ {sow_by} ಒಳಗೆ {alternative} ಬಿತ್ತಿ.
+    status: checked
+  templates.SWITCH_CROP.actions.0:
+    source: Do not sow {crop} this season on land without irrigation.
+    text: ಈ ಋತುವಿನಲ್ಲಿ ನೀರಾವರಿಯಿಲ್ಲದ ಭೂಮಿಯಲ್ಲಿ {crop} ಬಿತ್ತಬೇಡಿ.
+    status: checked
+  templates.SWITCH_CROP.actions.1:
+    source: Sow {alternative} before {sow_by}. It needs less water and less time.
+    text: '{sow_by} ಒಳಗೆ {alternative} ಬಿತ್ತಿ. ಇದಕ್ಕೆ ಕಡಿಮೆ ನೀರು, ಕಡಿಮೆ ಸಮಯ ಸಾಕು.'
+    status: checked
+  templates.SWITCH_CROP.actions.2:
+    source: Ask your agriculture office or KVK for {alternative} seed.
+    text: '{alternative} ಬೀಜಕ್ಕಾಗಿ ನಿಮ್ಮ ಕೃಷಿ ಕಚೇರಿ ಅಥವಾ ಕೃಷಿ ವಿಜ್ಞಾನ ಕೇಂದ್ರವನ್ನು (KVK) ಸಂಪರ್ಕಿಸಿ.'
+    status: checked
+  templates.HEAVY_RAIN_PROTECT.verdict:
+    source: Heavy rain coming
+    text: ಭಾರೀ ಮಳೆ ಬರಲಿದೆ
+    status: checked
+  templates.HEAVY_RAIN_PROTECT.verdict_sub:
+    source: Protect {crop}
+    text: '{crop} ರಕ್ಷಿಸಿ'
+    status: checked
+  templates.HEAVY_RAIN_PROTECT.headline:
+    source: Heavy rain is expected. Protect your {crop} and stored produce.
+    text: ಭಾರೀ ಮಳೆಯಾಗುವ ನಿರೀಕ್ಷೆಯಿದೆ. ನಿಮ್ಮ {crop} ಮತ್ತು ಸಂಗ್ರಹಿಸಿದ ಉತ್ಪನ್ನಗಳನ್ನು ರಕ್ಷಿಸಿಕೊಳ್ಳಿ.
+    status: checked
+  templates.HEAVY_RAIN_PROTECT.actions.0:
+    source: Clear the field drains so that water does not stand in the field.
+    text: ಹೊಲದಲ್ಲಿ ನೀರು ನಿಲ್ಲದಂತೆ ಹೊಲದ ಚರಂಡಿಗಳನ್ನು ತೆರವುಗೊಳಿಸಿ.
+    status: checked
+  templates.HEAVY_RAIN_PROTECT.actions.1:
+    source: Do not spray pesticide or apply fertiliser before the rain.
+    text: ಮಳೆಗೂ ಮೊದಲು ಕೀಟನಾಶಕ ಸಿಂಪಡಿಸಬೇಡಿ, ಗೊಬ್ಬರ ಹಾಕಬೇಡಿ.
+    status: checked
+  templates.HEAVY_RAIN_PROTECT.actions.2:
+    source: Move harvested produce and seed to a dry, high place.
+    text: ಕೊಯ್ಲು ಮಾಡಿದ ಉತ್ಪನ್ನ ಮತ್ತು ಬೀಜವನ್ನು ಒಣ, ಎತ್ತರದ ಜಾಗಕ್ಕೆ ಸಾಗಿಸಿ.
+    status: checked
+  templates.DRY_SPELL_CONSERVE_MOISTURE.verdict:
+    source: Save soil moisture
+    text: ಮಣ್ಣಿನ ತೇವಾಂಶವನ್ನು ಉಳಿಸಿ
+    status: checked
+  templates.DRY_SPELL_CONSERVE_MOISTURE.verdict_sub:
+    source: '{crop}'
+    text: '{crop}'
+    status: checked
+  templates.DRY_SPELL_CONSERVE_MOISTURE.headline:
+    source: A dry period is expected. Save the moisture in your {crop} field.
+    text: ಒಣ ಅವಧಿಯ ನಿರೀಕ್ಷೆಯಿದೆ. ನಿಮ್ಮ {crop} ಹೊಲದಲ್ಲಿ ತೇವಾಂಶವನ್ನು ಉಳಿಸಿ.
+    status: checked
+  templates.DRY_SPELL_CONSERVE_MOISTURE.actions.0:
+    source: Remove weeds, because they take water from the crop.
+    text: ಕಳೆ ತೆಗೆಯಿರಿ; ಕಳೆ ಬೆಳೆಯ ನೀರನ್ನು ಕಸಿದುಕೊಳ್ಳುತ್ತದೆ.
+    status: checked
+  templates.DRY_SPELL_CONSERVE_MOISTURE.actions.1:
+    source: Loosen the top soil lightly between the rows, or cover the soil with crop residue.
+    text: ಸಾಲುಗಳ ನಡುವೆ ಮೇಲ್ಮಣ್ಣನ್ನು ಹಗುರವಾಗಿ ಸಡಿಲಗೊಳಿಸಿ, ಅಥವಾ ಬೆಳೆ ಉಳಿಕೆಯಿಂದ ಮಣ್ಣನ್ನು ಮುಚ್ಚಿ.
+    status: checked
+  templates.DRY_SPELL_CONSERVE_MOISTURE.actions.2:
+    source: Wait for rain before you apply top-dressing fertiliser.
+    text: ಮಳೆ ಬಂದ ನಂತರವೇ ಮೇಲುಗೊಬ್ಬರ ಹಾಕಿ.
+    status: checked
+  templates.ALL_CLEAR.verdict:
+    source: No action needed
+    text: ಯಾವುದೇ ಕ್ರಮದ ಅಗತ್ಯವಿಲ್ಲ
+    status: checked
+  templates.ALL_CLEAR.verdict_sub:
+    source: '{crop}: conditions normal'
+    text: '{crop}: ಪರಿಸ್ಥಿತಿ ಸಾಮಾನ್ಯ'
+    status: checked
+  templates.ALL_CLEAR.headline:
+    source: No weather risk is expected for {crop} in the coming weeks.
+    text: ಮುಂದಿನ ವಾರಗಳಲ್ಲಿ {crop} ಗೆ ಯಾವುದೇ ಹವಾಮಾನ ಅಪಾಯ ನಿರೀಕ್ಷಿಸಿಲ್ಲ.
+    status: checked
+  templates.ALL_CLEAR.actions.0:
+    source: Continue your normal farm work.
+    text: ನಿಮ್ಮ ಸಾಮಾನ್ಯ ಕೃಷಿ ಕೆಲಸವನ್ನು ಮುಂದುವರಿಸಿ.
+    status: checked
+  templates.ALL_CLEAR.actions.1:
+    source: We will message you if the forecast changes.
+    text: ಮುನ್ಸೂಚನೆಯು ಬದಲಾದರೆ ನಾವು ನಿಮಗೆ ಸಂದೇಶ ಕಳುಹಿಸುತ್ತೇವೆ.
+    status: checked
+  crops.ragi:
+    source: Ragi
+    text: ರಾಗಿ
+    status: glossary
+  crops.tur:
+    source: Tur (red gram)
+    text: ತೊಗರಿ
+    status: glossary
+  crops.maize:
+    source: Maize
+    text: ಮೆಕ್ಕೆಜೋಳ
+    status: glossary
+  crops.cotton:
+    source: Cotton
+    text: ಹತ್ತಿ
+    status: glossary
+  crops.groundnut:
+    source: Groundnut
+    text: ಶೇಂಗಾ
+    status: glossary
+  crops.soybean:
+    source: Soybean
+    text: ಸೋಯಾಬೀನ್
+    status: glossary
+  crops.jowar:
+    source: Jowar
+    text: ಜೋಳ
+    status: glossary
+  crops.paddy:
+    source: Paddy
+    text: ಭತ್ತ
+    status: glossary
+  crops.greengram:
+    source: Green gram
+    text: ಹೆಸರು
+    status: glossary
+  crops.horsegram:
+    source: Horse gram
+    text: ಹುರುಳಿ
+    status: glossary
+  crops.cowpea:
+    source: Cowpea
+    text: ಅಲಸಂದೆ
+    status: glossary
+  crops.bajra:
+    source: Bajra
+    text: ಸಜ್ಜೆ
+    status: glossary
+  crops.sunflower:
+    source: Sunflower
+    text: ಸೂರ್ಯಕಾಂತಿ
+    status: glossary
+  crops.all:
+    source: all crops
+    text: ಎಲ್ಲಾ ಬೆಳೆಗಳು
+    status: glossary

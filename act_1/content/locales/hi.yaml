@@ -1,0 +1,623 @@
+meta:
+  code: hi
+  name: हिन्दी
+  english_name: Hindi
+  order: 2
+  babel: hi_IN
+  indictrans: hin_Deva
+  font: Anek Devanagari
+  tts_speaker: Divya
+  number_words:
+  - शून्य
+  - एक
+  - दो
+  - तीन
+  - चार
+  - पाँच
+  - छह
+  - सात
+  - आठ
+  - नौ
+  - दस
+  - ग्यारह
+  - बारह
+  - तेरह
+  - चौदह
+  - पंद्रह
+  - सोलह
+  - सत्रह
+  - अठारह
+  - उन्नीस
+  - बीस
+  - इक्कीस
+  - बाईस
+  - तेईस
+  - चौबीस
+  - पच्चीस
+  - छब्बीस
+  - सत्ताईस
+  - अट्ठाईस
+  - उनतीस
+  - तीस
+  - इकतीस
+  number_words_note: 0-31 spoken in voice notes instead of digits; hand-entered, needs native review
+keywords:
+  menu:
+  - मेनू
+  - नमस्ते
+  - नमस्कार
+  - मदद
+  - सहायता
+  - हाय
+  - namaste
+  - madad
+  stop:
+  - रुको
+  - रोकें
+  - बंद
+  - बंद करो
+  - band
+  start:
+  - शुरू
+  - चालू
+  - shuru
+  language:
+  - भाषा
+  - bhasha
+glossary:
+  crops:
+    ragi: रागी (मडुआ)
+    tur: अरहर (तुअर)
+    maize: मक्का
+    cotton: कपास
+    groundnut: मूंगफली
+    soybean: सोयाबीन
+    jowar: ज्वार
+    paddy: धान
+    greengram: मूंग
+    horsegram: कुलथी
+    cowpea: लोबिया
+    bajra: बाजरा
+    sunflower: सूरजमुखी
+    all: सभी फसलें
+    chilli: मिर्च
+    onion: प्याज
+    tomato: टमाटर
+    chickpea: चना
+    wheat: गेहूँ
+    castor: अरंडी
+    safflower: कुसुम
+    sesamum: तिल
+    blackgram: उड़द
+    fieldbean: सेम
+    niger: रामतिल
+    sugarcane: गन्ना
+    mustard: सरसों
+    potato: आलू
+  strings:
+    crop_done: हो गया
+entries:
+  strings.service:
+    source: Mungaru monsoon advisories
+    text: मुंगारु सलाह
+    status: checked
+  strings.welcome_word:
+    source: Welcome
+    text: स्वागत है
+    status: checked
+  strings.tagline:
+    source: Monsoon advice for your farm
+    text: आपके खेत के लिए मानसून की सलाह
+    status: checked
+  strings.your_block:
+    source: Your block
+    text: आपका ब्लॉक
+    status: checked
+  strings.subscribed_title:
+    source: You are subscribed
+    text: आपका पंजीकरण हो गया
+    status: checked
+  strings.outlook_usual:
+    source: usually {usual}
+    text: आमतौर पर {usual}
+    status: checked
+  strings.lang_word:
+    source: Language
+    text: भाषा
+    status: checked
+  strings.lang_list_button:
+    source: Languages
+    text: भाषाएँ
+    status: checked
+  strings.welcome:
+    source: Welcome to Mungaru. We send free weather advice for your crops, approved by your agriculture officer.
+    text: मुंगारु में आपका स्वागत है। हम आपकी फसलों के लिए मुफ़्त मौसम सलाह भेजते हैं; हर सलाह आपके कृषि अधिकारी से मंज़ूर होकर आती है।
+    status: checked
+  strings.location_prompt:
+    source: Share your farm location so we can find your block. Tap the button below, or type your 6-digit PIN code.
+    text: अपने खेत का स्थान साझा करें ताकि हम आपका ब्लॉक ढूंढ सकें। नीचे दिए गए बटन पर टैप करें, या अपना 6 अंकों का पिन कोड टाइप करें।
+    status: checked
+  strings.block_found:
+    source: Your block is {block}, {district} district. Is this correct?
+    text: आपका ब्लॉक {block}, {district} जिला है। क्या यह सही है?
+    status: checked
+  strings.btn_yes:
+    source: Yes, correct
+    text: हाँ, सही है
+    status: checked
+  strings.btn_no:
+    source: No, change it
+    text: नहीं, बदलें
+    status: checked
+  strings.block_not_found:
+    source: We could not find a block for this location. Please share your location again, or type your 6-digit PIN code.
+    text: हमें इस स्थान के लिए कोई ब्लॉक नहीं मिला। कृपया अपना स्थान फिर से साझा करें, या अपना 6 अंकों का पिन कोड टाइप करें।
+    status: checked
+  strings.pin_not_found:
+    source: We could not find the PIN code {pin}. Please check it, or share your location.
+    text: हमें पिन कोड {pin} नहीं मिला। कृपया इसे देखें, या अपना स्थान साझा करें।
+    status: checked
+  strings.pick_block:
+    source: Choose your block from the list.
+    text: सूची से अपना ब्लॉक चुनें।
+    status: checked
+  strings.pick_block_button:
+    source: Blocks
+    text: ब्लॉक
+    status: checked
+  strings.share_again:
+    source: Share location again
+    text: स्थान फिर भेजें
+    status: checked
+  strings.crop_prompt:
+    source: Which crop do you grow? Choose one. You can add more after this.
+    text: आप कौन सी फसल उगाते हैं? एक चुनें। बाद में और भी जोड़ सकते हैं।
+    status: checked
+  strings.crop_list_button:
+    source: Crops
+    text: फसलें
+    status: checked
+  strings.crop_added:
+    source: 'Selected: {crops}. Add another crop, or tap Done.'
+    text: 'चुनी गई फसलें: {crops}. एक और फसल जोड़ें, या पूरा करने के लिए नीचे का बटन दबाएँ।'
+    status: checked
+  strings.btn_add_crop:
+    source: Add another crop
+    text: एक और फसल जोड़ें
+    status: checked
+  strings.other_crop:
+    source: Other crop
+    text: अन्य फसल
+    status: checked
+  strings.crop_type_prompt:
+    source: Type the name of your crop.
+    text: अपनी फसल का नाम लिखें।
+    status: checked
+  strings.crop_done:
+    source: Done
+    text: हो गया
+    status: glossary
+  strings.crop_need_one:
+    source: Please choose at least one crop.
+    text: कृपया कम से कम एक फसल चुनें।
+    status: checked
+  strings.subscribed:
+    source: You are subscribed. We will send advice for {crops} in {block} when there is something you need to know. Send STOP at any time to stop.
+    text: आपका पंजीकरण हो गया है। {block} में {crops} के लिए ज़रूरी जानकारी होने पर हम सलाह भेजेंगे। रोकने के लिए कभी भी STOP भेजें।
+    status: checked
+  strings.crops_updated:
+    source: 'Your crops are now: {crops}.'
+    text: 'आपकी फसलें अब हैं: {crops}।'
+    status: checked
+  strings.menu_prompt:
+    source: What would you like to do?
+    text: आप क्या करना चाहेंगे?
+    status: checked
+  strings.menu_footer:
+    source: Send STOP to unsubscribe
+    text: सदस्यता समाप्त करने के लिए STOP भेजें
+    status: checked
+  strings.btn_outlook:
+    source: 4-week outlook
+    text: अगले 4 सप्ताह
+    status: checked
+  strings.btn_change_crop:
+    source: Change crop
+    text: फसल बदलें
+    status: checked
+  strings.btn_officer:
+    source: Talk to officer
+    text: अधिकारी से बात करें
+    status: checked
+  strings.btn_menu:
+    source: Main menu
+    text: मुख्य मेन्यू
+    status: checked
+  strings.officer_intro:
+    source: Here is your agriculture officer. Tap the contact to call.
+    text: ये हैं आपके कृषि अधिकारी। कॉल करने के लिए संपर्क पर टैप करें।
+    status: checked
+  strings.officer_kcc:
+    source: 'Kisan Call Centre, free call: {kcc}'
+    text: 'किसान कॉल सेंटर, मुफ़्त कॉल: {kcc}'
+    status: checked
+  strings.officer_notified:
+    source: We have also asked the officer to call you.
+    text: हमने अधिकारी से आपको फोन करने के लिए भी कहा है।
+    status: checked
+  strings.officer_alert:
+    source: 'A farmer in {block} asked to talk. Phone: {phone}. Crops: {crops}.'
+    text: '{block} के एक किसान ने बात करने के लिए कहा है। फ़ोन: {phone}. फसलें: {crops}.'
+    status: checked
+  strings.no_officer:
+    source: No officer is listed for your block yet. Please call the Kisan Call Centre.
+    text: आपके ब्लॉक के लिए अभी अधिकारी की जानकारी नहीं है। कृपया किसान कॉल सेंटर पर कॉल करें।
+    status: checked
+  strings.stop_confirm:
+    source: You are unsubscribed. You will not get any more messages. Send START to subscribe again.
+    text: आपकी सदस्यता बंद कर दी गई है। अब आपको संदेश नहीं मिलेंगे। फिर से शुरू करने के लिए START भेजें।
+    status: checked
+  strings.start_confirm:
+    source: Welcome back. You are subscribed again.
+    text: आपका फिर से स्वागत है। आपकी सदस्यता फिर चालू हो गई है।
+    status: checked
+  strings.opted_out_hint:
+    source: You are unsubscribed. Send START to subscribe again.
+    text: आपकी सदस्यता बंद है। फिर से शुरू करने के लिए START भेजें।
+    status: checked
+  strings.tap_hint:
+    source: Please tap one of the buttons below.
+    text: कृपया नीचे दिए गए बटनों में से किसी एक पर टैप करें।
+    status: checked
+  strings.language_changed:
+    source: Language changed.
+    text: भाषा बदल गई।
+    status: checked
+  strings.outlook_title:
+    source: Weather forecast for {block}, next 4 weeks
+    text: '{block} — अगले 4 हफ़्तों का मौसम पूर्वानुमान'
+    status: checked
+  strings.outlook_unavailable:
+    source: The forecast for {block} is not available right now. Please try again later.
+    text: '{block} के लिए पूर्वानुमान अभी उपलब्ध नहीं है। कृपया बाद में फिर से प्रयास करें।'
+    status: checked
+  strings.outlook_line:
+    source: '{event}: {chance} (usually {usual})'
+    text: '{event}: {chance} (आमतौर पर {usual})'
+    status: checked
+  strings.outlook_footer:
+    source: The forecast for week 4 is less certain than for week 1.
+    text: सप्ताह 4 के लिए पूर्वानुमान सप्ताह 1 की तुलना में कम निश्चित है।
+    status: checked
+  strings.outlook_normal:
+    source: Close to normal
+    text: सामान्य के करीब
+    status: checked
+  strings.week_label:
+    source: Week {n}
+    text: सप्ताह {n}
+    status: checked
+  strings.chance:
+    source: '{n} in 10'
+    text: 10 में से {n}
+    status: checked
+  strings.chance_lt1:
+    source: less than 1 in 10
+    text: 10 में 1 से कम
+    status: checked
+  strings.reason:
+    source: Between {start} and {end}, the chance of {event} is {chance}. The usual chance is {usual}.
+    text: '{start} और {end} के बीच, {event} की संभावना {chance} है। सामान्य संभावना {usual} है।'
+    status: checked
+  strings.valid:
+    source: Valid {valid_from} to {valid_to}
+    text: '{valid_from} से {valid_to} तक मान्य'
+    status: checked
+  strings.source:
+    source: Based on IMD data · {product}
+    text: IMD डेटा के आधार पर · {product}
+    status: checked
+  strings.next_weeks:
+    source: Next 4 weeks
+    text: अगले 4 सप्ताह
+    status: checked
+  strings.what_to_do:
+    source: What to do
+    text: क्या करना है
+    status: checked
+  strings.confidence_high:
+    source: High certainty
+    text: उच्च निश्चितता
+    status: checked
+  strings.confidence_medium:
+    source: Medium certainty
+    text: मध्यम निश्चितता
+    status: checked
+  strings.confidence_low:
+    source: Low certainty
+    text: कम निश्चितता
+    status: checked
+  strings.cmri_normal:
+    source: Normal
+    text: हरी चेतावनी
+    status: checked
+  strings.cmri_watch:
+    source: Watch
+    text: पीली चेतावनी
+    status: checked
+  strings.cmri_warning:
+    source: Warning
+    text: नारंगी चेतावनी
+    status: checked
+  strings.cmri_alert:
+    source: Alert
+    text: लाल चेतावनी
+    status: checked
+  strings.imd_normal:
+    source: No action needed
+    text: कोई कार्रवाई नहीं
+    status: checked
+  strings.imd_watch:
+    source: Be aware
+    text: जागरूक रहें
+    status: checked
+  strings.imd_warning:
+    source: Be prepared
+    text: तैयार रहें
+    status: checked
+  strings.imd_alert:
+    source: Take action
+    text: कार्रवाई करें
+    status: checked
+  strings.ev_onset:
+    source: Rain starts
+    text: मानसून की बारिश शुरू
+    status: checked
+  strings.ev_dry_spell:
+    source: Dry period
+    text: शुष्क अवधि
+    status: checked
+  strings.ev_heavy_rain:
+    source: Heavy rain
+    text: भारी बारिश
+    status: checked
+  strings.event_onset:
+    source: the start of steady monsoon rain
+    text: मानसून की लगातार बारिश की शुरुआत
+    status: checked
+  strings.event_false_onset:
+    source: early rain followed by a long dry period
+    text: पहले बारिश, फिर लंबा सूखा
+    status: checked
+  strings.event_dry_spell_7d:
+    source: a dry period of 7 days or more without rain
+    text: बिना बारिश के 7 या उससे अधिक दिन का सूखा दौर
+    status: checked
+  strings.event_dry_spell_10d:
+    source: a dry period of 10 days or more without rain
+    text: बिना बारिश के 10 या उससे अधिक दिन का सूखा दौर
+    status: checked
+  strings.event_heavy_rain:
+    source: heavy rain of more than 6 cm in a day
+    text: एक दिन में 6 सेंटीमीटर से अधिक की भारी बारिश
+    status: checked
+  templates.DELAY_SOWING.verdict:
+    source: Wait to sow
+    text: बोने के लिए प्रतीक्षा करें
+    status: checked
+  templates.DELAY_SOWING.verdict_sub:
+    source: '{crop}: sow after {wait_until}'
+    text: '{crop}: {wait_until} के बाद बोएँ'
+    status: checked
+  templates.DELAY_SOWING.headline:
+    source: Do not sow {crop} before {wait_until}.
+    text: '{wait_until} से पहले {crop} न बोएँ।'
+    status: checked
+  templates.DELAY_SOWING.actions.0:
+    source: Do not sow now, even if it rains this week. The seed may dry out and die.
+    text: अभी न बोएँ, भले ही इस सप्ताह बारिश हो। बीज सूख सकता है और मर सकता है।
+    status: checked
+  templates.DELAY_SOWING.actions.1:
+    source: Keep your seed and fertiliser ready.
+    text: अपने बीज और उर्वरक तैयार रखें।
+    status: checked
+  templates.DELAY_SOWING.actions.2:
+    source: When the soil is moist 15 cm deep, sow after {wait_until}.
+    text: जब मिट्टी 15 सेंटीमीटर गहरी नम हो, तो {wait_until} के बाद बोएँ।
+    status: checked
+  templates.SOW_NOW.verdict:
+    source: Sow now
+    text: अब बोएँ
+    status: checked
+  templates.SOW_NOW.verdict_sub:
+    source: '{crop}: sow before {sow_by}'
+    text: '{crop}: {sow_by} से पहले बोएँ'
+    status: checked
+  templates.SOW_NOW.headline:
+    source: This is a good time to sow {crop}. Sow before {sow_by}.
+    text: यह {crop} बोने का अच्छा समय है। {sow_by} से पहले बोएँ।
+    status: checked
+  templates.SOW_NOW.actions.0:
+    source: The soil has enough moisture and steady rain is expected.
+    text: मिट्टी में पर्याप्त नमी है और लगातार बारिश होने की उम्मीद है।
+    status: checked
+  templates.SOW_NOW.actions.1:
+    source: Use treated seed of a recommended variety.
+    text: अनुशंसित किस्म के उपचारित बीज का उपयोग करें।
+    status: checked
+  templates.SOW_NOW.actions.2:
+    source: Apply basal fertiliser at sowing.
+    text: बुवाई के समय आधार खाद (बेसल डोज़) डालें।
+    status: checked
+  templates.PREPARE_IRRIGATION.verdict:
+    source: Get irrigation ready
+    text: सिंचाई के लिए तैयार रहें
+    status: checked
+  templates.PREPARE_IRRIGATION.verdict_sub:
+    source: '{crop}'
+    text: '{crop}'
+    status: checked
+  templates.PREPARE_IRRIGATION.headline:
+    source: A dry period may affect your {crop}. Get ready to irrigate.
+    text: सूखा दौर आपकी {crop} को प्रभावित कर सकता है। सिंचाई के लिए तैयार रहें।
+    status: checked
+  templates.PREPARE_IRRIGATION.actions.0:
+    source: Check your pump, pipes and water source now.
+    text: अब अपने पंप, पाइप और पानी के स्रोत की जाँच करें।
+    status: checked
+  templates.PREPARE_IRRIGATION.actions.1:
+    source: If there is no rain for a week, irrigate the crop once.
+    text: अगर एक सप्ताह तक बारिश न हो, तो फसल को एक बार पानी दें।
+    status: checked
+  templates.PREPARE_IRRIGATION.actions.2:
+    source: Irrigate in the evening or early morning to save water.
+    text: पानी बचाने के लिए शाम या सुबह जल्दी पानी दें।
+    status: checked
+  templates.SWITCH_CROP.verdict:
+    source: Switch to {alternative}
+    text: '{alternative} बोएँ'
+    status: checked
+  templates.SWITCH_CROP.verdict_sub:
+    source: instead of {crop}
+    text: '{crop} के बजाय'
+    status: checked
+  templates.SWITCH_CROP.headline:
+    source: It is too risky to sow {crop} now. Sow {alternative} instead, before {sow_by}.
+    text: अब {crop} बोना बहुत जोखिम भरा है। इसके बजाय {sow_by} से पहले {alternative} बोएँ।
+    status: checked
+  templates.SWITCH_CROP.actions.0:
+    source: Do not sow {crop} this season on land without irrigation.
+    text: इस मौसम में बिना सिंचाई के भूमि पर {crop} न बोएँ।
+    status: checked
+  templates.SWITCH_CROP.actions.1:
+    source: Sow {alternative} before {sow_by}. It needs less water and less time.
+    text: '{sow_by} से पहले {alternative} बोएँ। इसमें कम पानी और कम समय लगता है।'
+    status: checked
+  templates.SWITCH_CROP.actions.2:
+    source: Ask your agriculture office or KVK for {alternative} seed.
+    text: '{alternative} के बीज के लिए अपने कृषि कार्यालय या कृषि विज्ञान केंद्र (KVK) से संपर्क करें।'
+    status: checked
+  templates.HEAVY_RAIN_PROTECT.verdict:
+    source: Heavy rain coming
+    text: भारी बारिश होने वाली है
+    status: checked
+  templates.HEAVY_RAIN_PROTECT.verdict_sub:
+    source: Protect {crop}
+    text: '{crop} की रक्षा करें'
+    status: checked
+  templates.HEAVY_RAIN_PROTECT.headline:
+    source: Heavy rain is expected. Protect your {crop} and stored produce.
+    text: भारी बारिश की उम्मीद है। अपने {crop} और संग्रहीत उत्पादों की रक्षा करें।
+    status: checked
+  templates.HEAVY_RAIN_PROTECT.actions.0:
+    source: Clear the field drains so that water does not stand in the field.
+    text: खेत की नालियों को साफ करें ताकि खेत में पानी न जमा हो।
+    status: checked
+  templates.HEAVY_RAIN_PROTECT.actions.1:
+    source: Do not spray pesticide or apply fertiliser before the rain.
+    text: बारिश से पहले न कीटनाशक छिड़कें, न खाद डालें।
+    status: checked
+  templates.HEAVY_RAIN_PROTECT.actions.2:
+    source: Move harvested produce and seed to a dry, high place.
+    text: कटी हुई उपज और बीज को सूखी, ऊँची जगह पर रखें।
+    status: checked
+  templates.DRY_SPELL_CONSERVE_MOISTURE.verdict:
+    source: Save soil moisture
+    text: मिट्टी की नमी बचाएँ
+    status: checked
+  templates.DRY_SPELL_CONSERVE_MOISTURE.verdict_sub:
+    source: '{crop}'
+    text: '{crop}'
+    status: checked
+  templates.DRY_SPELL_CONSERVE_MOISTURE.headline:
+    source: A dry period is expected. Save the moisture in your {crop} field.
+    text: एक शुष्क अवधि की उम्मीद है। अपने {crop} खेत में नमी बचाएँ।
+    status: checked
+  templates.DRY_SPELL_CONSERVE_MOISTURE.actions.0:
+    source: Remove weeds, because they take water from the crop.
+    text: खरपतवार निकाल दें; वे फसल का पानी खींच लेते हैं।
+    status: checked
+  templates.DRY_SPELL_CONSERVE_MOISTURE.actions.1:
+    source: Loosen the top soil lightly between the rows, or cover the soil with crop residue.
+    text: कतारों के बीच ऊपरी मिट्टी की हल्की गुड़ाई करें, या फसल अवशेष से मिट्टी ढक दें।
+    status: checked
+  templates.DRY_SPELL_CONSERVE_MOISTURE.actions.2:
+    source: Wait for rain before you apply top-dressing fertiliser.
+    text: ऊपरी खाद (टॉप ड्रेसिंग) बारिश के बाद ही डालें।
+    status: checked
+  templates.ALL_CLEAR.verdict:
+    source: No action needed
+    text: कोई कार्रवाई नहीं चाहिए
+    status: checked
+  templates.ALL_CLEAR.verdict_sub:
+    source: '{crop}: conditions normal'
+    text: '{crop}: स्थितियाँ सामान्य'
+    status: checked
+  templates.ALL_CLEAR.headline:
+    source: No weather risk is expected for {crop} in the coming weeks.
+    text: आने वाले हफ़्तों में {crop} के लिए मौसम से कोई खतरा नहीं दिख रहा।
+    status: checked
+  templates.ALL_CLEAR.actions.0:
+    source: Continue your normal farm work.
+    text: अपने सामान्य कृषि कार्य को जारी रखें।
+    status: checked
+  templates.ALL_CLEAR.actions.1:
+    source: We will message you if the forecast changes.
+    text: यदि पूर्वानुमान बदलता है तो हम आपको संदेश भेजेंगे।
+    status: checked
+  crops.ragi:
+    source: Ragi
+    text: रागी (मडुआ)
+    status: glossary
+  crops.tur:
+    source: Tur (red gram)
+    text: अरहर (तुअर)
+    status: glossary
+  crops.maize:
+    source: Maize
+    text: मक्का
+    status: glossary
+  crops.cotton:
+    source: Cotton
+    text: कपास
+    status: glossary
+  crops.groundnut:
+    source: Groundnut
+    text: मूंगफली
+    status: glossary
+  crops.soybean:
+    source: Soybean
+    text: सोयाबीन
+    status: glossary
+  crops.jowar:
+    source: Jowar
+    text: ज्वार
+    status: glossary
+  crops.paddy:
+    source: Paddy
+    text: धान
+    status: glossary
+  crops.greengram:
+    source: Green gram
+    text: मूंग
+    status: glossary
+  crops.horsegram:
+    source: Horse gram
+    text: कुलथी
+    status: glossary
+  crops.cowpea:
+    source: Cowpea
+    text: लोबिया
+    status: glossary
+  crops.bajra:
+    source: Bajra
+    text: बाजरा
+    status: glossary
+  crops.sunflower:
+    source: Sunflower
+    text: सूरजमुखी
+    status: glossary
+  crops.all:
+    source: all crops
+    text: सभी फसलें
+    status: glossary

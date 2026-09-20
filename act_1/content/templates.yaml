@@ -1,0 +1,44 @@
+# Advisory templates: language-independent part.
+# Wording lives in content/locales/<lang>.yaml under `templates.<ID>`. Every language must provide
+# verdict, verdict_sub, headline and actions (same count as English).
+#
+# Placeholders available to every template:
+#   {crop} {block} {district} {state}          crop name is localised, place names stay as given
+#   {valid_from} {valid_to}                     formatted in the subscriber's language
+#   {wait_until} {sow_by}                       dates from params, formatted in the subscriber's language
+#   {alternative}                               localised crop name from params.alternative
+# `required` lists params the upstream advisory engine must send for that template (422 otherwise).
+# `reason` line (shared, see strings.reason) is added when params has event, p_event, p_clim and lead_week.
+
+DELAY_SOWING:
+  icon: hourglass
+  required: [wait_until]
+SOW_NOW:
+  icon: sprout
+  required: [sow_by]
+PREPARE_IRRIGATION:
+  icon: droplets
+  required: []
+SWITCH_CROP:
+  icon: refresh-cw
+  required: [alternative, sow_by]
+HEAVY_RAIN_PROTECT:
+  icon: cloud-rain-wind
+  required: []
+DRY_SPELL_CONSERVE_MOISTURE:
+  icon: sun
+  required: []
+ALL_CLEAR:
+  icon: circle-check
+  required: []
+
+# params.event values the engine may send, and which weekly series they belong to.
+events:
+  onset: onset
+  false_onset: dry_spell
+  dry_spell_7d: dry_spell
+  dry_spell_10d: dry_spell
+  heavy_rain: heavy_rain
+
+# Crops offered in the onboarding list (max 9, a 10th row is "Done"). Ids must exist in every locale's `crops`.
+onboarding_crops: [ragi, tur, maize, cotton, groundnut, soybean, jowar, paddy, greengram]

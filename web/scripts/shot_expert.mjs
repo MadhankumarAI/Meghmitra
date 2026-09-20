@@ -1,0 +1,13 @@
+import { chromium } from "playwright";
+const out = process.argv[2];
+const b = await chromium.launch({ args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
+const p = await b.newPage({ viewport: { width: 1600, height: 900 } });
+const errs = []; p.on("pageerror", (e) => errs.push(e.message)); p.on("console", (m) => { if (m.type() === "error") errs.push(m.text()); });
+await p.goto("http://localhost:3100/", { waitUntil: "load" }); await p.waitForTimeout(7000);
+await p.evaluate(() => { const s = window.__console.getState(); s.setDate("2023-06-22"); s.setSelected(2813); });
+await p.waitForTimeout(2500);
+await p.screenshot({ path: `${out}/panel_standard.png`, clip: { x: 1200, y: 60, width: 400, height: 720 } });
+await p.getByRole("button", { name: "expert" }).click(); await p.waitForTimeout(2500);
+await p.screenshot({ path: `${out}/panel_expert.png`, clip: { x: 1200, y: 60, width: 400, height: 720 } });
+console.log(errs.join("\n") || "no errors");
+await b.close();

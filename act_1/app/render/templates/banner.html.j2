@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="utf-8">
+<style>
+  {% for f in fonts %}
+  @font-face { font-family: "{{ f.family }}"; src: url("{{ f.url }}") format("truetype"); font-weight: 100 900; font-stretch: 75% 125%; }
+  {% endfor %}
+  :root { --green: #0F6B4F; --green-2: #16855F; --blue: #1D5FA8; --ink: #0F172A; --muted: #475569; --paper: #F5F9F4; --line: #D5E3D8; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1200px; height: 630px; }
+  body { font-family: "{{ font }}", "Anek Latin", sans-serif; color: var(--ink); background: var(--paper); overflow: hidden; position: relative; }
+  svg { width: 1em; height: 1em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .brand { position: absolute; left: 56px; bottom: 34px; display: flex; align-items: center; gap: 12px; font-family: "Anek Latin"; font-weight: 800; font-size: 30px; color: var(--green); }
+  .brand .dot { width: 44px; height: 44px; border-radius: 12px; background: var(--green); color: #fff; display: grid; place-items: center; font-size: 28px; }
+  .brand small { font-weight: 600; font-size: 22px; color: var(--muted); }
+  .brand .logo { width: 56px; height: 56px; border-radius: 50%; box-shadow: 0 1px 4px #0002; }
+  .hero-logo { position: absolute; right: 50px; top: 50%; transform: translateY(-50%); width: 470px; height: 470px; border-radius: 50%; box-shadow: 0 6px 24px #0f6b4f33; }
+  .rain { position: absolute; inset: 0; background:
+      radial-gradient(circle at 88% 12%, #DCEBFB 0 170px, transparent 171px),
+      radial-gradient(circle at 100% 100%, #E3F1E6 0 260px, transparent 261px); }
+
+  /* welcome */
+  .welcome { position: absolute; inset: 0; padding: 70px 56px; display: flex; flex-direction: column; gap: 22px; }
+  .welcome h1 { font-family: "Anek Latin"; font-size: 104px; font-weight: 800; color: var(--green); line-height: .95; }
+  .welcome .tag { font-size: 38px; font-weight: 600; color: var(--ink); }
+  .welcome .words { display: flex; flex-wrap: wrap; gap: 10px 14px; margin-top: 8px; max-width: 600px; }
+  .chip { background: #fff; border: 2px solid var(--line); border-radius: 999px; padding: 6px 20px; font-size: 30px; font-weight: 600; }
+  .hero { position: absolute; right: 70px; top: 90px; font-size: 300px; color: var(--blue); }
+  .hero.small { font-size: 150px; right: 120px; top: 360px; color: var(--green-2); }
+
+  /* block map */
+  .map { position: absolute; left: 0; top: 0; width: 630px; height: 630px; background: #EAF2EC; border-right: 3px solid var(--line); }
+  .map svg { width: 630px; height: 630px; }
+  .side { position: absolute; left: 686px; right: 50px; top: 90px; display: flex; flex-direction: column; gap: 14px; }
+  .label { font-size: 30px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; display: flex; align-items: center; gap: 10px; }
+  .big { font-family: "Anek Latin"; font-size: 76px; font-weight: 800; line-height: 1; color: var(--ink); }
+  .sub { font-family: "Anek Latin"; font-size: 38px; font-weight: 600; color: var(--muted); }
+  .side .brand { position: static; margin-top: 60px; }
+
+  /* subscribed */
+  .ok { position: absolute; left: 56px; top: 64px; width: 150px; height: 150px; border-radius: 50%; background: var(--green); color: #fff; display: grid; place-items: center; font-size: 96px; }
+  .subscribed { position: absolute; left: 240px; right: 300px; top: 70px; display: flex; flex-direction: column; gap: 24px; }
+  .subscribed h1 { font-size: 72px; font-weight: 800; line-height: 1.05; }
+  .subscribed .label { font-size: 36px; text-transform: none; }
+  .crops { display: flex; flex-wrap: wrap; gap: 12px; }
+  .crops .chip { background: #E3F1E6; border-color: #BFDCC6; font-size: 44px; padding: 8px 26px; display: flex; align-items: center; gap: 10px; }
+
+  /* outlook tiles */
+  .ol-title { position: absolute; left: 56px; right: 300px; top: 36px; font-size: 40px; font-weight: 800; line-height: 1.1; }
+  .tiles { position: absolute; left: 40px; right: 40px; top: 150px; bottom: 36px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+  .tile { background: #fff; border: 3px solid var(--line); border-radius: 22px; padding: 14px 10px 16px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: space-between; overflow: hidden; }
+  .tile .wk { font-size: 32px; font-weight: 800; }
+  .tile .dt { font-family: "Anek Latin"; font-size: 22px; color: var(--muted); }
+  .tile .ic { font-size: 84px; line-height: 1; }
+  .tile .ev { font-size: 27px; font-weight: 700; line-height: 1.1; min-height: 60px; display: flex; align-items: center; justify-content: center; }
+  .tile .ch { font-size: 38px; font-weight: 800; line-height: 1; }
+  .tile .us { font-size: 22px; color: var(--muted); }
+  .tile.hot { border-color: #C25E00; background: #FFF3E6; }
+  .tile.hot .ic { color: #C25E00; }
+  .tile.wet .ic { color: var(--blue); }
+  .tile.calm .ic { color: var(--green-2); }
+  .tile.faint { border-style: dashed; opacity: .75; }
+</style>
+</head>
+<body>
+{% if kind == "welcome" %}
+  <div class="rain"></div>
+  <div class="welcome">
+    <h1>Mungaru</h1>
+    <div class="tag">{{ tagline }}</div>
+    <div class="words">{% for w in words %}<span class="chip">{{ w }}</span>{% endfor %}</div>
+  </div>
+  <img class="hero-logo" src="{{ logo }}" alt="Mungaru">
+
+{% elif kind == "block" %}
+  <div class="map">
+    <svg viewBox="0 0 630 630">
+      {% for p in others %}<path d="{{ p }}" fill="#FFFFFF" stroke="#B9CCBE" stroke-width="2"/>{% endfor %}
+      {% for p in mine %}<path d="{{ p }}" fill="#16855F" fill-opacity=".85" stroke="#0F6B4F" stroke-width="5"/>{% endfor %}
+      <circle cx="{{ pin[0] }}" cy="{{ pin[1] }}" r="22" fill="#C62828" stroke="#FFFFFF" stroke-width="7"/>
+    </svg>
+  </div>
+  <div class="side">
+    <div class="label">{{ icons['map-pin'] | safe }} {{ your_block }}</div>
+    <div class="big">{{ block }}</div>
+    <div class="sub">{{ district }}, {{ state }}</div>
+    <div class="brand"><img class="logo" src="{{ logo }}" alt="">Mungaru</div>
+  </div>
+
+{% elif kind == "subscribed" %}
+  <div class="rain"></div>
+  <div class="ok">{{ icons['circle-check'] | safe }}</div>
+  <div class="hero" style="top: 150px; right: 60px; font-size: 260px; color: var(--green-2)">{{ icons['sprout'] | safe }}</div>
+  <div class="subscribed">
+    <h1>{{ title }}</h1>
+    <div class="label">{{ icons['map-pin'] | safe }} {{ block }}</div>
+    <div class="crops">{% for c in crops %}<span class="chip">{{ icons['sprout'] | safe }} {{ c }}</span>{% endfor %}</div>
+  </div>
+  <div class="brand"><img class="logo" src="{{ logo }}" alt="">Mungaru <small>· {{ tagline }}</small></div>
+
+{% elif kind == "outlook" %}
+  <div class="ol-title">{{ title }}</div>
+  <div class="tiles">
+    {% for t in tiles %}
+    <div class="tile {{ t.mood }} {% if t.week == 4 %}faint{% endif %}">
+      <div class="wk">{{ t.label }}</div>
+      <div class="dt">{{ t.dates }}</div>
+      <div class="ic">{{ icons[t.icon] | safe }}</div>
+      <div class="ev">{{ t.event }}</div>
+      <div class="ch">{{ t.chance }}</div>
+      <div class="us">{{ t.usual }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="brand" style="left: auto; right: 44px; top: 40px; bottom: auto"><img class="logo" src="{{ logo }}" alt="">Mungaru</div>
+{% endif %}
+</body>
+</html>

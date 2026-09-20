@@ -1,0 +1,57 @@
+{
+  "advisory_id": "7132399B41596969416801_demo_chilli_moisture",
+  "issued_at": "2026-09-19T06:00:00+05:30",
+  "valid_from": "2026-09-19",
+  "valid_to": "2026-10-16",
+  "product": "CMRI v1.0",
+  "block": {
+    "block_id": "7132399B41596969416801",
+    "name": "Bengaluru South",
+    "district": "Bangalore",
+    "state": "Karnataka"
+  },
+  "cmri_class": "warning",
+  "crop": "chilli",
+  "template_id": "DRY_SPELL_CONSERVE_MOISTURE",
+  "params": {
+    "p_event": 0.68,
+    "p_clim": 0.31,
+    "event": "dry_spell_7d",
+    "lead_week": 2
+  },
+  "weeks": [
+    {
+      "week": 1,
+      "onset": 0.05,
+      "dry_spell": 0.3,
+      "heavy_rain": 0.08,
+      "confidence": "high"
+    },
+    {
+      "week": 2,
+      "onset": 0.03,
+      "dry_spell": 0.68,
+      "heavy_rain": 0.05,
+      "confidence": "high"
+    },
+    {
+      "week": 3,
+      "onset": 0.03,
+      "dry_spell": 0.44,
+      "heavy_rain": 0.07,
+      "confidence": "medium"
+    },
+    {
+      "week": 4,
+      "onset": 0.02,
+      "dry_spell": 0.33,
+      "heavy_rain": 0.09,
+      "confidence": "low"
+    }
+  ],
+  "officer": {
+    "name": "Assistant Director of Agriculture, Bengaluru South",
+    "phone": "+918022212345"
+  },
+  "requires_approval": true
+}

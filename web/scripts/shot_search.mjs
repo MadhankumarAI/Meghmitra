@@ -1,0 +1,16 @@
+import { chromium } from "playwright";
+const out = process.argv[2];
+const b = await chromium.launch({ args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
+const p = await b.newPage({ viewport: { width: 1600, height: 900 } });
+const logs = [];
+p.on("pageerror", (e) => logs.push(`pageerror: ${e.message}`));
+p.on("console", (m) => { if (m.type() === "error") logs.push(m.text()); });
+await p.goto("http://localhost:3100/", { waitUntil: "load" });
+await p.waitForTimeout(7000);
+await p.keyboard.press("Control+k"); await p.waitForTimeout(400);
+await p.keyboard.type("Kund", { delay: 60 }); await p.waitForTimeout(500);
+await p.screenshot({ path: `${out}/05_search.png` });
+await p.keyboard.press("Enter"); await p.waitForTimeout(3500);
+await p.screenshot({ path: `${out}/06_kundgol.png` });
+console.log(logs.join("\n") || "no errors");
+await b.close();

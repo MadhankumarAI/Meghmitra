@@ -1,0 +1,17 @@
+import { chromium } from "playwright";
+const out = process.argv[2];
+const b = await chromium.launch({ args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
+const errs = [];
+const phone = await b.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 });
+phone.on("pageerror", (e) => errs.push(e.message));
+await phone.goto("http://localhost:3100/f/7132399B62927069207149?lang=kn&date=2023-06-22", { waitUntil: "load" });
+await phone.waitForTimeout(4000);
+await phone.screenshot({ path: `${out}/farmer_kn_names.png`, clip: { x: 0, y: 0, width: 390, height: 420 } });
+const p = await b.newPage({ viewport: { width: 1600, height: 900 } });
+p.on("pageerror", (e) => errs.push(e.message));
+await p.goto("http://localhost:3100/", { waitUntil: "load" }); await p.waitForTimeout(7000);
+await p.keyboard.press("Control+k"); await p.waitForTimeout(400);
+await p.keyboard.type("ನವಲ"); await p.waitForTimeout(700);
+await p.screenshot({ path: `${out}/search_kn.png`, clip: { x: 500, y: 100, width: 600, height: 300 } });
+console.log(errs.join("\n") || "no errors");
+await b.close();

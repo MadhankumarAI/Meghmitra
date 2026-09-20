@@ -1,0 +1,12 @@
+import { chromium } from "playwright";
+const b = await chromium.launch({ args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader"] });
+const p = await b.newPage({ viewport: { width: 1600, height: 900 } });
+const miss = new Set(); p.on("response", (r) => { if (r.status() === 404) miss.add(r.url().replace(/^https?:\/\/[^/]+/, "")); });
+await p.goto("http://localhost:3100/", { waitUntil: "load" }); await p.waitForTimeout(7000);
+await p.getByRole("button", { name: "Understand" }).click(); await p.waitForTimeout(3000);
+await p.getByRole("button", { name: "Live" }).click(); await p.waitForTimeout(5000);
+await p.screenshot({ path: process.argv[2] + "/live_topbar.png", clip: { x: 0, y: 0, width: 1600, height: 120 } });
+await p.getByRole("button", { name: "2023 replay" }).click(); await p.waitForTimeout(3000);
+await p.screenshot({ path: process.argv[2] + "/replay_topbar.png", clip: { x: 0, y: 0, width: 1600, height: 120 } });
+console.log([...miss].join("\n") || "no 404s");
+await b.close();

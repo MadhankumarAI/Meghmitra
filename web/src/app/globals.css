@@ -1,0 +1,219 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------------
+   Design tokens. The console is dark (maps glow, films well); the farmer
+   view is light (cheap screens in sunlight). Data is the only colour: UI
+   chrome stays neutral so the eye goes to the map.
+   ------------------------------------------------------------------------ */
+:root {
+  /* console surfaces */
+  --bg: #060a12;
+  --ocean: #04070d;
+  --land: #0c1320;
+  --surface: rgba(12, 19, 32, 0.86);
+  --surface-solid: #0c1320;
+  --surface-2: #121b2c;
+  --line: #1c2740;
+  --line-strong: #2a3957;
+  --text: #e8eef8;
+  --text-2: #a3b1c7;
+  --text-3: #6f7f99;
+  --focus: #5cc8ff;
+
+  /* CMRI classes: IMD warning semantics (green / yellow / orange / red) */
+  --cmri-normal: #3d9a64;
+  --cmri-watch: #e5c14a;
+  --cmri-warning: #f08c3a;
+  --cmri-alert: #e03e3e;
+
+  /* event hues (sequential ramps are built in lib/colors.ts from these) */
+  --dry: #c2711f;
+  --wet: #3f7fd8;
+  --onset: #2fa88a;
+
+  --radius: 10px;
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--line);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-solid: var(--surface-solid);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-text: var(--text);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-focus: var(--focus);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-normal: var(--cmri-normal);
+  --color-watch: var(--cmri-watch);
+  --color-warning: var(--cmri-warning);
+  --color-alert: var(--cmri-alert);
+  --color-dry: var(--dry);
+  --color-wet: var(--wet);
+  --color-onset: var(--onset);
+  --font-sans: var(--font-inter), var(--font-anek-kn), var(--font-anek-dv), system-ui, sans-serif;
+  --font-brand: var(--font-poppins), var(--font-inter), sans-serif;
+  --font-indic: var(--font-anek-kn), var(--font-anek-dv), var(--font-inter), sans-serif;
+  --radius-panel: var(--radius);
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+}
+
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+}
+
+/* every number in the product is tabular so values never jitter */
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+.panel {
+  background: var(--surface);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* the one primary action on a surface, and its quiet companion */
+.btn-primary,
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.5rem;
+  padding: 0 1rem;
+  border-radius: 0.55rem;
+  font-size: 13.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.15s, opacity 0.15s, transform 0.1s;
+}
+.btn-primary {
+  background: var(--focus);
+  color: #06121c;
+}
+.btn-primary:hover:not(:disabled) {
+  background: #7fd4ff;
+}
+.btn-primary:active:not(:disabled),
+.btn-ghost:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.btn-ghost {
+  color: var(--text-2);
+  font-weight: 500;
+}
+.btn-ghost:hover:not(:disabled) {
+  background: var(--surface-2);
+  color: var(--text);
+}
+.btn-primary:disabled,
+.btn-ghost:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* MapLibre chrome restyled to match the console */
+.maplibregl-ctrl-attrib {
+  background: transparent !important;
+  color: var(--text-3) !important;
+  font-size: 10px !important;
+}
+.maplibregl-ctrl-attrib a {
+  color: var(--text-3) !important;
+}
+.maplibregl-canvas:focus-visible {
+  outline: none;
+}
+
+/* "Understand" mode: low-pressure markers (components/map/AtmosLayer.tsx) */
+.atmos-low { position: relative; width: 44px; height: 44px; display: grid; place-items: center; pointer-events: none; }
+.atmos-low-L { font: 800 22px/1 var(--font-inter), sans-serif; color: #ff6b6b; text-shadow: 0 0 6px #000, 0 0 2px #000; }
+.atmos-low-L.big { font-size: 28px; color: #ff4d6d; }
+.atmos-low-hpa { position: absolute; top: 38px; font: 600 10px/1 var(--font-inter), sans-serif; color: #fff; text-shadow: 0 0 4px #000; }
+.atmos-low-ring { position: absolute; inset: 6px; border: 2px solid rgba(255, 107, 107, 0.7); border-radius: 50%;
+  animation: atmos-pulse 2.4s ease-out infinite; }
+.atmos-low-ring.d2 { animation-delay: 1.2s; }
+@keyframes atmos-pulse { from { transform: scale(0.5); opacity: 0.9; } to { transform: scale(2.2); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .atmos-low-ring { animation: none; opacity: 0.5; } }
+.atmos-axis { display: inline-block; pointer-events: none; padding: 2px 7px; border-radius: 999px; font: 600 10.5px/1.4 var(--font-inter), sans-serif;
+  letter-spacing: 0.04em; text-transform: uppercase; color: #0a1220; background: var(--axis); box-shadow: 0 1px 6px rgba(0,0,0,0.5);
+  animation: atmos-axis-in 0.5s ease-out both; }
+@keyframes atmos-axis-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+/* place names drawn over the map (components/map/MapLabels.tsx): no glyphs in the style */
+.map-label { position: absolute; transform: translate(-50%, -50%); white-space: nowrap;
+  color: rgba(232, 238, 248, 0.92); text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0, 0, 0, 0.7); }
+.map-label.state { font: 600 12px/1 var(--font-inter), sans-serif; letter-spacing: 0.09em; text-transform: uppercase;
+  color: rgba(232, 238, 248, 0.78); }
+.map-label.district { font: 500 11.5px/1 var(--font-inter), sans-serif; letter-spacing: 0.03em; }
+.map-label.block { font: 500 11px/1 var(--font-inter), sans-serif; color: rgba(232, 238, 248, 0.85); }
+
+/* Panels that sit over the animated map need to win the contrast fight: opaque, not glassy.
+   --ink* are the text ramp on that solid surface (brighter than the map-side --text ramp). */
+.panel-solid {
+  background: rgba(9, 14, 24, 0.96);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.09);
+  --ink: #f2f6fc;
+  --ink-2: #c3cfe0;
+  --ink-3: #8d9aae;
+}
+
+/* Scrollbars: the default Windows one is a slab of grey over a dark UI. Thin, rounded, and
+   only as visible as it needs to be, with a bigger hit area than it looks (transparent border). */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(163, 177, 199, 0.35) transparent;
+}
+::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(163, 177, 199, 0.28);
+  background-clip: content-box;
+  border: 3px solid transparent;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(163, 177, 199, 0.5);
+  background-clip: content-box;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}

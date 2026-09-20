@@ -1,0 +1,18 @@
+import { chromium } from "playwright";
+const out = process.argv[2];
+const b = await chromium.launch({ args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
+const p = await b.newPage({ viewport: { width: 1600, height: 900 }, deviceScaleFactor: 1 });
+const logs = [];
+p.on("console", (m) => { if (["error", "warning"].includes(m.type())) logs.push(`${m.type()}: ${m.text()}`); });
+p.on("pageerror", (e) => logs.push(`pageerror: ${e.message}`));
+await p.goto("http://localhost:3100/", { waitUntil: "load", timeout: 120000 });
+await p.waitForTimeout(8000);
+await p.screenshot({ path: `${out}/01_cmri.png` });
+await p.getByRole("button", { name: "Dry spell" }).click();
+await p.waitForTimeout(1500);
+await p.screenshot({ path: `${out}/02_dry.png` });
+await p.mouse.move(820, 560); await p.waitForTimeout(600);
+await p.mouse.click(820, 560); await p.waitForTimeout(1200);
+await p.screenshot({ path: `${out}/03_block.png` });
+console.log(logs.slice(0, 12).join("\n") || "no console errors");
+await b.close();

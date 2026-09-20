@@ -1,0 +1,58 @@
+# --- secrets: never commit ---------------------------------------------------
+.env
+.env.*
+!.env.example
+act_1/.env
+web/.env.local
+web/.env*.local
+
+# --- farmers' data: the delivery service's database holds real phone numbers ---
+act_1/var/
+act_1/fixtures/subscribers.local.json
+
+# --- environments and caches --------------------------------------------------
+.venv/
+act_1/.venv/
+act_1/.venv-ml/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+node_modules/
+web/.next/
+web/out/
+web/.vercel/
+.vscode/
+.idea/
+
+# --- data lives on D:\Morphy, not in git --------------------------------------
+# web/public/data is a Windows junction to D:\Morphy\exports
+web/public/data
+data/
+*.nc
+*.parquet
+*.grd
+*.pmtiles
+*.sqlite3
+*.sqlite3-*
+
+# --- large downloaded sources (fetch them with the scripts) -------------------
+# CRIDA district contingency plans: src/data/crida_plans.py fetch
+*.pdf
+!act_1/assets/**/*.pdf
+act_1/tools/ngrok.exe
+act_1/var/media/
+
+# --- generated media ----------------------------------------------------------
+*.ogg
+*.mp4
+shots/
+screenshots/
+
+# --- os -----------------------------------------------------------------------
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# generated daily by scripts/daily_live.sh (the dummy lives in act_1/fixtures/forecast/)
+act_1/forecast/latest.json

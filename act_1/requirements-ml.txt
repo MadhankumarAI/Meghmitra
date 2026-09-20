@@ -1,0 +1,13 @@
+# Offline content tools (translation + TTS worker). Separate venv: parler-tts pins its own transformers.
+#   python -m venv .venv-ml
+#   .venv-ml\Scripts\pip install --no-deps "torch==2.14.0+cu126" --index-url https://download.pytorch.org/whl/cu126   (NVIDIA)
+#   or: .venv-ml\Scripts\pip install torch==2.14.0 --index-url https://download.pytorch.org/whl/cpu              (CPU only)
+#   .venv-ml\Scripts\pip install -r requirements-ml.txt
+parler_tts @ git+https://github.com/huggingface/parler-tts.git@d108732cd57788ec86bc857d99a6cabd66663d68
+transformers==4.46.1
+indictranstoolkit==1.1.1
+huggingface_hub==0.36.2
+sentencepiece==0.2.2
+soundfile==0.14.0
+accelerate==1.10.1  # streams TTS weights onto the GPU without a full copy in RAM
+PyYAML==6.0.3

@@ -1,0 +1,204 @@
+meta:
+  code: en
+  order: 6
+  name: English
+  english_name: English
+  babel: en_IN
+  indictrans: eng_Latn
+  font: Anek Latin
+  tts_speaker: Mary
+  default_status: reviewed
+keywords:
+  menu:
+  - menu
+  - hi
+  - hello
+  - hey
+  - help
+  - home
+  stop:
+  - stop
+  - unsubscribe
+  - stopall
+  - cancel
+  start:
+  - start
+  - subscribe
+  language:
+  - language
+  - lang
+strings:
+  service: Mungaru monsoon advisories
+  welcome_word: Welcome
+  tagline: Monsoon advice for your farm
+  your_block: Your block
+  subscribed_title: You are subscribed
+  outlook_usual: usually {usual}
+  lang_word: Language
+  lang_list_button: Languages
+  welcome: Welcome to Mungaru. We send free weather advice for your crops, approved by your agriculture officer.
+  location_prompt: Share your farm location so we can find your block. Tap the button below, or type your 6-digit PIN code.
+  block_found: Your block is {block}, {district} district. Is this correct?
+  btn_yes: Yes, correct
+  btn_no: No, change it
+  block_not_found: We could not find a block for this location. Please share your location again, or type your 6-digit PIN code.
+  pin_not_found: We could not find the PIN code {pin}. Please check it, or share your location.
+  pick_block: Choose your block from the list.
+  pick_block_button: Blocks
+  share_again: Share location again
+  crop_prompt: Which crop do you grow? Choose one. You can add more after this.
+  crop_list_button: Crops
+  crop_added: 'Selected: {crops}. Add another crop, or tap Done.'
+  btn_add_crop: Add another crop
+  other_crop: Other crop
+  crop_type_prompt: Type the name of your crop.
+  crop_done: Done
+  crop_need_one: Please choose at least one crop.
+  subscribed: You are subscribed. We will send advice for {crops} in {block} when there is something you need to know. Send STOP at any time to stop.
+  crops_updated: 'Your crops are now: {crops}.'
+  menu_prompt: What would you like to do?
+  menu_footer: Send STOP to unsubscribe
+  btn_outlook: 4-week outlook
+  btn_change_crop: Change crop
+  btn_officer: Talk to officer
+  btn_menu: Main menu
+  officer_intro: Here is your agriculture officer. Tap the contact to call.
+  officer_kcc: 'Kisan Call Centre, free call: {kcc}'
+  officer_notified: We have also asked the officer to call you.
+  officer_alert: 'A farmer in {block} asked to talk. Phone: {phone}. Crops: {crops}.'
+  no_officer: No officer is listed for your block yet. Please call the Kisan Call Centre.
+  stop_confirm: You are unsubscribed. You will not get any more messages. Send START to subscribe again.
+  start_confirm: Welcome back. You are subscribed again.
+  opted_out_hint: You are unsubscribed. Send START to subscribe again.
+  tap_hint: Please tap one of the buttons below.
+  language_changed: Language changed.
+  outlook_title: Weather forecast for {block}, next 4 weeks
+  outlook_unavailable: The forecast for {block} is not available right now. Please try again later.
+  outlook_line: '{event}: {chance} (usually {usual})'
+  outlook_footer: The forecast for week 4 is less certain than for week 1.
+  outlook_normal: Close to normal
+  week_label: Week {n}
+  chance: '{n} in 10'
+  chance_lt1: less than 1 in 10
+  reason: Between {start} and {end}, the chance of {event} is {chance}. The usual chance is {usual}.
+  valid: Valid {valid_from} to {valid_to}
+  source: Based on IMD data · {product}
+  next_weeks: Next 4 weeks
+  what_to_do: What to do
+  confidence_high: High certainty
+  confidence_medium: Medium certainty
+  confidence_low: Low certainty
+  cmri_normal: Normal
+  cmri_watch: Watch
+  cmri_warning: Warning
+  cmri_alert: Alert
+  imd_normal: No action needed
+  imd_watch: Be aware
+  imd_warning: Be prepared
+  imd_alert: Take action
+  ev_onset: Rain starts
+  ev_dry_spell: Dry period
+  ev_heavy_rain: Heavy rain
+  event_onset: the start of steady monsoon rain
+  event_false_onset: early rain followed by a long dry period
+  event_dry_spell_7d: a dry period of 7 days or more without rain
+  event_dry_spell_10d: a dry period of 10 days or more without rain
+  event_heavy_rain: heavy rain of more than 6 cm in a day
+templates:
+  DELAY_SOWING:
+    verdict: Wait to sow
+    verdict_sub: '{crop}: sow after {wait_until}'
+    headline: Do not sow {crop} before {wait_until}.
+    actions:
+    - Do not sow now, even if it rains this week. The seed may dry out and die.
+    - Keep your seed and fertiliser ready.
+    - When the soil is moist 15 cm deep, sow after {wait_until}.
+  SOW_NOW:
+    verdict: Sow now
+    verdict_sub: '{crop}: sow before {sow_by}'
+    headline: This is a good time to sow {crop}. Sow before {sow_by}.
+    actions:
+    - The soil has enough moisture and steady rain is expected.
+    - Use treated seed of a recommended variety.
+    - Apply basal fertiliser at sowing.
+  PREPARE_IRRIGATION:
+    verdict: Get irrigation ready
+    verdict_sub: '{crop}'
+    headline: A dry period may affect your {crop}. Get ready to irrigate.
+    actions:
+    - Check your pump, pipes and water source now.
+    - If there is no rain for a week, irrigate the crop once.
+    - Irrigate in the evening or early morning to save water.
+  SWITCH_CROP:
+    verdict: Switch to {alternative}
+    verdict_sub: instead of {crop}
+    headline: It is too risky to sow {crop} now. Sow {alternative} instead, before {sow_by}.
+    actions:
+    - Do not sow {crop} this season on land without irrigation.
+    - Sow {alternative} before {sow_by}. It needs less water and less time.
+    - Ask your agriculture office or KVK for {alternative} seed.
+  HEAVY_RAIN_PROTECT:
+    verdict: Heavy rain coming
+    verdict_sub: Protect {crop}
+    headline: Heavy rain is expected. Protect your {crop} and stored produce.
+    actions:
+    - Clear the field drains so that water does not stand in the field.
+    - Do not spray pesticide or apply fertiliser before the rain.
+    - Move harvested produce and seed to a dry, high place.
+  DRY_SPELL_CONSERVE_MOISTURE:
+    verdict: Save soil moisture
+    verdict_sub: '{crop}'
+    headline: A dry period is expected. Save the moisture in your {crop} field.
+    actions:
+    - Remove weeds, because they take water from the crop.
+    - Loosen the top soil lightly between the rows, or cover the soil with crop residue.
+    - Wait for rain before you apply top-dressing fertiliser.
+  ALL_CLEAR:
+    verdict: No action needed
+    verdict_sub: '{crop}: conditions normal'
+    headline: No weather risk is expected for {crop} in the coming weeks.
+    actions:
+    - Continue your normal farm work.
+    - We will message you if the forecast changes.
+crops:
+  ragi: Ragi
+  tur: Tur (red gram)
+  maize: Maize
+  cotton: Cotton
+  groundnut: Groundnut
+  soybean: Soybean
+  jowar: Jowar
+  paddy: Paddy
+  greengram: Green gram
+  horsegram: Horse gram
+  cowpea: Cowpea
+  bajra: Bajra
+  sunflower: Sunflower
+  chilli: Chilli
+  onion: Onion
+  tomato: Tomato
+  all: all crops
+  chickpea: Chickpea (Bengal gram)
+  wheat: Wheat
+  castor: Castor
+  safflower: Safflower
+  sesamum: Sesamum
+  blackgram: Black gram
+  fieldbean: Field bean
+  niger: Niger
+  sugarcane: Sugarcane
+  mustard: Mustard
+  potato: Potato
+mt_hints:
+  strings.cmri_normal: Green alert
+  strings.cmri_watch: Yellow alert
+  strings.cmri_warning: Orange alert
+  strings.cmri_alert: Red alert
+  strings.crop_done: Done
+  strings.btn_officer: Call officer
+  strings.share_again: Send location
+  strings.service: Mungaru advice
+  strings.btn_outlook: Next 4 weeks
+  strings.ev_onset: Monsoon rain starts
+  strings.ev_heavy_rain: Heavy rainfall
+  strings.chance: '{n} out of 10'

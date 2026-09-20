@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="{{ r.language }}">
+<head>
+<meta charset="utf-8">
+<style>
+  {% for f in fonts %}
+  @font-face { font-family: "{{ f.family }}"; src: url("{{ f.url }}") format("truetype"); font-weight: 100 900; font-stretch: 75% 125%; }
+  {% endfor %}
+  :root {
+    --band: {{ band_bg }};
+    --band-ink: {{ band_ink }};
+    --ink: #0F172A;
+    --muted: #475569;
+    --line: #CBD5E1;
+    --paper: #FFFFFF;
+    --tile: #F1F5F9;
+    --scale: 1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1350px; background: var(--paper); }
+  body {
+    font-family: "{{ r.font }}", "Anek Latin", sans-serif;
+    color: var(--ink);
+    display: flex; flex-direction: column;
+    font-size: calc(34px * var(--scale));
+    line-height: 1.25;
+    -webkit-font-smoothing: antialiased;
+  }
+  svg { width: 1em; height: 1em; stroke: currentColor; fill: none; stroke-width: 2.25; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+
+  .band { background: var(--band); color: var(--band-ink); padding: 34px 56px; display: flex; align-items: center; gap: 30px; }
+  .band .badge { width: 124px; height: 124px; border-radius: 50%; background: var(--band-ink); color: var(--band); display: grid; place-items: center; font-size: 84px; flex: none; }
+  .band .word { font-size: calc(76px * var(--scale)); font-weight: 800; letter-spacing: .01em; line-height: 1.05; }
+  .band .meaning { font-size: calc(40px * var(--scale)); font-weight: 600; }
+  .band .product { margin-left: auto; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 22px; font-weight: 700; font-family: "Anek Latin", sans-serif; }
+  .band .product .logo { width: 104px; height: 104px; border-radius: 50%; background: #fff; box-shadow: 0 2px 8px #0003; }
+
+  main { flex: 1; display: flex; flex-direction: column; padding: calc(34px * var(--scale)) 56px 12px; gap: calc(28px * var(--scale)); min-height: 0; overflow: hidden; }
+  .verdict { display: flex; gap: 32px; align-items: center; }
+  .verdict .icon { width: calc(150px * var(--scale)); height: calc(150px * var(--scale)); border-radius: 28px; background: var(--tile); border: 5px solid var(--band-edge); display: grid; place-items: center; font-size: calc(96px * var(--scale)); flex: none; }
+  .verdict h1 { font-size: calc(92px * var(--scale)); font-weight: 800; line-height: 1.05; }
+  .verdict .sub { font-size: calc(46px * var(--scale)); font-weight: 600; color: var(--ink); margin-top: 6px; }
+  .reason { font-size: calc(33px * var(--scale)); color: var(--ink); background: var(--tile); border-left: 10px solid var(--band-edge); padding: 18px 24px; border-radius: 10px; }
+
+  h2 { font-size: calc(30px * var(--scale)); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 14px; }
+  .weeks { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .tile { border: 3px solid var(--line); border-radius: 18px; padding: calc(14px * var(--scale)) 10px calc(16px * var(--scale)); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .tile .wk { font-size: calc(28px * var(--scale)); font-weight: 700; }
+  .tile .dates { font-size: calc(22px * var(--scale)); color: var(--muted); }
+  .tile .ic { font-size: calc(66px * var(--scale)); margin: 4px 0 0; }
+  .tile .ev { font-size: calc(28px * var(--scale)); font-weight: 700; line-height: 1.1; }
+  .tile .ch { font-size: calc(36px * var(--scale)); font-weight: 800; }
+  .tile .conf { font-size: calc(21px * var(--scale)); color: var(--muted); display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 2px 6px; line-height: 1.15; }
+  .dots { display: inline-flex; gap: 4px; }
+  .dots i { width: 12px; height: 12px; border-radius: 50%; background: var(--ink); display: inline-block; }
+  .dots i.off { background: transparent; border: 2px solid var(--muted); }
+  .tile.risk { border-color: var(--band-edge); background: var(--band-tint); }
+  .tile.low { border-style: dashed; opacity: .72; }
+
+  ol.actions { list-style: none; display: flex; flex-direction: column; gap: calc(14px * var(--scale)); }
+  ol.actions li { display: flex; gap: 20px; align-items: flex-start; font-size: calc(35px * var(--scale)); }
+  ol.actions .n { width: calc(56px * var(--scale)); height: calc(56px * var(--scale)); border-radius: 50%; background: var(--ink); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 32px; flex: none; font-family: "Anek Latin", sans-serif; }
+
+  footer { margin-top: auto; padding: 26px 56px 30px; border-top: 3px solid var(--line); display: flex; align-items: flex-end; gap: 24px; }
+  footer .place { font-size: 38px; font-weight: 800; display: flex; align-items: center; gap: 12px; font-family: "Anek Latin", sans-serif; }
+  footer .valid { font-size: calc(27px * var(--scale)); color: var(--ink); margin-top: 4px; }
+  footer .credit { margin-left: auto; text-align: right; font-size: calc(24px * var(--scale)); color: var(--muted); max-width: 420px; }
+  footer .credit .id { font-family: "Anek Latin", sans-serif; font-size: 16px; margin-top: 4px; word-break: break-all; }
+</style>
+</head>
+<body style="--band-edge: {{ band_edge }}; --band-tint: {{ band_tint }};">
+  <section class="band">
+    <div class="badge">{{ icons[r.cmri_icon] | safe }}</div>
+    <div>
+      <div class="word">{{ r.band_word }}</div>
+      <div class="meaning">{{ r.band_meaning }}</div>
+    </div>
+    <div class="product"><img class="logo" src="{{ logo }}" alt="Mungaru"><div>{{ product }}</div></div>
+  </section>
+
+  <main id="main">
+    <section class="verdict">
+      <div class="icon">{{ icons[r.template_icon] | safe }}</div>
+      <div>
+        <h1>{{ r.verdict }}</h1>
+        <div class="sub">{{ r.verdict_sub }}</div>
+      </div>
+    </section>
+
+    {% if r.reason %}<div class="reason">{{ r.reason }}</div>{% endif %}
+
+    {% if r.tiles %}
+    <section>
+      <h2>{{ r.labels.next_weeks }}</h2>
+      <div class="weeks">
+        {% for t in r.tiles %}
+        <div class="tile {% if t.p >= 0.5 and t.event != 'onset' %}risk{% endif %} {% if t.confidence == 'low' %}low{% endif %}">
+          <div class="wk">{{ r.labels.week[t.week - 1] }}</div>
+          <div class="dates">{{ t.start }} – {{ t.end }}</div>
+          <div class="ic">{{ icons[t.icon] | safe }}</div>
+          <div class="ev">{{ t.label }}</div>
+          <div class="ch">{{ t.chance | replace(" ", " ") }}</div>
+          <div class="conf"><span class="dots">{% for i in range(3) %}<i class="{% if i >= {'high': 3, 'medium': 2, 'low': 1}[t.confidence] %}off{% endif %}"></i>{% endfor %}</span>{{ t.confidence_label }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    <section>
+      <h2>{{ r.labels.what_to_do }}</h2>
+      <ol class="actions">
+        {% for a in r.actions %}<li><span class="n">{{ loop.index }}</span><span>{{ a }}</span></li>{% endfor %}
+      </ol>
+    </section>
+  </main>
+
+  <footer>
+    <div>
+      <div class="place">{{ icons['map-pin'] | safe }} {{ r.block_line }}</div>
+      <div class="valid">{{ r.validity }}</div>
+    </div>
+    <div class="credit">{{ r.source }}<div class="id">{{ r.advisory_id }}</div></div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,22 @@
+// Screenshot tour of every screen: node scripts/shot_tour.mjs OUTDIR
+import { chromium } from "playwright";
+const out = process.argv[2];
+const b = await chromium.launch({ args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
+const p = await b.newPage({ viewport: { width: 1600, height: 900 } });
+const errs = []; p.on("pageerror", (e) => errs.push(e.message));
+const base = `http://localhost:${process.env.PORT ?? 3100}`;
+const shot = (n) => p.screenshot({ path: `${out}/tour_${n}.png` });
+await p.goto(base + "/", { waitUntil: "load" }); await p.waitForTimeout(9000); await shot("1_home");
+await p.evaluate(() => { const s = window.__console.getState(); s.setDate("2023-06-22"); s.setSelected(2813); });
+await p.waitForTimeout(3500); await shot("2_block");
+await p.getByRole("button", { name: "Expert" }).click(); await p.waitForTimeout(2500); await shot("3_expert");
+await p.getByRole("button", { name: "Standard" }).click();
+await p.evaluate(() => { const s = window.__console.getState(); s.setSelected(null); s.setDate("2023-06-12"); s.setUnderstand(true); });
+await p.waitForTimeout(8000); await shot("4_understand");
+await p.goto(base + "/science", { waitUntil: "load" }); await p.waitForTimeout(4000); await shot("5_science");
+await p.evaluate(() => window.scrollTo(0, 1400)); await p.waitForTimeout(1500); await shot("5b_science");
+const m = await b.newPage({ viewport: { width: 390, height: 844 } });
+await m.goto(base + "/f/7132399B62927069207149?lang=kn&crop=ragi&date=2023-06-22", { waitUntil: "load" }); await m.waitForTimeout(4000);
+await m.screenshot({ path: `${out}/tour_6_farmer.png`, fullPage: true });
+console.log(errs.join("\n") || "no errors");
+await b.close();

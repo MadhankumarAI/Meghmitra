@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phone simulator</title>
+<style>
+  @font-face { font-family: "Anek Latin"; src: url("/assets/fonts/AnekLatin.ttf"); }
+  @font-face { font-family: "Anek Kannada"; src: url("/assets/fonts/AnekKannada.ttf"); }
+  @font-face { font-family: "Anek Devanagari"; src: url("/assets/fonts/AnekDevanagari.ttf"); }
+  @font-face { font-family: "Anek Telugu"; src: url("/assets/fonts/AnekTelugu.ttf"); }
+  @font-face { font-family: "Anek Tamil"; src: url("/assets/fonts/AnekTamil.ttf"); }
+  :root { --bg: #EFEAE2; --me: #D9FDD3; --them: #FFFFFF; --ink: #111B21; --muted: #667781; --accent: #008069; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #D1D7DB; font-family: "Anek Latin", "Anek Kannada", "Anek Devanagari", "Anek Telugu", "Anek Tamil", system-ui, sans-serif; color: var(--ink); }
+  .phone { max-width: 430px; height: 100vh; margin: 0 auto; display: flex; flex-direction: column; background: var(--bg); }
+  header { background: var(--accent); color: #fff; padding: 10px 14px; display: flex; gap: 8px; align-items: center; }
+  header b { flex: 1; font-size: 17px; }
+  header input { width: 150px; border: 0; border-radius: 6px; padding: 6px 8px; font: inherit; }
+  header button { background: transparent; color: #fff; border: 1px solid #fff8; border-radius: 6px; padding: 5px 8px; cursor: pointer; font: inherit; font-size: 13px; }
+  #chat { flex: 1; overflow-y: auto; padding: 12px 10px; display: flex; flex-direction: column; gap: 6px; }
+  .msg { max-width: 85%; padding: 7px 9px 5px; border-radius: 8px; box-shadow: 0 1px .5px #0002; white-space: pre-wrap; font-size: 15px; line-height: 1.35; }
+  .out { align-self: flex-start; background: var(--them); }
+  .in { align-self: flex-end; background: var(--me); }
+  .meta { font-size: 11px; color: var(--muted); text-align: right; margin-top: 2px; }
+  .tag { font-size: 11px; font-weight: 700; color: #3558a8; margin-bottom: 2px; }
+  .msg img { width: 100%; border-radius: 6px; display: block; }
+  .msg audio { width: 260px; }
+  .btns { display: flex; flex-direction: column; gap: 1px; margin: 6px -9px -5px; border-top: 1px solid #0001; }
+  .btns button { background: #fff; border: 0; border-top: 1px solid #0001; color: #027EB5; padding: 9px; font: inherit; font-size: 15px; cursor: pointer; }
+  .btns button:hover { background: #f5f5f5; }
+  .footer { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .sheet { position: fixed; inset: 0; background: #0006; display: none; align-items: flex-end; justify-content: center; }
+  .sheet.open { display: flex; }
+  .sheet .panel { background: #fff; width: 100%; max-width: 430px; border-radius: 14px 14px 0 0; padding: 10px 0 16px; max-height: 80vh; overflow: auto; }
+  .sheet .row { padding: 10px 18px; cursor: pointer; border-bottom: 1px solid #0001; }
+  .sheet .row:hover { background: #f5f5f5; }
+  .sheet .row small { display: block; color: var(--muted); }
+  .sheet h3 { margin: 4px 18px 8px; font-size: 16px; }
+  .contact { display: flex; gap: 10px; align-items: center; }
+  .contact .av { width: 40px; height: 40px; border-radius: 50%; background: #DFE5E7; display: grid; place-items: center; font-weight: 700; }
+  form { display: flex; gap: 6px; padding: 8px; background: #F0F2F5; }
+  form input { flex: 1; border: 0; border-radius: 20px; padding: 10px 14px; font: inherit; }
+  form button { border: 0; background: var(--accent); color: #fff; border-radius: 20px; padding: 0 16px; font: inherit; cursor: pointer; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <header>
+    <b>Mungaru (simulator)</b>
+    <input id="phone" value="+919000000099" aria-label="Phone number">
+    <button id="reset" title="Forget this conversation">Reset</button>
+  </header>
+  <div id="chat" aria-live="polite"></div>
+  <form id="f"><input id="t" placeholder="Type a message (menu, STOP, a PIN code…)" autocomplete="off"><button>Send</button></form>
+</div>
+<div class="sheet" id="sheet"><div class="panel" id="panel"></div></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const chat = $('#chat');
+let last = 0, phone = new URLSearchParams(location.search).get('phone') || localStorage.getItem('simPhone') || $('#phone').value;
+$('#phone').value = phone;
+
+const PLACES = [
+  ['Kundgol (Dharwad, Karnataka)', 15.2566, 75.2486],
+  ['Navalgund (Dharwad, Karnataka)', 15.5579, 75.3598],
+  ['Sehore (Madhya Pradesh)', 23.2032, 77.0844],
+  ['Arabian Sea (no block)', 15.0, 73.0],
+];
+
+function esc(s) { return (s || '').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[c]); }
+function md(s) { return esc(s).replace(/\*([^*\n]+)\*/g, '<b>$1</b>').replace(/_([^_\n]+)_/g, '<i>$1</i>'); }
+
+async function send(body) {
+  await fetch('/dev/inbound', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({phone, ...body})});
+  poll();
+}
+
+function sheet(title, rows, onPick) {
+  const p = $('#panel');
+  p.innerHTML = `<h3>${esc(title)}</h3>` + rows.map((r, i) => `<div class="row" data-i="${i}">${esc(r.title)}${r.description ? `<small>${esc(r.description)}</small>` : ''}</div>`).join('');
+  p.querySelectorAll('.row').forEach(el => el.onclick = () => { $('#sheet').classList.remove('open'); onPick(rows[+el.dataset.i]); });
+  $('#sheet').classList.add('open');
+}
+$('#sheet').onclick = e => { if (e.target.id === 'sheet') e.target.classList.remove('open'); };
+
+function render(m) {
+  const d = document.createElement('div');
+  const p = m.payload;
+  d.className = 'msg ' + (m.direction === 'in' ? 'in' : 'out');
+  let h = '';
+  if (m.kind === 'image') h += `<img src="${p.url}" alt="Advisory card">${p.caption ? `<div>${md(p.caption)}</div>` : ''}`;
+  else if (m.kind === 'voice') h += `<audio controls src="${p.url}"></audio>`;
+  else if (m.kind === 'contact') h += `<div class="contact"><div class="av">${esc((p.name || '?')[0])}</div><div><b>${esc(p.name)}</b><br><a href="tel:${esc(p.phone)}">${esc(p.phone)}</a></div></div>`;
+  else h += (p.image_url ? `<img src="${p.image_url}" alt="" style="margin-bottom:6px">` : '') + (p.header ? `<b>${esc(p.header)}</b>\n` : '') + md(p.body);
+  if (p.footer) h += `<div class="footer">${esc(p.footer)}</div>`;
+  h += `<div class="meta">${new Date(m.ts).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}</div>`;
+  d.innerHTML = h;
+  if (m.direction === 'out' && (m.kind === 'buttons' || m.kind === 'list' || m.kind === 'location_request')) {
+    const b = document.createElement('div'); b.className = 'btns';
+    if (m.kind === 'buttons') p.buttons.forEach(x => { const e = document.createElement('button'); e.textContent = x.title; e.onclick = () => send({kind: 'button', payload: x.id, title: x.title}); b.append(e); });
+    if (m.kind === 'list') { const e = document.createElement('button'); e.textContent = '☰ ' + p.button; e.onclick = () => sheet(p.button, p.rows, r => send({kind: 'list', payload: r.id, title: r.title})); b.append(e); }
+    if (m.kind === 'location_request') { const e = document.createElement('button'); e.textContent = 'Send location'; e.onclick = () => sheet('Share location', PLACES.map(([t, la, lo]) => ({title: t, description: `${la}, ${lo}`, la, lo})), r => send({kind: 'location', lat: r.la, lon: r.lo})); b.append(e); }
+    d.append(b);
+  }
+  chat.append(d);
+}
+
+async function poll() {
+  const r = await fetch(`/dev/outbox?phone=${encodeURIComponent(phone)}&after=${last}`);
+  if (!r.ok) return;
+  const rows = await r.json();
+  rows.forEach(m => { render(m); last = m.id; });
+  if (rows.length) { chat.scrollTop = chat.scrollHeight; if (!document.hidden) fetch(`/dev/read?phone=${encodeURIComponent(phone)}`, {method: 'POST'}); }
+}
+
+$('#f').onsubmit = e => { e.preventDefault(); const v = $('#t').value.trim(); if (v) { send({kind: 'text', text: v}); $('#t').value = ''; } };
+$('#phone').onchange = () => { phone = $('#phone').value.trim(); try { localStorage.setItem('simPhone', phone); } catch {} chat.innerHTML = ''; last = 0; poll(); };
+$('#reset').onclick = async () => { await fetch(`/dev/reset?phone=${encodeURIComponent(phone)}`, {method: 'POST'}); chat.innerHTML = ''; last = 0; };
+setInterval(poll, 1200); poll();
+</script>
+</body>
+</html>

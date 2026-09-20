@@ -1,0 +1,20 @@
+{
+  "advisory_id": "7132399B42588708285234_2026-07-05_soybean_allclear",
+  "issued_at": "2026-07-05T06:00:00+05:30",
+  "valid_from": "2026-07-05",
+  "valid_to": "2026-08-01",
+  "product": "CMRI v1.0",
+  "block": { "block_id": "7132399B42588708285234", "name": "Sehore", "district": "Sehore", "state": "Madhya Pradesh" },
+  "cmri_class": "normal",
+  "crop": "soybean",
+  "template_id": "ALL_CLEAR",
+  "params": {},
+  "weeks": [
+    { "week": 1, "onset": 0.05, "dry_spell": 0.17, "heavy_rain": 0.12, "confidence": "high" },
+    { "week": 2, "onset": 0.04, "dry_spell": 0.21, "heavy_rain": 0.14, "confidence": "high" },
+    { "week": 3, "onset": 0.03, "dry_spell": 0.24, "heavy_rain": 0.13, "confidence": "medium" },
+    { "week": 4, "onset": 0.03, "dry_spell": 0.27, "heavy_rain": 0.10, "confidence": "low" }
+  ],
+  "officer": { "name": "Senior Agriculture Development Officer, Sehore", "phone": "+910000000003" },
+  "requires_approval": false
+}

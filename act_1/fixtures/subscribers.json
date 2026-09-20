@@ -1,0 +1,70 @@
+[
+  {
+    "subscriber_id": "sub-kn-kundgol-01",
+    "phone": "${DEMO_PHONE_1:+919000000001}",
+    "channel_pref": "whatsapp",
+    "language": "kn",
+    "block_id": "7132399B30508081289508",
+    "crops": [
+      "ragi",
+      "greengram"
+    ],
+    "role": "farmer",
+    "consent_ts": "2026-06-01T10:00:00+05:30",
+    "opted_out": false
+  },
+  {
+    "subscriber_id": "sub-hi-sehore-01",
+    "phone": "${DEMO_PHONE_2:+919000000002}",
+    "channel_pref": "whatsapp",
+    "language": "hi",
+    "block_id": "7132399B42588708285234",
+    "crops": [
+      "soybean"
+    ],
+    "role": "farmer",
+    "consent_ts": "2026-06-02T09:30:00+05:30",
+    "opted_out": false
+  },
+  {
+    "subscriber_id": "sub-kn-navalgund-01",
+    "phone": "${DEMO_PHONE_3:+919000000003}",
+    "channel_pref": "whatsapp",
+    "language": "kn",
+    "block_id": "7132399B62927069207149",
+    "crops": [
+      "greengram",
+      "cotton"
+    ],
+    "role": "farmer",
+    "consent_ts": "2026-06-03T08:15:00+05:30",
+    "opted_out": false
+  },
+  {
+    "subscriber_id": "sub-mr-navalgund-01",
+    "phone": "+919000000004",
+    "channel_pref": "whatsapp",
+    "language": "mr",
+    "block_id": "7132399B62927069207149",
+    "crops": [
+      "cotton",
+      "greengram"
+    ],
+    "role": "farmer",
+    "consent_ts": "2026-06-04T18:40:00+05:30",
+    "opted_out": false
+  },
+  {
+    "subscriber_id": "off-en-kundgol-01",
+    "phone": "${DEMO_OFFICER_PHONE:+919000000005}",
+    "channel_pref": "whatsapp",
+    "language": "en",
+    "block_id": "7132399B30508081289508",
+    "crops": [
+      "all"
+    ],
+    "role": "officer",
+    "consent_ts": "2026-06-01T09:00:00+05:30",
+    "opted_out": false
+  }
+]

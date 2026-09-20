@@ -1,0 +1,14 @@
+import { chromium } from "playwright";
+const out = process.argv[2];
+const b = await chromium.launch({ args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
+const p = await b.newPage({ viewport: { width: 1600, height: 900 } });
+const errs = []; p.on("pageerror", (e) => errs.push(e.message)); p.on("console", (m) => { if (m.type() === "error") errs.push(m.text()); });
+await p.goto(`http://localhost:${process.env.PORT ?? 3100}/`, { waitUntil: "load" }); await p.waitForTimeout(7000);
+await p.evaluate(() => { const s = window.__console.getState(); s.setDate("2023-06-22"); s.setSelected(2813); });
+await p.waitForTimeout(2500);
+await p.getByRole("button", { name: /Review/ }).click(); await p.waitForTimeout(4500);
+await p.screenshot({ path: `${out}/review.png` });
+await p.getByRole("button", { name: /Approve & send/ }).click(); await p.waitForTimeout(1200);
+await p.screenshot({ path: `${out}/review_done.png`, clip: { x: 300, y: 600, width: 700, height: 250 } });
+console.log(errs.join("\n") || "no errors");
+await b.close();

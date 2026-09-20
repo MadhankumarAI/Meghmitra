@@ -1,0 +1,14 @@
+import { chromium } from "playwright";
+const out = process.argv[2];
+const b = await chromium.launch({ args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
+const p = await b.newPage({ viewport: { width: 1600, height: 900 } });
+const errs = []; p.on("pageerror", (e) => errs.push(e.message)); p.on("console", (m) => { if (m.type() === "error") errs.push(m.text()); });
+await p.goto("http://localhost:3100/", { waitUntil: "load" }); await p.waitForTimeout(7000);
+await p.getByRole("button", { name: "Onset" }).click(); await p.waitForTimeout(1200);
+await p.screenshot({ path: `${out}/07_onset_front.png`, clip: { x: 450, y: 60, width: 700, height: 760 } });
+await p.getByRole("radio", { name: /Week 3/ }).click(); await p.waitForTimeout(190);
+await p.screenshot({ path: `${out}/08_onset_mid.png`, clip: { x: 450, y: 60, width: 700, height: 760 } });
+await p.waitForTimeout(900);
+await p.screenshot({ path: `${out}/09_onset_w3.png`, clip: { x: 450, y: 60, width: 700, height: 760 } });
+console.log(errs.join("\n") || "no errors");
+await b.close();

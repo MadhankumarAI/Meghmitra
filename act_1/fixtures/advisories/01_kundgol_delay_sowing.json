@@ -1,0 +1,20 @@
+{
+  "advisory_id": "7132399B30508081289508_2026-06-21_ragi_delay",
+  "issued_at": "2026-06-21T06:00:00+05:30",
+  "valid_from": "2026-06-21",
+  "valid_to": "2026-07-18",
+  "product": "CMRI v1.0",
+  "block": { "block_id": "7132399B30508081289508", "name": "Kundgol", "district": "Dharwad", "state": "Karnataka" },
+  "cmri_class": "warning",
+  "crop": "ragi",
+  "template_id": "DELAY_SOWING",
+  "params": { "wait_until": "2026-07-05", "p_event": 0.68, "p_clim": 0.31, "event": "dry_spell_10d", "lead_week": 2 },
+  "weeks": [
+    { "week": 1, "onset": 0.42, "dry_spell": 0.21, "heavy_rain": 0.08, "confidence": "high" },
+    { "week": 2, "onset": 0.18, "dry_spell": 0.68, "heavy_rain": 0.05, "confidence": "high" },
+    { "week": 3, "onset": 0.30, "dry_spell": 0.44, "heavy_rain": 0.07, "confidence": "medium" },
+    { "week": 4, "onset": 0.35, "dry_spell": 0.33, "heavy_rain": 0.09, "confidence": "low" }
+  ],
+  "officer": { "name": "Assistant Director of Agriculture, Kundgol", "phone": "+910000000001" },
+  "requires_approval": true
+}

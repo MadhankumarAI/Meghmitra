@@ -1,0 +1,12 @@
+import { chromium } from "playwright";
+const [out, date, idx] = process.argv.slice(2);
+const b = await chromium.launch({ args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
+const p = await b.newPage({ viewport: { width: 1600, height: 900 } });
+const errs = []; p.on("pageerror", (e) => errs.push(e.message)); p.on("console", (m) => { if (m.type() === "error") errs.push(m.text()); });
+await p.goto("http://localhost:3100/", { waitUntil: "load" }); await p.waitForTimeout(7000);
+const bb = await p.evaluate(async (i) => (await (await fetch("/data/blocks_index.json")).json())[i].bb, Number(idx));
+await p.evaluate(([d, i, bb]) => { const s = window.__console.getState(); s.setDate(d); s.setSelected(i); s.setFocus(bb); }, [date, Number(idx), bb]);
+await p.waitForTimeout(4000);
+await p.screenshot({ path: `${out}/block_${idx}_${date}.png` });
+console.log(errs.join("\n") || "no errors");
+await b.close();

@@ -1,0 +1,12 @@
+import { chromium } from "playwright";
+const out = process.argv[2];
+const b = await chromium.launch({ args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
+const p = await b.newPage({ viewport: { width: 1600, height: 900 } });
+const errs = []; p.on("pageerror", (e) => errs.push(e.message)); p.on("console", (m) => { if (m.type() === "error") errs.push(m.text()); });
+await p.goto(`http://localhost:${process.env.PORT ?? 3100}/`, { waitUntil: "load" }); await p.waitForTimeout(8000);
+await p.getByRole("button", { name: "Live" }).click(); await p.waitForTimeout(7000);
+await p.screenshot({ path: `${out}/live_now.png` });
+await p.getByRole("radio").nth(10).click(); await p.waitForTimeout(6000);
+await p.screenshot({ path: `${out}/live_5d.png` });
+console.log(errs.join("\n") || "no errors");
+await b.close();
