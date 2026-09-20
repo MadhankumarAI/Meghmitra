@@ -24,7 +24,9 @@ import lightgbm as lgb
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from config import PROCESSED
 from models.climatology import FOLDS, fold_of, smooth, PRIOR_WEIGHT, EVENTS
+from features import iod
 from verify.score import summary
+from features.targets import ISSUE_DOY0
 
 YEARS = np.arange(1991, 2026)
 # threads from the shared-server budget (env.sh), never hard-coded: other jobs run here
@@ -62,7 +64,7 @@ def main(fast: bool, v2: bool = False, only_fold: int | None = None, save_models
     yidx = {int(y): i for i, y in enumerate(all_years)}
     rng = np.random.default_rng(0)
     step, block_frac = (5, 0.5) if fast else (3, 1.0)
-    fnames = names + ["clim", "usual_onset", "days_vs_usual"]
+    fnames = names + ["clim", "usual_onset", "days_vs_usual"] + iod.NAMES
 
     # v2: replace raw planetary indices (which overfit: ~4,000 independent MJO days
     # behind millions of rows) with per-block teleconnection signatures.
@@ -92,7 +94,10 @@ def main(fast: bool, v2: bool = False, only_fold: int | None = None, save_models
         for f, (fa, fb) in enumerate(FOLDS):
             test_years = [y for y in YEARS if fa <= y <= fb]
             train_years = [y for y in YEARS if not (fa <= y <= fb)]
-            # nested fold-dependent estimates
+            # nested fold-dependent estimates (the IOD climatology is nested the same way)
+            iod_test = tuple(int(y) for y in YEARS if fold_of(int(y)) != f)
+            iod_tr = {g: tuple(int(y) for y in YEARS if fold_of(int(y)) not in (f, g))
+                      for g in range(len(FOLDS)) if g != f}
             clim_test = estimate(Hs, Vs, folds_all != f)
             clim_tr = {g: estimate(Hs, Vs, (folds_all != f) & (folds_all != g))
                        for g in range(len(FOLDS)) if g != f}
@@ -115,7 +120,7 @@ def main(fast: bool, v2: bool = False, only_fold: int | None = None, save_models
                             rng.choice(B, int(B * block_frac), replace=False)
                 continue
             for li in range(4):
-                def rows(y, clim, uo, sub, sigs=None):
+                def rows(y, clim, uo, sub, sigs=None, keep=None):
                     Xy = X[y]                                   # (I, B, F)
                     iss = np.arange(0, I, step) if sub else np.arange(I)
                     blk = (np.sort(rng.choice(B, int(B * block_frac), replace=False))
@@ -125,6 +130,7 @@ def main(fast: bool, v2: bool = False, only_fold: int | None = None, save_models
                     u = np.broadcast_to(uo[blk], (len(iss), len(blk)))
                     dvu = xs[..., doy_col] - u
                     feat = np.concatenate([xs, c[..., None], u[..., None], dvu[..., None]], -1)
+                    feat = iod.append(feat, y, iss + ISSUE_DOY0, len(blk), keep)
                     feat = feat[..., keep_cols]
                     if sigs is not None:
                         yi_ = yidx[y]
@@ -140,7 +146,7 @@ def main(fast: bool, v2: bool = False, only_fold: int | None = None, save_models
                 Xtr, ytr, Xva, yva = [], [], [], []
                 for y in train_years:
                     g = fold_of(y)
-                    a, b, _ = rows(y, clim_by_lead(clim_tr[g]), uo_tr[g], sub=True, sigs=sig_tr[g])
+                    a, b, _ = rows(y, clim_by_lead(clim_tr[g]), uo_tr[g], sub=True, sigs=sig_tr[g], keep=iod_tr[g])
                     (Xva if y in val_years else Xtr).append(a)
                     (yva if y in val_years else ytr).append(b)
                 dtr = lgb.Dataset(np.concatenate(Xtr), np.concatenate(ytr), feature_name=fnames,
@@ -155,7 +161,8 @@ def main(fast: bool, v2: bool = False, only_fold: int | None = None, save_models
                 importances.setdefault(f"{e}_W{li + 1}", []).append((imp / imp.sum()).tolist())
 
                 for y in test_years:
-                    a, _, (iss, blk, ok) = rows(y, clim_by_lead(clim_test), uo_test, sub=False, sigs=sig_test)
+                    a, _, (iss, blk, ok) = rows(y, clim_by_lead(clim_test), uo_test, sub=False, sigs=sig_test,
+                                                keep=iod_test)
                     p = np.full(len(iss) * len(blk), np.nan, np.float32)
                     p[ok] = model.predict(a, num_threads=THREADS)
                     pred[e][yidx[y], :, li, :] = p.reshape(len(iss), len(blk))

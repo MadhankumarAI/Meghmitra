@@ -19,7 +19,7 @@ DEST="public/data"
 rm -rf "$DEST.tmp"
 mkdir -p "$DEST.tmp/forecast" "$DEST.tmp/advisory" "$DEST.tmp/explain"
 cp "$SRC/india.pmtiles" "$SRC/blocks_index.json" "$SRC/crops.json" "$SRC/metrics.json" "$DEST.tmp/"
-cp "$SRC/advice_skill_$YEAR.json" "$SRC/model_card.json" "$DEST.tmp/" 2>/dev/null || true
+cp "$SRC/advice_skill_$YEAR.json" "$SRC/model_card.json" "$SRC/experiments.json" "$DEST.tmp/" 2>/dev/null || true
 cp "$SRC/forecast/season_$YEAR.json" "$DEST.tmp/forecast/"
 n=0
 for kind in forecast advisory explain; do

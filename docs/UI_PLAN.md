@@ -1,4 +1,4 @@
-# UI / UX Plan — SIH PS 86 (MoES · Agriculture, FoodTech & Rural Development)
+# UI / UX plan: the officer console
 
 Working name: **Mungaru** (ಮುಂಗಾರು — "monsoon"). Change freely; nothing depends on it.
 
@@ -25,7 +25,7 @@ Reference points: UK Met Office warnings, NOAA/NWS outlooks, US Drought Monitor,
 2. **Texture carries meaning, not just colour.** Dry-spell risk = cracked-earth pattern that gets denser with probability. Heavy rain = rain-stroke pattern. Low model confidence = the pattern dissolves into grain/mist. A block is readable in greyscale and by colour-blind users.
 3. **Living atmosphere layer.** Animated flow particles for the low-level monsoon jet and moisture transport (WebGL particle layer). It is beautiful on video *and* it is the actual regional driver the model uses — toggling "why" lights up the flow feeding or starving a block.
 4. **The Season Ribbon** (replaces the fan chart in the block panel). One horizontal 30-day band per block: rain texture where wet is likely, cracked texture where dry is likely, fading to mist with lead time. Crop decision windows sit on top as brackets; the recommended sowing window is a highlighted slot. One glyph answers "when do I sow?".
-5. **Planet-to-field chain** (replaces gauges). A small globe showing warm/cool Pacific (ENSO), Indian Ocean dipole, and the MJO pulse travelling along the equator → India → this block → this field. Four linked stops, each with one sentence. It *is* the problem statement, drawn.
+5. **Planet-to-field chain** (replaces gauges). A small globe showing warm/cool Pacific (ENSO), Indian Ocean dipole, and the MJO pulse travelling along the equator → India → this block → this field. Four linked stops, each with one sentence. It is the whole idea, drawn.
 6. **Odds as people understand them.** Icon arrays ("in 10 years like this one, 7 had a dry spell here") instead of bars. Analog years are told as memory: "The sky last looked like this in 2014 — sowing here was delayed three weeks."
 7. **IMD alert semantics.** Alert tiers reuse IMD's green / yellow / orange / red colour-code meaning (no action / be aware / be prepared / take action), so the ministry reads it without a legend.
 8. **The Bulletin.** Every block gets an auto-written, signed-off bulletin — same content as the console — printable as a one-page PDF for the gram panchayat notice board, in the local language. Low-tech last mile, high feasibility.
@@ -36,9 +36,9 @@ Where a conventional chart remains (Science page: reliability, ROC, skill by lea
 
 ## 1c. The headline product: **CMRI — Combined Monsoon Risk Indicator v1.0**
 
-Lesson from Copernicus EDO: their front page does not show five competing datasets. It shows **one named, versioned indicator with three words** — Watch / Warning / Alert. The Combined Drought Indicator fuses rainfall anomaly, soil-moisture anomaly and vegetation stress into a single classified layer, and the classes encode the *physical cascade* of a drought. That single decision is why EDO reads as an authority and a hackathon map reads as a school project.
+Lesson from Copernicus EDO: their front page does not show five competing datasets. It shows **one named, versioned indicator with three words** — Watch / Warning / Alert. The Combined Drought Indicator fuses rainfall anomaly, soil-moisture anomaly and vegetation stress into a single classified layer, and the classes encode the *physical cascade* of a drought. That single decision is why EDO reads as an authority and most risk maps read as a class project.
 
-We do the same for monsoon sowing risk. CMRI is a cascade from planet to field — which is literally the problem statement, expressed as one legend:
+We do the same for monsoon sowing risk. CMRI is a cascade from planet to field, expressed as one legend:
 
 | Class | Meaning | Condition |
 |---|---|---|

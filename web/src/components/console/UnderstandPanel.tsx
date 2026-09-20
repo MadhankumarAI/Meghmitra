@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Wind, Waves, Droplets, TrendingDown, Flame, X, ChevronDown } from "lucide-react";
-import { AXIS, type Frame, type narrate } from "@/lib/atmos";
+import { AXIS, type Frame, type Heat, type narrate } from "@/lib/atmos";
+import LayerRows from "./LayerRows";
 import { useConsole } from "@/lib/store";
 
 const PHASE = {
@@ -19,10 +20,11 @@ const PHASE = {
  * opaque rather than glassy, kept narrow, and only as tall as its text: the map is the subject,
  * this is the caption. The map key is one tap away instead of filling the panel.
  */
-export default function UnderstandPanel({ frame, loading, reading: n }: {
-  frame: Frame | null; loading: boolean; reading: ReturnType<typeof narrate> | null;
+export default function UnderstandPanel({ frame, loading, reading: n, heat }: {
+  frame: Frame | null; loading: boolean; reading: ReturnType<typeof narrate> | null; heat: Heat | null;
 }) {
   const setUnderstand = useConsole((s) => s.setUnderstand);
+  const windBy = useConsole((s) => s.windBy);
   const [keyOpen, setKeyOpen] = useState(false);
   const axis = n?.phase === "advancing" ? AXIS.heat : AXIS.trough;
   const when = frame ? new Date(frame.t).toLocaleString("en-IN", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kolkata" }) : "";
@@ -64,6 +66,12 @@ export default function UnderstandPanel({ frame, loading, reading: n }: {
             ))}
           </ul>
         )}
+        {frame && (
+          <div className="mt-3 border-t border-white/10 pt-2">
+            <p className="mb-1 px-1.5 text-[10px] font-medium uppercase tracking-wider text-(--ink-3)">Four fields on the map</p>
+            <LayerRows frame={frame} heat={heat} />
+          </div>
+        )}
       </div>
 
       {/* the key is reference, not reading: collapsed until asked for */}
@@ -78,7 +86,9 @@ export default function UnderstandPanel({ frame, loading, reading: n }: {
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.2 }} className="overflow-hidden">
               <div className="space-y-0.5 px-4 pb-3">
-                <Key icon={<Wind size={14} />} label="Moving streaks" note="wind at 1.5 km; brightest is the monsoon jet" />
+                <Key icon={<Wind size={14} />} label="Moving streaks"
+                  note={windBy === "moisture" ? "wind at 1.5 km; the brighter the streak, the more water that air carries"
+                    : "wind at 1.5 km; brightest is the monsoon jet"} />
                 <Key icon={<Waves size={14} />} label="Thin lines" note="sea-level pressure, every 2 hPa" />
                 <Key icon={<TrendingDown size={14} style={{ color: axis.color }} />}
                   label={n?.phase === "advancing" ? "Orange dashes" : "Yellow dashes"}

@@ -25,6 +25,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from config import PROCESSED, RAW_INDICES, RAW, EXPORTS
 from features.targets import ISSUE_DOY0, ISSUE_DOY1
 from features.build_features import year_features, neighbour_matrix
+from features import iod
 from features.onset_normal import search_start_doy
 from features.block_series import weight_matrix
 from export import forecast_json as fj
@@ -130,6 +131,7 @@ def main(issue: pd.Timestamp):
         P[e] = np.zeros((4, B), np.float32)
         for li in range(4):
             feat = np.concatenate([x, c[li][:, None], uo[:, None], (x[:, doy_col] - uo)[:, None]], -1)
+            feat = iod.append(feat, issue.year, np.array([doy]), feat.shape[0])
             m = lgb.Booster(model_file=str(MODELS / f"{e}_W{li + 1}.txt"))
             P[e][li] = m.predict(feat)
         C[e] = c
@@ -145,12 +147,13 @@ def main(issue: pd.Timestamp):
     for e in EVENTS:
         m = lgb.Booster(model_file=str(MODELS / f"{e}_W1.txt"))
         feat = np.concatenate([x, C[e][0][:, None], uo[:, None], (x[:, doy_col] - uo)[:, None]], -1)
+        feat = iod.append(feat, issue.year, np.array([doy]), feat.shape[0])
         groups[e], p = xj.contributions(m, feat, meta["features"])
         appl[e] = np.isfinite(P[e][0])
         worst = max(worst, float(np.abs(p[appl[e]] - P[e][0][appl[e]]).max()) if appl[e].any() else 0.0)
     xj.write(EXPORTS / "explain" / f"{issue:%Y-%m-%d}.json", f"{issue:%Y-%m-%d}",
              "v1 gradient boosting, trained 1991-2025", groups, appl,
-             xj.raw_values(x, meta["features"]), xj.planet_values(x[0], meta["features"]))
+             xj.raw_values(x, meta["features"]), xj.planet_values(x[0], meta["features"], iod.columns(issue.year, np.array([doy]))[0]))
     shutil.copy(EXPORTS / "explain" / f"{issue:%Y-%m-%d}.json", EXPORTS / "explain" / "live.json")
     print(f"explanations written; max |sum of contributions - forecast| = {worst:.1e}", flush=True)
     pct = lambda a: np.where(np.isfinite(a), np.round(a * 100), -1).astype(int).tolist()

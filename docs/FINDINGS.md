@@ -45,7 +45,7 @@ Correlation between the share of farmland with a false onset and that season's r
 
 Correlation with Niño 3.4: **r = +0.34 (p = 0.02)**. El Niño adds about 11 percentage points of false-onset farmland, but ENSO alone explains only about 12% of the year-to-year variation.
 
-**1997 is the example to use.** It was the strongest El Niño of the century, and India's monsoon was normal (+2%), because a positive Indian Ocean Dipole offset it. No single planetary index decides a block's season. That's why the system combines ENSO, IOD, MJO and BSISO with the regional atmosphere, rather than relying on one index.
+**1997 is the example to use.** It was the strongest El Niño of the century, and India's monsoon was normal (+2%), because a positive Indian Ocean Dipole offset it. No single planetary index decides a block's season. That's why the model weighs ENSO and the MJO together with the block's own rainfall history rather than relying on one index, and why the dipole was built and tested rather than assumed (section 7e).
 
 **2026 is an El Niño year:** Niño 3.4 reached +1.89 °C in August 2026.
 
@@ -77,7 +77,7 @@ How to present it:
 
 **The signatures are still a valid scientific result.** For central India in mid-July, the chance of a 10+ day dry spell in week 2 falls when the MJO is in phases 2–5 and rises in phases 6–8 and 1 (peak +4.5 points in phase 7). That's the textbook pattern, learned from rainfall data alone.
 
-**The original v1 diagnosis:** fed raw MJO values, the model overfits. For onset in week 3 it put 31% of its weight on MJO and scored below climatology. The MJO is one number per day for the whole country, so there are only about 4,000 independent MJO days behind millions of rows. The fix is what the problem statement asks for, to *"downscale their signatures"*: compute each block's own response to each MJO phase and ENSO state from training years only, smoothed across neighbours. That's model v2.
+**The original v1 diagnosis:** fed raw MJO values, the model overfits. For onset in week 3 it put 31% of its weight on MJO and scored below climatology. The MJO is one number per day for the whole country, so there are only about 4,000 independent MJO days behind millions of rows. The fix is to downscale the signature: compute each block's own response to each MJO phase and ENSO state from training years only, smoothed across neighbours. That's model v2.
 
 ## 7. The 2023 season as the data saw it (time-machine storyline)
 
@@ -133,6 +133,34 @@ links straight to it.
   recent rain 15%, MJO 12%.
 - **Matrix:** BSS, AUC, Brier, climatology Brier, base rate and the number of forecasts scored, for four
   events × four lead weeks, on held-out years only (23–37 million forecasts per cell).
+
+## 7e. What we tried that did not work: the Indian Ocean Dipole
+
+The IOD is the other big planetary lever on the Indian monsoon, so we built it in properly rather than
+assuming: NOAA ERSST v5 monthly SST, the Saji et al. (1999) boxes (50-70E/10S-10N minus 90-110E/10S-0),
+a 12-day publication lag so no forecast uses an index it could not have had, and the anomaly climatology
+refitted **inside each fold** so a held-out block cannot leak in through the SSTs. Two columns: the index
+on the issue day and its three-month mean. Then we retrained all 80 models and scored it the same way.
+
+It made the forecasts worse.
+
+| event | lead | BSS without IOD | BSS with IOD |
+|---|---|---|---|
+| 10-day dry spell | week 2 | **+0.0261** | +0.0148 |
+| 10-day dry spell | week 3 | **+0.0111** | +0.0020 |
+| 7-day dry spell | week 4 | **+0.0044** | -0.0005 |
+| heavy rain | week 1 | +0.0313 | **+0.0317** |
+
+Every dry-spell cell lost skill; the best the IOD bought anywhere was +0.0005 on heavy rain, which is noise.
+Mean change across all sixteen cells: **-0.0026 BSS**. The reason is visible in the importances: the trees
+spent 5-8% of their gain on the dipole. With ~35 independent seasons the index barely moves inside a
+held-out 7-year block, so a split on it is mostly a split on *which years this fold contains* - it fits the
+fold, not the monsoon. ENSO survives the same test because we feed it as a weekly Nino 3.4 value that does
+move within a season.
+
+So the shipped model has no IOD columns. The code stays (`src/features/iod.py`, `ENABLED = False`,
+`src/data/iod_index.py`) and flipping the flag reproduces the run above. This is the result we would rather
+report than a skill number we could not defend: the honest scoreboard is in section 7d.
 
 ## 8. Data integrity checks that caught real errors
 

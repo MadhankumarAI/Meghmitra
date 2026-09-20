@@ -46,6 +46,11 @@ Date **1 June 2023** (the header says *Hindcast*; the model never saw 2019–202
 - Cyclone Biparjoy pulses in the Arabian Sea (964 hPa), drawing moisture away from the mainland.
 - The **heat low** is labelled across the north, under a 42 °C surface-heat glow; the monsoon has reached about 14% of India.
 - The narration says the same, in words.
+- Under it, **the four fields on the map** - wind, moisture, surface heat, pressure - each with the number it
+  is drawn from and a marker that moves at that number's own rate (faster streaks for a stronger jet, quicker
+  drops for wetter air). Tap any row to take that field off the map; tap **moisture** under *Colour streaks by*
+  and the streaks are coloured by the water the air carries, so the animation shows moisture being transported,
+  not just air moving.
 
 Scrub to **27 July**: the dashed line becomes the **monsoon trough** at 22°N and India turns moist (active phase). Scrub to **10 August**: the trough jumps to the foothills and the jet weakens, which is the break of the driest August on record.
 
@@ -54,6 +59,8 @@ Click **Navalgund** (22 June). **Why this outlook** replays: from the block's us
 
 Switch to **Live** and click **Kalghatgi**: today, 0 mm in 7 days and 8 dry days in a row push the chance from 30% to 70%. That is a Warning, with the advice to conserve soil moisture.
 
+On the **Heavy rain** layer the same block shows the chance as ten cells, the forecast number of them filling with falling drops: *if this week played out 10 times, a heavy-rain day happens in 4 of them, usually 1.* It animates the odds, never a forecast of rain arriving, which is the distinction the whole product rests on.
+
 ### 2:25–3:10 · The advice reaches a farmer
 **Review & send to farmers**: step 1 shows each advisory with its evidence bar, its recipients and their languages, and the WhatsApp card rendered by the delivery service in Kannada. Step 2: the officer signs with their name and ticks that they read it. Step 3: delivery tracks live (queued → sent → delivered → read).
 
@@ -61,6 +68,8 @@ Cut to a real phone: the card, the Kannada voice note (let three seconds play), 
 
 ### 3:10–3:45 · Proof and honesty
 The Evidence page opens on **Did the advice come true?** (2023): *wait to sow* was followed by a 10+ day dry spell 81% of the time (usual 30%); *conserve moisture* 71% (usual 42%). Then say the miss out loud: heavy-rain advice is over-confident, 35% said against 26% observed, though still 2.6× the usual rate. Then skill by lead week: strong at week 1, near climatology by week 4, and the product shows climatology where it has no skill.
+
+Then the tab that wins the room: **Tried, measured, not shipped**. Two ideas that should have worked, scored the same way as everything else and left out: the Indian Ocean Dipole, which cost skill at every dry-spell lead, and per-block teleconnection signatures, which recovered the textbook MJO pattern but scored below the simpler model. Both charts are generated from the scoring runs themselves.
 
 ### 3:45–4:00 · Cost and scale
 Three lines, no narration over them:

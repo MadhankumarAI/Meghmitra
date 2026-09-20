@@ -7,7 +7,7 @@ see `README.md`.*
 
 ## 1. What this is
 
-The last stage of the SIH 2026 PS-86 monsoon early-warning system. The forecasting team's system decides
+The last stage of the Mungaru monsoon early-warning system. The forecasting pipeline decides
 **what** warning to send. This service **delivers it to farmers on WhatsApp**, in their own language, as:
 
 - a **picture card**: alert colour, verdict, 4-week outlook tiles, 3 steps, the Mungaru logo;

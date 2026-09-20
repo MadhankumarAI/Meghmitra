@@ -25,7 +25,8 @@ echo "== 3/4 live outlook + NOAA GFS atmosphere (server)"
 ssh -o BatchMode=yes "$SERVER" 'source ~/morphy/env.sh && cd ~/morphy \
   && (python src/live/run_live.py || echo "live outlook not published (see live_status.json)") \
   && python src/atmos/frames.py gfs \
-  && python src/export/model_card.py' 2>&1 | grep -v NVML | tail -6
+  && python src/export/model_card.py \
+  && python src/export/experiments_json.py' 2>&1 | grep -v NVML | tail -6
 
 echo "== 4/4 pull results to D:"
 TODAY=$(date +%Y-%m-%d)
@@ -37,7 +38,7 @@ scp -q -o BatchMode=yes "$SERVER:morphy/data/exports/advisory/live.json" "$SERVE
     D:/Morphy/exports/advisory/ 2>/dev/null || true
 scp -q -o BatchMode=yes "$SERVER:morphy/data/exports/explain/live.json" "$SERVER:morphy/data/exports/explain/$TODAY.json" \
     D:/Morphy/exports/explain/ 2>/dev/null || true
-scp -q -o BatchMode=yes "$SERVER:morphy/data/exports/model_card.json" D:/Morphy/exports/
+scp -q -o BatchMode=yes "$SERVER:morphy/data/exports/model_card.json" "$SERVER:morphy/data/exports/experiments.json" D:/Morphy/exports/
 scp -q -o BatchMode=yes "$SERVER:morphy/data/exports/atmos/gfs_*" "$SERVER:morphy/data/exports/atmos/live_index.json" \
     D:/Morphy/exports/atmos/
 cat D:/Morphy/exports/forecast/live_status.json; echo

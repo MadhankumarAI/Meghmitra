@@ -1,6 +1,6 @@
 # Advisory delivery service: WhatsApp, in Indian languages
 
-This is the last stage of the SIH 2026 PS-86 monsoon early-warning system (Ministry of Earth Sciences). The
+This is the last stage of the Mungaru block-level monsoon early-warning system. The
 advisory engine upstream decides *what* to say and *when*. This service **renders, translates, delivers,
 logs**, and answers farmers' questions from the latest forecast. It sends nothing until an officer approves.
 
@@ -24,7 +24,7 @@ logs**, and answers farmers' questions from the latest forecast. It sends nothin
 ## 1. Quick start (simulator, no accounts needed)
 
 ```powershell
-cd C:\Users\jaip7\Downloads\madhan\act
+cd <repo>\act_1
 python -m venv .venv; .venv\Scripts\pip install -r requirements.txt; .venv\Scripts\python -m playwright install chromium
 copy .env.example .env          # defaults run everything in simulator mode
 .venv\Scripts\python scripts\build_geo.py      # once: block polygons + PIN index from D:\Morphy (read-only)
@@ -202,6 +202,7 @@ Each entry is `{source, text, status}`:
 | Status | Meaning |
 |---|---|
 | `machine` | Raw IndicTrans2 output, placeholders verified. **Must be reviewed.** |
+| `checked` | Read line by line against the English and corrected where wrong. Not a native speaker's sign-off. Never overwritten by the script. |
 | `glossary` | Hand-entered term. Still needs a native speaker's sign-off. |
 | `reviewed` | Signed off by a native speaker. Never overwritten by the script. |
 | `stale` | Was reviewed, but the English has since changed. Needs a new review. |
@@ -223,7 +224,7 @@ them. Rows whose `{placeholders}` don't match the English, or that break a Whats
 and listed.
 
 Every preview reports `review_status`, and `GET /health` counts statuses per language.
-**Current state: no language is reviewed yet.** A native agronomy reviewer per language should go through
+**Current state: Kannada and Hindi are `checked`, every string read against the English and corrected; Telugu, Tamil and Marathi are still raw machine output. No language carries a native speaker's sign-off yet.** A native agronomy reviewer per language should go through
 `content/locales/<code>.yaml` before any real farmer receives it. Several problems were caught while
 building this: "dry spell" came out as "dry spelling", "sow by" as "sow from", and "confidence" as
 "self-confidence". The English source was reworded to avoid them, and the remaining outputs are listed in

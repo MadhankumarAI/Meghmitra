@@ -10,10 +10,11 @@
  *   lows       pulsing L markers with central pressure
  *   wind       850 hPa flow as drifting particles on a canvas, coloured by speed
  */
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { contours } from "d3-contour";
 import { Marker, type GeoJSONSource, type ImageSource, type Map as MLMap } from "maplibre-gl";
 import { useMap } from "@/lib/mapbus";
+import { useConsole } from "@/lib/store";
 import { sample, troughAxis, AXIS, type Frame, type Phase } from "@/lib/atmos";
 
 const IDS = { heat: "atmos-heat", moist: "atmos-moist", iso: "atmos-isobars", trough: "atmos-trough" };
@@ -22,7 +23,11 @@ const MAX_ELEV = 1500;       // display mask: Himalaya/Tibet, not the Deccan (di
 
 export default function AtmosLayer({ frame, elev, phase }: { frame: Frame | null; elev: number[] | null; phase: Phase | null }) {
   const map = useMap();
+  const layers = useConsole((s) => s.layers);
+  const windBy = useConsole((s) => s.windBy);
+  const shown = useRef({ layers, windBy });
   const canvas = useRef<HTMLCanvasElement>(null);
+  useEffect(() => { shown.current = { layers, windBy }; }, [layers, windBy]);   // the loop reads the latest
   const frameRef = useRef<Frame | null>(frame);
   useEffect(() => {
     frameRef.current = frame;                                   // the particle loop reads the latest frame
@@ -57,6 +62,18 @@ export default function AtmosLayer({ frame, elev, phase }: { frame: Frame | null
     };
   }, [map]);
 
+  // each field is its own layer, and each can be turned off: they are equal citizens here
+  useEffect(() => {
+    if (!map) return;
+    const vis = (id: string, on: boolean) => {
+      if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", on ? "visible" : "none");
+    };
+    vis(IDS.moist, layers.moist);
+    vis(IDS.heat, layers.heat);
+    vis(IDS.iso, layers.press);
+    vis(IDS.trough, layers.press);
+  }, [map, layers]);
+
   // per-frame data: moisture image, isobars, trough, lows
   useEffect(() => {
     if (!map || !frame) return;
@@ -73,35 +90,58 @@ export default function AtmosLayer({ frame, elev, phase }: { frame: Frame | null
     (map.getSource(IDS.trough) as GeoJSONSource | undefined)?.setData({
       type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: axis },
     });
-    const markers = frame.diag.lows.map((l) => new Marker({ element: lowMarker(l.hpa, l.depth) })
-      .setLngLat([l.lon, l.lat]).addTo(map));
+    const markers = layers.press
+      ? frame.diag.lows.map((l) => new Marker({ element: lowMarker(l.hpa, l.depth) }).setLngLat([l.lon, l.lat]).addTo(map))
+      : [];
     // name the dashed line where it is drawn: heat low before the monsoon arrives, trough after
     const kind = phase === "advancing" ? AXIS.heat : AXIS.trough;
     map.setPaintProperty(IDS.trough, "line-color", kind.color);
-    if (axis.length > 4) {
+    if (axis.length > 4 && layers.press) {
       const at = axis[Math.floor(axis.length * 0.3)];
       markers.push(new Marker({ element: axisLabel(kind.label, kind.color), anchor: "bottom", offset: [0, -6] })
         .setLngLat(at).addTo(map));
     }
     return () => markers.forEach((m) => m.remove());
-  }, [map, frame, elev, phase]);
+  }, [map, frame, elev, phase, layers.press]);
+
+  // how far the weather layer should step back, by zoom (0 at national view)
+  const [scrim, setScrim] = useState(0);
+  useEffect(() => {
+    if (!map) return;
+    const read = () => {
+      const z = map.getZoom();
+      setScrim(Math.max(0, Math.min(0.5, (z - 5.2) * 0.13)));     // starts at district zoom, caps at 0.5
+    };
+    read();
+    map.on("zoom", read);
+    return () => { map.off("zoom", read); };
+  }, [map]);
 
   // wind particles
   useEffect(() => {
     const cv = canvas.current;
     if (!map || !cv) return;
-    return runParticles(map, cv, () => frameRef.current);
+    return runParticles(map, cv, () => frameRef.current, () => shown.current);
   }, [map]);
 
   // a canvas keeps its intrinsic 300x150 size unless given width and height explicitly
-  return <canvas ref={canvas} aria-hidden className="pointer-events-none absolute inset-0 z-[5] h-full w-full" />;
+  return (
+    <>
+      {/* zoomed out the animation is the story; zoomed in it is background, so fade it back */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 z-[4] transition-[background-color] duration-300"
+        style={{ backgroundColor: `rgba(6, 10, 18, ${scrim.toFixed(2)})` }} />
+      <canvas ref={canvas} aria-hidden className="pointer-events-none absolute inset-0 z-[5] h-full w-full"
+        style={{ opacity: 1 - scrim * 1.1 }} />
+    </>
+  );
 }
 
 /* ------------------------------------------------------------------ wind particles */
 
 const N_PARTICLES = 3200, MAX_AGE = 90, SPEED = 0.0028;   // deg per (m/s) per animation step
 
-function runParticles(map: MLMap, cv: HTMLCanvasElement, getFrame: () => Frame | null) {
+function runParticles(map: MLMap, cv: HTMLCanvasElement, getFrame: () => Frame | null,
+                      getShown: () => { layers: { wind: boolean }; windBy: "speed" | "moisture" }) {
   const ctx = cv.getContext("2d")!;
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let W = 0, H = 0, raf = 0;
@@ -129,8 +169,11 @@ function runParticles(map: MLMap, cv: HTMLCanvasElement, getFrame: () => Frame |
     ctx.fillStyle = "rgba(0,0,0,0.92)";
     ctx.fillRect(0, 0, W, H);
     ctx.globalCompositeOperation = "lighter";
-    if (f && !map.isMoving()) {
-      ctx.lineWidth = 1.1;
+    const on = getShown();
+    if (f && !map.isMoving() && on.layers.wind) {
+      const z = map.getZoom();
+      ctx.lineWidth = z > 6.5 ? 0.8 : 1.1;
+      ctx.globalAlpha = z > 6.5 ? 0.55 : 1;
       for (const p of ps) {
         const u = sample(f, f.u850, p.lon, p.lat), v = sample(f, f.v850, p.lon, p.lat);
         if (u == null || v == null || ++p.age > MAX_AGE) { spawn(p); p.age = 0; continue; }
@@ -139,14 +182,26 @@ function runParticles(map: MLMap, cv: HTMLCanvasElement, getFrame: () => Frame |
         p.lat += v * SPEED;
         const b = map.project([p.lon, p.lat]);
         const spd = Math.hypot(u, v);
-        ctx.strokeStyle = speedColor(spd);
+        // colour by wind speed, or by how much water the air is actually carrying
+        ctx.strokeStyle = on.windBy === "moisture"
+          ? moistureColor(sample(f, f.tcwv, p.lon, p.lat))
+          : speedColor(spd);
         ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
       }
     }
+    ctx.globalAlpha = 1;
     raf = requestAnimationFrame(step);
   };
   if (!reduce) raf = requestAnimationFrame(step);
   return () => { cancelAnimationFrame(raf); map.off("movestart", clear); map.off("resize", resize); clear(); };
+}
+
+/** Water in the column at this point: dry air stays faint, monsoon air glows. */
+function moistureColor(mm: number | null) {
+  if (mm == null) return "rgba(150,170,195,0.25)";
+  const t = Math.max(0, Math.min(1, (mm - 25) / 35));            // 25 mm dry .. 60 mm monsoon
+  const r = Math.round(120 - 60 * t), g = Math.round(180 + 40 * t), b = 255;
+  return `rgba(${r},${g},${b},${(0.25 + 0.6 * t).toFixed(2)})`;
 }
 
 function speedColor(s: number) {

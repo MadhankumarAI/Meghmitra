@@ -28,7 +28,7 @@ web/.vercel/
 # --- data lives on D:\Morphy, not in git --------------------------------------
 # web/public/data is a Windows junction to D:\Morphy\exports
 web/public/data
-data/
+/data/          # the data tree at the repo root, not src/data (which is code)
 *.nc
 *.parquet
 *.grd

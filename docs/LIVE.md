@@ -38,6 +38,8 @@ The atmosphere layer explains the *weather situation*. It shows:
 - lows, depressions and cyclones,
 - column moisture.
 
+The panel lists all four fields with the diagnostic each is drawn from (jet in m/s, column water in mm, hottest plains point in °C, the deepest low's central pressure), and a marker beside each one that moves at that value's own rate. Any field can be switched off so the others can be read alone, and the wind streaks can be coloured by column moisture instead of speed, which turns the animation into moisture transport rather than air movement.
+
 Diagnostics are computed per frame (`src/atmos/frames.py`), and high terrain (> 600 m) is masked so extrapolated sea-level pressure over Tibet and the Himalaya can't produce fake lows.
 
 It is **context, not the model's reasoning**: the v1 model does not use these fields, and the panel says so on screen. For 2023 the frames are ERA5 reanalysis (06 UTC daily).

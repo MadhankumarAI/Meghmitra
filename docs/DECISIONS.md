@@ -55,10 +55,10 @@ PyTorch is pinned to **2.5.1+cu121**, the exact build already proven to reach CU
 |---|---|---|---|
 | **ENSO** | CPC weekly OISST Niño 3.4 anomaly | 1981-09 → 2026-09-09, weekly | PSL monthly Niño 3.4: fine but monthly and ~10-day lag; kept only as a cross-check |
 | **MJO** | NOAA PSL **ROMI** (CPC OLR), daily | 1991-01 → 2026-09-14 | BoM RMM: **discontinued 2024-02-24**, and switches method in 2013 (inhomogeneous). OMI: needs future data, lags 3 months |
-| **IOD** | **Computed in-house** from ERA5 SST: west box 50–70°E 10°S–10°N minus east box 90–110°E 10°S–0° | ERA5 lag ~5 days | PSL DMI: last value May 2026, **~4 months behind**, unusable operationally |
+| **IOD** | **Computed in-house** from NOAA ERSST v5: west box 50–70°E 10°S–10°N minus east box 90–110°E 10°S–0°. **Tested and left out**: it cost skill at every dry-spell lead (FINDINGS §7e), and `features/iod.py` keeps it behind `ENABLED = False` | ERSST v5 monthly, published in the first week of the following month (we apply a 12-day lag) | PSL DMI: last value May 2026, **~4 months behind**, unusable operationally |
 | **BSISO** | **Computed in-house** from ERA5 OLR and u850, Lee et al. (2013) method, domain 10°S–40°N 40–160°E | ERA5 lag ~5 days | No reliable operational feed found |
 
-BSISO is added deliberately: it is the monsoon-season intraseasonal mode and is more relevant to Indian active/break cycles than the MJO index the problem statement names. The in-house indices use EOFs and climatologies **fitted inside each validation fold**, so they cannot leak the test year.
+BSISO is planned deliberately: it is the monsoon-season intraseasonal mode and is more relevant to Indian active/break cycles than the MJO index alone. It belongs to the ERA5 stage and is **not in the shipped v1 model**, whose planetary inputs are the MJO (ROMI) and Niño 3.4 alone. The in-house indices use EOFs and climatologies **fitted inside each validation fold**, so they cannot leak the test year.
 
 Context worth stating in the pitch: Niño 3.4 reached **+1.89 °C in August 2026**. The current year is an El Niño year.
 

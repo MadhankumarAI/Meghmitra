@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
-import { CloudRain, Radar, Sprout, Orbit, Waves, RotateCcw, Info } from "lucide-react";
+import { CloudRain, Radar, Sprout, Orbit, Waves, Globe2, RotateCcw, Info } from "lucide-react";
 import { loadExplain, explain, DRIVERS, type ExplainFile, type ExplainEvent, type Driver } from "@/lib/explain";
 import type { ForecastFile } from "@/lib/data";
 
 const ICON: Record<Exclude<Driver, "normal">, typeof CloudRain> = {
-  recent: CloudRain, around: Radar, progress: Sprout, mjo: Orbit, enso: Waves,
+  recent: CloudRain, around: Radar, progress: Sprout, mjo: Orbit, enso: Waves, iod: Globe2,
 };
 const EVENTS: { key: ExplainEvent; label: string; noun: string }[] = [
   { key: "dry10", label: "Dry spell", noun: "10+ day dry spell" },

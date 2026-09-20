@@ -7,6 +7,7 @@ import { loadAdvisory, renderAdvice, citation, type AdvisoryFile, type Advice } 
 import { AnimatePresence, motion } from "motion/react";
 import ReviewSend from "./ReviewSend";
 import WhyPanel from "./WhyPanel";
+import Odds from "./Odds";
 import type { ExplainEvent } from "@/lib/explain";
 import { useConsole } from "@/lib/store";
 import type { BlockMeta } from "@/lib/store";
@@ -217,6 +218,11 @@ function Headline({ forecast, i, week, advice }: {
   const dryN = forecast.events.dry10.clim[w][i];
   // Lead with the reason for the tier: in weeks 1-2 the most urgent advice sets it.
   const top = w < 2 && advice.length ? [...advice].sort((a, b) => b[2] - a[2])[0] : null;
+  // odds for the event the advice is about, so the picture matches the sentence
+  const ev = top ? eventOf([top]) : "dry10";
+  const key = ev === "heavy" ? "heavy" : ev === "onset" ? "onset" : "dry10";
+  const pv = forecast.events[key].p[w][i], cv = forecast.events[key].clim[w][i];
+  const odds = pv >= 0 && cv >= 0 ? <Odds kind={key} p={pv / 100} clim={cv / 100} /> : null;
   if (top) {
     const { title, body } = renderAdvice(top);
     return (
@@ -230,6 +236,7 @@ function Headline({ forecast, i, week, advice }: {
         {/* block-level: drop the "Crop: " prefix the cards below carry */}
         <p className="text-[14px] font-semibold leading-snug">{capitalise(title.replace(/^[^:]+:\s*/, ""))}</p>
         <p className="mt-1 text-[13px] leading-snug text-text-2">{body}</p>
+        {odds && <div className="mt-3">{odds}</div>}
       </section>
     );
   }
@@ -251,6 +258,7 @@ function Headline({ forecast, i, week, advice }: {
           "No dry-spell outlook available."
         )}
       </p>
+      {odds && <div className="mt-3">{odds}</div>}
     </section>
   );
 }

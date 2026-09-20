@@ -1,6 +1,6 @@
 """Teleconnection signatures: each block's own response to each planetary state.
 
-The problem statement asks to "downscale the signatures" of ENSO/IOD/MJO. Feeding a
+The design goal is to downscale the signatures of ENSO/IOD/MJO to a block. Feeding a
 raw index to a model makes it overfit: the MJO is one number per day for all of
 India, so millions of rows carry only ~4,000 independent MJO days. Instead we
 estimate, per block, per half-month of the season, per lead week:

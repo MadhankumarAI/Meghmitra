@@ -6,13 +6,13 @@
  */
 import { fetchDaily } from "./gz";
 
-export type Driver = "normal" | "recent" | "progress" | "around" | "mjo" | "enso";
+export type Driver = "normal" | "recent" | "progress" | "around" | "mjo" | "enso" | "iod";
 export type ExplainEvent = "onset" | "dry10" | "heavy";
 export interface ExplainFile {
   issued: string; model: string; scale: number; na: number; week: number; groups: Driver[];
   events: Record<ExplainEvent, Record<Driver, number[]>>;
   raw: { r7: number[]; r30: number[]; dry_run: number[]; r7_400km: number[]; front_400km: number[] };
-  planet: { mjo_amp: number | null; mjo_phase: number | null; nino34: number | null };
+  planet: { mjo_amp: number | null; mjo_phase: number | null; nino34: number | null; dmi?: number | null };
 }
 
 const cache = new Map<string, Promise<ExplainFile | null>>();
@@ -27,6 +27,7 @@ export const DRIVERS: Record<Exclude<Driver, "normal">, { label: string; short: 
   progress: { label: "Monsoon progress here", short: "Onset progress" },
   mjo: { label: "Madden–Julian Oscillation", short: "MJO" },
   enso: { label: "El Niño / La Niña", short: "ENSO" },
+  iod: { label: "Indian Ocean Dipole", short: "IOD" },
 };
 
 const sigmoid = (x: number) => 1 / (1 + Math.exp(-x));
@@ -52,6 +53,7 @@ export function explain(f: ExplainFile, ev: ExplainEvent, i: number, onsetStatus
   if (!g || g.normal[i] === f.na) return null;
   const s = f.scale;
   const drivers = (Object.keys(DRIVERS) as Exclude<Driver, "normal">[])
+    .filter((d) => f.groups.includes(d) && g[d])            // a driver the model didn't use isn't published
     .map((d) => ({ d, v: g[d][i] / s }))
     .sort((a, b) => Math.abs(b.v) - Math.abs(a.v));
   let logit = g.normal[i] / s;
@@ -83,6 +85,10 @@ function evidence(f: ExplainFile, d: Driver, i: number, onsetStatus?: number): s
     case "enso":
       if (p.nino34 === null) return "Niño 3.4 not available";
       return `Niño 3.4 at ${p.nino34 > 0 ? "+" : ""}${p.nino34.toFixed(1)} °C: ${p.nino34 >= 0.5 ? "El Niño" : p.nino34 <= -0.5 ? "La Niña" : "neutral"}`;
+    case "iod":
+      if (p.dmi === null || p.dmi === undefined) return "Dipole Mode Index not available";
+      return `Dipole Mode Index ${p.dmi > 0 ? "+" : ""}${p.dmi.toFixed(2)} °C: `
+        + `${p.dmi >= 0.4 ? "positive IOD, which usually helps the monsoon" : p.dmi <= -0.4 ? "negative IOD, which usually weakens it" : "neutral"}`;
     default:
       return "";
   }

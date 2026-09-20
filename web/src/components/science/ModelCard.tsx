@@ -27,7 +27,8 @@ export interface ModelCardData {
 
 const DRIVER_LABEL: Record<string, string> = {
   recent: "Rain here lately", normal: "Usual for the block and date", around: "Rain around the block",
-  progress: "Monsoon progress here", mjo: "MJO", enso: "El Niño / La Niña", other: "Other",
+  progress: "Monsoon progress here", mjo: "MJO", enso: "El Niño / La Niña",
+  iod: "Indian Ocean Dipole", other: "Other",
 };
 const EVENT_ORDER = ["dry10", "onset", "heavy", "dry7"];
 const pct = (x: number) => `${Math.round(x * 100)}%`;

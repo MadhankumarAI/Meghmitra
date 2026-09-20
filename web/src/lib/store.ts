@@ -27,6 +27,11 @@ interface ConsoleState {
   /** "Understand" mode: animated atmosphere (wind, pressure, moisture) with narration */
   understand: boolean;
   setUnderstand: (u: boolean) => void;
+  /** which atmosphere fields are drawn, and what colours the wind streaks */
+  layers: { wind: boolean; moist: boolean; heat: boolean; press: boolean };
+  toggleLayer: (k: "wind" | "moist" | "heat" | "press") => void;
+  windBy: "speed" | "moisture";
+  setWindBy: (w: "speed" | "moisture") => void;
   /** issue date being shown (YYYY-MM-DD); the time machine moves this */
   date: string | null;
   setDate: (d: string) => void;
@@ -58,6 +63,10 @@ export const useConsole = create<ConsoleState>((set) => ({
   setDelivery: (delivery) => set({ delivery }),
   understand: false,
   setUnderstand: (understand) => set({ understand }),
+  layers: { wind: true, moist: true, heat: true, press: true },
+  toggleLayer: (k) => set((s) => ({ layers: { ...s.layers, [k]: !s.layers[k] } })),
+  windBy: "speed",
+  setWindBy: (windBy) => set({ windBy }),
   date: null,
   setDate: (date) => set({ date }),
   dayPlaying: false,

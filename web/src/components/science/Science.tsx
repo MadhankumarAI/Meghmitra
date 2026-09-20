@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { BrandMark, Wordmark } from "@/components/Brand";
 import ModelCard from "./ModelCard";
+import TriedAndRejected from "./Tried";
 import {
   loadMetrics, bssExpression, EVENT_LABEL, MODEL_LABEL, PUBLISHED,
   type Metrics, type MetricEvent, type EventScore,
@@ -70,7 +71,7 @@ export default function Science() {
             <motion.div key={tab} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.18 }} className="space-y-10">
               {tab === "works" && <><AdviceOutcomes /><SkillTable m={m} /></>}
-              {tab === "honest" && <><Reliability m={m} /><Honesty /></>}
+              {tab === "honest" && <><Reliability m={m} /><Honesty /><TriedAndRejected /></>}
               {tab === "where" && <SkillMapSection m={m} />}
               {tab === "model" && <><ModelCard /><Lineage /></>}
             </motion.div>
@@ -370,8 +371,6 @@ function Honesty() {
       "A dry spell already under way when the forecast is issued counts, and its current length carries about half the model’s weight at week 1. That’s genuinely useful to an officer, but it isn’t foresight of a new break."],
     ["Weeks 3–4 are at climatology.",
       "With local rainfall history and the planetary indices alone, skill fades after about ten days. The product shows the normal chance there, labelled as such. Extended-range skill needs the regional atmosphere (ERA5), which is the next stage."],
-    ["A more sophisticated model didn’t help.",
-      "Per-block teleconnection signatures (v2) recovered the textbook MJO pattern from data, but scored slightly below v1 from week 2. We kept the simpler model."],
     ["Satellite rainfall is used for texture, not truth.",
       "CHIRPS matches IMD on seasonal totals (ratio 1.06) and dry weeks (86%), but only r = 0.31 day to day. Events are defined on IMD gauge data."],
   ];
@@ -401,7 +400,7 @@ function Lineage() {
   const checks = [
     "Our drought years match IMD’s official list exactly: 1982, 1987, 2002, 2004, 2009, 2014, 2015.",
     "Every input is dated to when it was published, not when it was observed.",
-    "Discontinued or lagging feeds were replaced: BoM’s MJO index (ended Feb 2024), NOAA’s IOD index (4 months behind).",
+    "Discontinued or lagging feeds were replaced: BoM’s MJO index ended Feb 2024; NOAA’s dipole index runs four months behind, so we computed the dipole ourselves from ERSST v5 before testing it.",
     "A naive parse of NOAA’s weekly ENSO file silently drops 73% of weeks, mostly La Niña weeks. Caught and fixed.",
     "Leak test: inverting every label in a held-out block leaves that block’s climatology bit-identical.",
   ];

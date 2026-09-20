@@ -18,6 +18,7 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from features import iod
 
 SCALE = 100
 NA = -32768
@@ -30,7 +31,10 @@ GROUPS = {
     "around": ["r7_150km", "r7_400km", "cand_share_150km", "cand_share_400km", "conf_share_400km", "dry_run_150km"],
     "mjo": ["mjo_pc1", "mjo_pc2", "mjo_amp", "mjo_sin", "mjo_cos"],
     "enso": ["nino34"],
+    "iod": ["dmi", "dmi_3m"],
 }
+if not iod.NAMES:
+    GROUPS.pop("iod")                                # the IOD is off: don't publish an empty driver
 
 
 def contributions(model, feat: np.ndarray, fnames: list[str]) -> tuple[dict[str, np.ndarray], np.ndarray]:
@@ -71,12 +75,14 @@ def raw_values(x: np.ndarray, names: list[str]) -> dict[str, np.ndarray]:
             "r7_400km": x[:, n["r7_400km"]], "front_400km": x[:, n["cand_share_400km"]] * 100}
 
 
-def planet_values(x0: np.ndarray, names: list[str]) -> dict:
+def planet_values(x0: np.ndarray, names: list[str], dmi: np.ndarray | None = None) -> dict:
+    """The planetary state quoted in the explanation. `dmi` is the appended IOD pair for the day."""
     n = {k: i for i, k in enumerate(names)}
     amp = float(x0[n["mjo_amp"]])
     return {"mjo_amp": round(amp, 2) if np.isfinite(amp) else None,
             "mjo_phase": mjo_phase(float(x0[n["mjo_sin"]]), float(x0[n["mjo_cos"]])) if np.isfinite(amp) else None,
-            "nino34": round(float(x0[n["nino34"]]), 2) if np.isfinite(x0[n["nino34"]]) else None}
+            "nino34": round(float(x0[n["nino34"]]), 2) if np.isfinite(x0[n["nino34"]]) else None,
+            "dmi": round(float(dmi[0]), 2) if dmi is not None and len(dmi) and np.isfinite(dmi[0]) else None}
 
 
 def season(year: int) -> None:
@@ -100,7 +106,8 @@ def season(year: int) -> None:
     names = json.loads((PROCESSED / "features" / "names.json").read_text())
     X = np.load(PROCESSED / "features" / f"{year}.npz")["X"]                # (I, B, F)
     doy_col = names.index("doy")
-    fnames = names + ["clim", "usual_onset", "days_vs_usual"]
+    fnames = names + ["clim", "usual_onset", "days_vs_usual"] + iod.NAMES
+    keep = tuple(int(y) for y in all_years if fold_of(int(y)) != f)      # as the fold model saw it
     published = xr.open_dataset(PROCESSED / "gbm_pred_fast.nc").sel(year=year)
     yi = int(np.where(all_years == year)[0][0])
     issues = tg.issue.values
@@ -118,6 +125,7 @@ def season(year: int) -> None:
         # [features, clim (filled per event), usual onset, days vs usual]: gbm.py's column order
         feat = np.concatenate([x, np.zeros((x.shape[0], 1), np.float32),
                                uo[:, None], (x[:, doy_col] - uo)[:, None]], -1)
+        feat = iod.append(feat, year, np.array([doy]), feat.shape[0], keep)
         groups, appl = {}, {}
         for e in EVENTS:
             feat[:, len(names)] = clim[e][i]
@@ -128,7 +136,8 @@ def season(year: int) -> None:
             groups[e], appl[e] = g, ok
         d = (pd.Timestamp(year, 1, 1) + pd.Timedelta(days=int(doy) - 1)).strftime("%Y-%m-%d")
         write(EXPORTS / "explain" / f"{d}.json", d, f"v1 gradient boosting, fold {fa}-{fb} (never saw {fa}-{fb})",
-              groups, appl, raw_values(x, names), planet_values(x[0], names))
+              groups, appl, raw_values(x, names),
+              planet_values(x[0], names, iod.columns(year, np.array([doy]), keep)[0]))
     print(f"explain {year}: {len(issues)} days; max |model - published| = {worst:.2e}")
 
 

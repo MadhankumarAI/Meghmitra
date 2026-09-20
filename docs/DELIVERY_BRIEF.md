@@ -1,6 +1,6 @@
 # Brief: advisory delivery service (WhatsApp + SMS)
 
-You are building the **last stage** of a monsoon early-warning system for Smart India Hackathon 2026, problem statement 86 (Ministry of Earth Sciences). Another session is building the forecasting model and the web console. Your job is to take finished advisories and get them to farmers and agricultural extension officers on WhatsApp and SMS, in Indian languages. Use dummy advisories for now; the real ones will arrive later in exactly the format below, so **the contract in §2 matters more than anything else in this brief.**
+You are building the **last stage** of a block-level monsoon early-warning system. Another session is building the forecasting model and the web console. Your job is to take finished advisories and get them to farmers and agricultural extension officers on WhatsApp and SMS, in Indian languages. Use dummy advisories for now; the real ones will arrive later in exactly the format below, so **the contract in §2 matters more than anything else in this brief.**
 
 ## 1. Ground rules
 

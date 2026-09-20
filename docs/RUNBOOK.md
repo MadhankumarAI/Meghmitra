@@ -55,13 +55,31 @@ has actually been sent: top bar → **Delivery**.
 .venv/Scripts/python src/advisory/sources.py show Dharwad cotton
 ```
 
-## 5. Rebuild outputs
+## 5. Retrain (server, GPU box)
+
+```bash
+python src/models/gbm.py --fast          # 80 models, 5 held-out blocks, ~30 min -> gbm_pred_fast.nc
+                                         #   + gbm_scores_fast.json (the performance matrix)
+python src/models/gbm.py --only-fold 4 --save-models PROCESSED/fold_models/f4_fast
+                                         #   keep one fold's models so explanations can be recomputed
+python src/models/final.py               # the 12 models that issue live forecasts (all years)
+```
+
+Training is seeded, so a rerun of the same code reproduces the same predictions exactly; that is how a
+code change is verified not to move any published number. Feature switches live next to the feature:
+`src/features/iod.py` has `ENABLED = False`, and flipping it reproduces the IOD experiment in
+`docs/FINDINGS.md` section 7e. Keep a copy of the scores before any experiment
+(`cp gbm_scores_fast.json gbm_scores_fast.<name>.json`); `src/export/experiments_json.py` reads those
+copies to build the Evidence page's "tried and not shipped" charts.
+
+## 6. Rebuild outputs
 
 ```bash
 # on the server (ssh user02@14.143.127.114, then: source ~/morphy/env.sh && cd ~/morphy)
 python src/export/forecast_json.py 2023 --source gbm_fast   # the replay season + advisories
 python src/export/explain_json.py 2023                      # per-block "why", week 1
 python src/export/model_card.py                             # model card + performance matrix
+python src/export/experiments_json.py                       # ideas tested and not shipped (Evidence page)
 python src/verify/advice_hits.py 2023                       # did the advice come true?
 python src/live/run_live.py                                 # today's outlook
 
@@ -69,7 +87,7 @@ python src/live/run_live.py                                 # today's outlook
 .venv/Scripts/python src/export/advisory_contract.py 2026-09-19 --latest act_1/forecast/latest.json
 ```
 
-## 6. Deploy
+## 7. Deploy
 
 ```bash
 cd web
@@ -81,7 +99,7 @@ npm run data:link       # restore the junction for local work
 Leave `DELIVERY_URL` unset on Vercel: the public console has no login, so anyone could otherwise
 approve messages to farmers.
 
-## 7. Tests
+## 8. Tests
 
 ```bash
 .venv/Scripts/python tests/test_labels.py     # label definitions
@@ -89,7 +107,7 @@ cd act_1 && .venv\Scripts\python -m pytest -q  # 56 delivery-service tests
 cd web && npx tsc --noEmit && npx eslint src && npx next build
 ```
 
-## 8. Screenshots (for the deck and the video)
+## 9. Screenshots (for the deck and the video)
 
 ```bash
 cd web

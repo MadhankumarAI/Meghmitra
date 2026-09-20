@@ -131,7 +131,7 @@ export default function Console() {
       )}
       {!understand && <Legend />}
       <AnimatePresence>{!understand && shown && blocks && <Briefing key="briefing" forecast={shown} blocks={blocks} />}</AnimatePresence>
-      <AnimatePresence>{understand && <UnderstandPanel frame={frame} loading={frameLoading} reading={reading} />}</AnimatePresence>
+      <AnimatePresence>{understand && <UnderstandPanel frame={frame} loading={frameLoading} reading={reading} heat={heat} />}</AnimatePresence>
       {mode === "live"
         ? <LiveBar index={liveIndex} />
         : <TimeBar dates={season?.dates ?? []} issued={forecast?.issued ?? date ?? START_DATE} />}

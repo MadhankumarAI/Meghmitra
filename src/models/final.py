@@ -33,7 +33,7 @@ def main():
     clim_oof = xr.open_dataset(PROCESSED / "clim_folds.nc")
     lab = xr.open_dataset(PROCESSED / "imd_block_labels.nc")
     names = json.loads((PROCESSED / "features" / "names.json").read_text())
-    fnames = names + ["clim", "usual_onset", "days_vs_usual"]
+    fnames = names + ["clim", "usual_onset", "days_vs_usual"] + iod.NAMES
     all_years = tg.year.values
     yidx = {int(y): i for i, y in enumerate(all_years)}
     I, B = tg.sizes["issue"], tg.sizes["block"]
@@ -65,6 +65,7 @@ def main():
                 c = C[yidx[y]][np.ix_(iss, [li], blk)][:, 0]
                 u = np.broadcast_to(uo_oof[fold_of(int(y))][blk], (len(iss), len(blk)))
                 feat = np.concatenate([xs, c[..., None], u[..., None], (xs[..., doy_col] - u)[..., None]], -1)
+                feat = iod.append(feat, y, iss + ISSUE_DOY0, feat.shape[1])
                 lab_ = T[yidx[y]][np.ix_(iss, [li], blk)][:, 0]
                 feat, lab_ = feat.reshape(-1, feat.shape[-1]), lab_.ravel()
                 ok = lab_ >= 0

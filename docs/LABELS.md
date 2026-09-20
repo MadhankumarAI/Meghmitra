@@ -17,7 +17,7 @@ This is the widely used Indian agronomic sowing criterion (25 mm over 5 days). I
 ## True onset vs **false onset** — the core label
 A candidate onset is followed by a 30-day check window.
 
-- If a **dry run of >= 10 consecutive days** begins anywhere in that window → **FALSE ONSET**. The seed germinates and then dies of moisture stress. This is the exact failure the problem statement describes.
+- If a **dry run of >= 10 consecutive days** begins anywhere in that window → **FALSE ONSET**. The seed germinates and then dies of moisture stress. This is the failure the system exists to warn about.
 - Otherwise → **TRUE ONSET**.
 
 After a false onset the scan resumes past the killing dry spell and looks for the next candidate. A cell can therefore record several false onsets before its true onset, which is precisely the pattern seen in bad years.
