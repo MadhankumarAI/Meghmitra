@@ -4,11 +4,12 @@ import { useEffect, useMemo, useState } from "react";
 import { Search as SearchIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useConsole, type BlockMeta } from "@/lib/store";
+import { loadVillages, type Village } from "@/lib/villages";
 
 const norm = (s: string) =>
   s.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
-interface Row { b: BlockMeta; score: number }
+interface Row { b: BlockMeta; score: number; village?: string }
 
 /** Rank: name prefix > word prefix in name > district/state match. */
 function rank(blocks: BlockMeta[], q: string): Row[] {
@@ -31,11 +32,38 @@ function rank(blocks: BlockMeta[], q: string): Row[] {
   return out.sort((a, z) => z.score - a.score).slice(0, 8);
 }
 
+/** Villages and panchayats: the name a farmer uses, resolved to the block that forecasts it. */
+function rankVillages(villages: Village[], byId: Map<string, BlockMeta>, q: string): Row[] {
+  const t = norm(q.trim());
+  if (t.length < 3) return [];
+  const out: Row[] = [];
+  for (const v of villages) {
+    const n = norm(v.name);
+    let score = -1;
+    if (n === t) score = 90;
+    else if (n.startsWith(t)) score = 70 - n.length / 100;
+    else if (n.split(/[\s-]/).some((w) => w.startsWith(t))) score = 50;
+    if (score < 0) continue;
+    const b = byId.get(v.blockId);
+    if (b) out.push({ b, score, village: v.name });
+    if (out.length > 400) break;
+  }
+  return out.sort((a, z) => z.score - a.score).slice(0, 5);
+}
+
 export default function Search({ blocks }: { blocks: BlockMeta[] }) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const [cur, setCur] = useState(0);
-  const results = useMemo(() => rank(blocks, q), [blocks, q]);
+  const [villages, setVillages] = useState<Village[]>([]);
+  const byId = useMemo(() => new Map(blocks.map((b) => [b.id, b])), [blocks]);
+  useEffect(() => { if (open && !villages.length) loadVillages().then(setVillages); }, [open, villages.length]);
+  const results = useMemo(() => {
+    const hits = rank(blocks, q);
+    const seen = new Set(hits.map((r) => r.b.i));
+    const vs = rankVillages(villages, byId, q).filter((r) => !seen.has(r.b.i) || r.score >= 70);
+    return [...hits, ...vs].sort((a, z) => z.score - a.score).slice(0, 8);
+  }, [blocks, villages, byId, q]);
 
   // reset in the same event that opens it, not in an effect afterwards
   const openSearch = () => { setQ(""); setCur(0); setOpen(true); };
@@ -52,10 +80,11 @@ export default function Search({ blocks }: { blocks: BlockMeta[] }) {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  const choose = (b: BlockMeta) => {
+  const choose = (b: BlockMeta, village?: string) => {
     const s = useConsole.getState();
     s.setSelected(b.i);
     s.setFocus(b.bb);
+    s.setPlace(village ?? null);
     setOpen(false);
   };
 
@@ -64,10 +93,10 @@ export default function Search({ blocks }: { blocks: BlockMeta[] }) {
       <button
         onClick={openSearch}
         className="panel pointer-events-auto flex min-h-11 cursor-pointer items-center gap-2.5 px-3.5 text-[13px] text-text-3 transition-colors hover:text-text-2"
-        aria-label="Search blocks (Ctrl+K)"
+        aria-label="Search a block or village (Ctrl+K)"
       >
         <SearchIcon size={16} />
-        <span className="whitespace-nowrap">Search blocks</span>
+        <span className="whitespace-nowrap">Search a place</span>
         <kbd className="ml-3 hidden whitespace-nowrap rounded border border-line px-1.5 py-0.5 text-[10px] text-text-3 min-[1500px]:inline">Ctrl K</kbd>
       </button>
 
@@ -82,7 +111,7 @@ export default function Search({ blocks }: { blocks: BlockMeta[] }) {
             <motion.div
               role="dialog"
               aria-modal="true"
-              aria-label="Search blocks"
+              aria-label="Search a block or village"
               initial={{ opacity: 0, y: -8, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -6, transition: { duration: 0.12 } }}
@@ -99,39 +128,46 @@ export default function Search({ blocks }: { blocks: BlockMeta[] }) {
                   onKeyDown={(e) => {
                     if (e.key === "ArrowDown") { e.preventDefault(); setCur((c) => Math.min(results.length - 1, c + 1)); }
                     else if (e.key === "ArrowUp") { e.preventDefault(); setCur((c) => Math.max(0, c - 1)); }
-                    else if (e.key === "Enter" && results[cur]) choose(results[cur].b);
+                    else if (e.key === "Enter" && results[cur]) choose(results[cur].b, results[cur].village);
                   }}
-                  placeholder="Kundgol, Dharwad, Karnataka…"
-                  aria-label="Block, district or state"
+                  placeholder="Kengeri, Kundgol, Dharwad…"
+                  aria-label="Village, block, district or state"
                   className="h-14 flex-1 bg-transparent text-[16px] text-text outline-none placeholder:text-text-3"
                 />
               </div>
-              <ul role="listbox" aria-label="Matching blocks" className="max-h-90 overflow-y-auto py-1.5">
+              <ul role="listbox" aria-label="Matching places" className="max-h-90 overflow-y-auto py-1.5">
                 {results.map((r, k) => (
                   <li
-                    key={r.b.i}
+                    key={r.village ? `v:${r.village}:${r.b.i}` : `b:${r.b.i}`}
                     role="option"
                     aria-selected={k === cur}
                     onMouseEnter={() => setCur(k)}
-                    onClick={() => choose(r.b)}
+                    onClick={() => choose(r.b, r.village)}
                     className={`mx-1.5 flex cursor-pointer items-baseline justify-between rounded-md px-3 py-2.5 ${
                       k === cur ? "bg-surface-2" : ""
                     }`}
                   >
                     <span className="text-[14px] font-medium">
-                      {r.b.name}
-                      {r.b.names?.kn || r.b.names?.hi ? (
+                      {r.village ?? r.b.name}
+                      {!r.village && (r.b.names?.kn || r.b.names?.hi) ? (
                         <span className="ml-2 font-normal text-text-3" style={{ fontFamily: "var(--font-indic)" }}>
                           {r.b.names.kn ?? r.b.names.hi}
                         </span>
                       ) : null}
+                      {r.village && (
+                        <span className="ml-2 rounded bg-white/8 px-1.5 py-0.5 text-[10px] font-normal tracking-wide text-text-3">
+                          VILLAGE
+                        </span>
+                      )}
                     </span>
-                    <span className="text-[12px] text-text-3">{r.b.district} · {r.b.state}</span>
+                    <span className="text-[12px] text-text-3">
+                      {r.village ? `in ${r.b.name} · ${r.b.district}` : `${r.b.district} · ${r.b.state}`}
+                    </span>
                   </li>
                 ))}
                 {q.trim() && results.length === 0 && (
                   <li className="px-4 py-6 text-center text-[13px] text-text-3">
-                    No block matches “{q}”. Try the district name.
+                    Nothing matches “{q}”. Try the block or district name.
                   </li>
                 )}
                 {!q.trim() && (

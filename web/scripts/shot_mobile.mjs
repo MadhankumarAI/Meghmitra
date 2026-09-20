@@ -1,0 +1,16 @@
+import { chromium, devices } from "playwright";
+const out = process.argv[2];
+const b = await chromium.launch({ args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader"] });
+const p = await b.newPage({ ...devices["Pixel 7"], isMobile: true, hasTouch: true });
+const errs = []; p.on("pageerror", (e) => errs.push(e.message));
+await p.goto("http://localhost:3100/", { waitUntil: "load" });
+await p.waitForTimeout(8000);
+await p.screenshot({ path: `${out}/m1_map.png` });
+await p.evaluate(() => window.__console.getState().setSelected(0));
+await p.waitForTimeout(2500);
+await p.screenshot({ path: `${out}/m2_block.png` });
+await p.evaluate(() => { const s = window.__console.getState(); s.setSelected(null); s.setUnderstand(true); });
+await p.waitForTimeout(4000);
+await p.screenshot({ path: `${out}/m3_understand.png` });
+console.log(errs.join("\n") || "no errors");
+await b.close();

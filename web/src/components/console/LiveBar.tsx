@@ -32,7 +32,7 @@ export default function LiveBar({ index }: { index: LiveIndex | null }) {
     .toLocaleString("en-IN", { month: "short" })} ${index.run.slice(8)}Z` : "";
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex justify-center p-3">
+    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex justify-center p-2 md:p-3">
       <div className="panel pointer-events-auto flex w-[min(1040px,calc(100vw-24px))] items-center gap-3 px-2 py-2">
         <div className="flex items-center gap-1">
           <Btn label="Previous" onClick={() => setK(Math.max(0, k - 1))}><ChevronLeft size={18} /></Btn>

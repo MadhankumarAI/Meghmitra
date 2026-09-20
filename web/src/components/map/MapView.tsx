@@ -144,10 +144,13 @@ export default function MapView({ values, expr, padRight }: MapViewProps) {
     map.on("load", () => {
       // constructor fitBoundsOptions is ignored in MapLibre 6: fit once the canvas is real.
       // Leave room for the top bar, time bar and (on wide screens) the side panels.
-      const wide = map.getContainer().clientWidth >= 1100;
+      const w = map.getContainer().clientWidth;
+      const wide = w >= 1100, phone = w < 768;
       map.fitBounds(INDIA_BOUNDS, {
         padding: initialPadRight.current !== undefined
           ? { top: 24, bottom: 24, left: 24, right: initialPadRight.current }
+          // a phone stacks the briefing on top and the legend and time bar below
+          : phone ? { top: 130, bottom: 230, left: 12, right: 12 }
           : { top: 76, bottom: 104, left: wide ? 290 : 16, right: wide ? 290 : 16 },
         duration: 0,
       });
@@ -236,8 +239,11 @@ export default function MapView({ values, expr, padRight }: MapViewProps) {
     if (!map || !focus) return;
     const [w, s, e, n] = focus;
     const wide = map.getContainer().clientWidth >= 1100;
+    const phone = map.getContainer().clientWidth < 768;
     map.fitBounds([[w, s], [e, n]], {
-      padding: { top: 120, bottom: 140, left: wide ? 320 : 24, right: wide ? 420 : 24 },
+      padding: phone
+        ? { top: 130, bottom: 430, left: 24, right: 24 }
+        : { top: 120, bottom: 140, left: wide ? 320 : 24, right: wide ? 420 : 24 },
       maxZoom: 9.5,
       duration: 1400,
       essential: false,           // skipped under prefers-reduced-motion

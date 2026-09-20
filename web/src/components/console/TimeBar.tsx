@@ -62,10 +62,10 @@ export default function TimeBar({ dates, issued }: { dates: string[]; issued: st
   });
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex justify-center p-3">
+    <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex justify-center p-2 md:p-3">
       <div className="panel pointer-events-auto w-[min(1040px,calc(100vw-24px))] overflow-hidden">
         {/* row 1: issue date across the season */}
-        <div className="flex items-center gap-3 border-b border-line px-2 py-1.5">
+        <div className="flex items-center gap-2 border-b border-line px-2 py-1.5 md:gap-3">
           <div className="flex items-center gap-1">
             <IconBtn label="Previous day" onClick={() => step(-1)}><ChevronLeft size={18} /></IconBtn>
             <IconBtn label={dayPlaying ? "Pause season" : "Play season"} onClick={() => setDayPlaying(!dayPlaying)} primary>
@@ -73,18 +73,25 @@ export default function TimeBar({ dates, issued }: { dates: string[]; issued: st
             </IconBtn>
             <IconBtn label="Next day" onClick={() => step(1)}><ChevronRight size={18} /></IconBtn>
           </div>
-          <div className="w-40 shrink-0 leading-tight">
-            <div className="text-[10px] uppercase tracking-wide text-text-3">Forecast issued</div>
-            <div className="num text-[15px] font-semibold">
+          <div className="shrink-0 leading-tight md:w-40">
+            <div className="hidden text-[10px] uppercase tracking-wide text-text-3 md:block">Forecast issued</div>
+            <div className="num text-[13px] font-semibold whitespace-nowrap md:text-[15px]">
               {fmtDay(issued, { day: "numeric", month: "short", year: "numeric" })}
             </div>
           </div>
+          <div className="hidden flex-1 md:flex">
+            <SeasonTrack dates={dates} k={k} onPick={(j) => { setDayPlaying(false); setDate(dates[j]); }} />
+          </div>
+        </div>
+
+        {/* on a phone the season rail gets a row of its own */}
+        <div className="flex border-b border-line px-2 py-1.5 md:hidden">
           <SeasonTrack dates={dates} k={k} onPick={(j) => { setDayPlaying(false); setDate(dates[j]); }} />
         </div>
 
         {/* row 2: how far ahead */}
-        <div className="flex items-stretch">
-          <div className="flex w-[196px] shrink-0 items-center px-4 text-[11px] leading-tight text-text-3">
+        <div className="no-scrollbar flex items-stretch overflow-x-auto">
+          <div className="hidden w-[196px] shrink-0 items-center px-4 text-[11px] leading-tight text-text-3 md:flex">
             Looking ahead
             <br />
             (skill falls with lead)
@@ -98,7 +105,7 @@ export default function TimeBar({ dates, issued }: { dates: string[]; issued: st
                   role="radio"
                   aria-checked={active}
                   onClick={() => setWeek(w)}
-                  className={`group relative flex-1 cursor-pointer border-l border-line px-4 py-2 text-left transition-colors duration-150 ${
+                  className={`group relative min-w-[88px] flex-1 cursor-pointer border-l border-line px-2.5 py-2 text-left transition-colors duration-150 md:px-4 ${
                     active ? "bg-surface-2" : "hover:bg-surface-2/60"
                   }`}
                 >
@@ -106,7 +113,7 @@ export default function TimeBar({ dates, issued }: { dates: string[]; issued: st
                     <span className={`text-[13px] font-semibold ${active ? "text-text" : "text-text-2"}`}>Week {w}</span>
                     <span className="flex items-center gap-1 text-[10px] uppercase tracking-wide text-text-3"
                       title={`Model skill at this lead time: ${CONF[w]}`}>
-                      {CONF[w]}
+                      <span className="hidden md:inline">{CONF[w]}</span>
                       <span className="flex gap-[2px]">
                         {[0, 1, 2].map((i) => (
                           <span key={i} className={`h-2.5 w-[3px] rounded-full ${i < BARS[w] ? "bg-focus/80" : "bg-line-strong"}`} />
@@ -114,7 +121,7 @@ export default function TimeBar({ dates, issued }: { dates: string[]; issued: st
                       </span>
                     </span>
                   </div>
-                  <div className="num mt-0.5 text-[11px] text-text-3">{weekRange(issued, w)}</div>
+                  <div className="num mt-0.5 text-[10px] text-text-3 md:text-[11px]">{weekRange(issued, w)}</div>
                   <span
                     className={`absolute inset-x-3 bottom-0 h-[3px] rounded-full transition-opacity duration-200 ${
                       active ? "bg-focus opacity-100" : "bg-line-strong opacity-0 group-hover:opacity-100"

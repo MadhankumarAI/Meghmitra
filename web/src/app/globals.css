@@ -217,3 +217,7 @@ body {
 ::-webkit-scrollbar-corner {
   background: transparent;
 }
+
+/* A swipeable control strip on a phone should not show a scrollbar over the map. */
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }

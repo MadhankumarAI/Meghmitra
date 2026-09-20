@@ -30,9 +30,10 @@ export default function TopBar({ forecast, blocks }: { forecast: ForecastFile | 
   const setDelivery = useConsole((s) => s.setDelivery);
 
   return (
-    <header className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-start justify-between gap-4 p-3">
-      <div className="flex items-start gap-2">
-        <div className="panel pointer-events-auto flex items-center gap-3 px-4 py-2.5">
+    <header className="no-scrollbar pointer-events-auto absolute inset-x-0 top-0 z-20 flex items-start gap-2 overflow-x-auto p-2
+      md:pointer-events-none md:justify-between md:gap-4 md:overflow-visible md:p-3">
+      <div className="flex shrink-0 items-start gap-2">
+        <div className="panel pointer-events-auto flex items-center gap-3 px-3 py-2 md:px-4 md:py-2.5">
           <BrandMark size={34} />
           <div className="leading-tight">
             <Wordmark className="block text-[16px]" />
@@ -42,7 +43,7 @@ export default function TopBar({ forecast, blocks }: { forecast: ForecastFile | 
         {blocks && <Search blocks={blocks} />}
       </div>
 
-      {forecast ? <nav aria-label="Map layer" className="panel pointer-events-auto flex p-1">
+      {forecast ? <nav aria-label="Map layer" className="panel pointer-events-auto flex shrink-0 p-1">
         {EVENTS.map((e) => (
           <button
             key={e.key}
@@ -58,7 +59,7 @@ export default function TopBar({ forecast, blocks }: { forecast: ForecastFile | 
         ))}
       </nav> : <div />}
 
-      <div className="flex items-start gap-2">
+      <div className="flex shrink-0 items-start gap-2">
         <div className="panel pointer-events-auto flex p-1" role="group" aria-label="Data mode">
           {([["replay", "2023 replay"], ["live", "Live"]] as const).map(([m, label]) => (
             <button key={m} aria-pressed={mode === m} onClick={() => setMode(m)}

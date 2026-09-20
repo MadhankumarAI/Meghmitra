@@ -27,6 +27,9 @@ interface ConsoleState {
   /** "Understand" mode: animated atmosphere (wind, pressure, moisture) with narration */
   understand: boolean;
   setUnderstand: (u: boolean) => void;
+  /** the village or panchayat the user searched for, if they searched by that name */
+  place: string | null;
+  setPlace: (p: string | null) => void;
   /** which atmosphere fields are drawn, and what colours the wind streaks */
   layers: { wind: boolean; moist: boolean; heat: boolean; press: boolean };
   toggleLayer: (k: "wind" | "moist" | "heat" | "press") => void;
@@ -63,6 +66,8 @@ export const useConsole = create<ConsoleState>((set) => ({
   setDelivery: (delivery) => set({ delivery }),
   understand: false,
   setUnderstand: (understand) => set({ understand }),
+  place: null,
+  setPlace: (place) => set({ place }),
   layers: { wind: true, moist: true, heat: true, press: true },
   toggleLayer: (k) => set((s) => ({ layers: { ...s.layers, [k]: !s.layers[k] } })),
   windBy: "speed",

@@ -14,7 +14,8 @@ export default function Legend() {
   const event = useConsole((s) => s.event);
 
   return (
-    <aside aria-label="Legend" className="panel pointer-events-auto absolute bottom-33 left-3 z-10 w-72 px-4 py-3">
+    <aside aria-label="Legend" className="panel pointer-events-auto absolute bottom-[190px] left-2 right-2 z-10 w-auto px-3 py-2
+      md:bottom-33 md:left-3 md:right-auto md:w-72 md:px-4 md:py-3">
       <AnimatePresence mode="wait" initial={false}>
         <motion.div key={event} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ duration: 0.15 }}>
           {event === "cmri" ? (
@@ -31,7 +32,7 @@ export default function Legend() {
                   </li>
                 ))}
               </ul>
-              <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 border-t border-line pt-2">
+              <div className="mt-2 hidden flex-wrap gap-x-3 gap-y-1 border-t border-line pt-2 md:flex">
                 {([-1, -2] as const).map((k) => (
                   <span key={k} className="flex items-center gap-1.5 text-[10.5px] text-text-3" title={REGIMES[k].detail}>
                     <span className="h-2.5 w-2.5 shrink-0 rounded-sm" style={{ background: REGIMES[k].color }} />

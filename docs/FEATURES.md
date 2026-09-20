@@ -186,9 +186,11 @@ the rainfall-through date visible.
 Week tiles carry a confidence band (high, medium, low) that follows the measured skill at that lead,
 not a guess, so week 4 never looks as solid as week 1.
 
-### Block search
-Search any block, district or state by name, with Ctrl+K from anywhere in the console, including local
-language names where available.
+### Search by the name a farmer uses
+Villages and gram panchayats are searchable by name, not just blocks: typing Kengeri finds it and opens
+the outlook for the block that forecasts it, saying which block that is. 29,803 villages in the pilot
+state, from the 2011 Census village directory, each placed inside its block by geometry. Blocks,
+districts and states are searchable too, with Ctrl+K and local-language names where available.
 
 ### Block panel
 One block's full picture: the four-week outlook, the onset status, the advice, the evidence behind the

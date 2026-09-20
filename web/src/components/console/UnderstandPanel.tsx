@@ -34,7 +34,8 @@ export default function UnderstandPanel({ frame, loading, reading: n, heat }: {
       aria-label="Why the monsoon is behaving this way"
       initial={{ opacity: 0, x: -14 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }}
       transition={{ type: "spring", stiffness: 380, damping: 34 }}
-      className="panel-solid absolute left-3 top-[72px] z-20 flex max-h-[calc(100%-180px)] w-80 flex-col overflow-hidden"
+      className="panel-solid absolute inset-x-0 bottom-[178px] top-auto z-20 flex max-h-[56%] w-auto flex-col overflow-hidden rounded-t-xl
+        md:inset-x-auto md:left-3 md:top-[72px] md:bottom-auto md:max-h-[calc(100%-180px)] md:w-80 md:rounded-none"
     >
       <header className="px-4 pb-2.5 pt-3">
         <div className="flex items-center gap-2">

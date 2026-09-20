@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useWide } from "@/lib/media";
 import { animate, AnimatePresence, motion } from "motion/react";
 import { ChevronDown, MapPin, ArrowUpRight } from "lucide-react";
 import { useConsole, type BlockMeta } from "@/lib/store";
@@ -31,7 +32,11 @@ const union = (bbs: BlockMeta["bb"][]): BlockMeta["bb"] => [
  * blocks have crop advice waiting, where it concentrates, and which blocks are most urgent.
  */
 export default function Briefing({ forecast, blocks }: { forecast: ForecastFile; blocks: BlockMeta[] }) {
-  const [open, setOpen] = useState(true);
+  const wide = useWide();
+  // a phone starts with the headline only, until the reader says otherwise
+  const [opened, setOpened] = useState<boolean | null>(null);
+  const open = opened ?? wide;
+  const setOpen = setOpened;
   const [adv, setAdv] = useState<{ date: string; f: AdvisoryFile | null } | null>(null);
   const setSelected = useConsole((s) => s.setSelected);
   const setFocus = useConsole((s) => s.setFocus);
@@ -73,7 +78,8 @@ export default function Briefing({ forecast, blocks }: { forecast: ForecastFile;
 
   return (
     <motion.aside aria-label="Today's briefing" initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -12 }} className="panel pointer-events-auto absolute left-3 top-[72px] z-10 w-72 overflow-hidden">
+      exit={{ opacity: 0, x: -12 }} className="panel pointer-events-auto absolute left-2 right-2 top-[56px] z-10 w-auto overflow-hidden
+        md:left-3 md:right-auto md:top-[72px] md:w-72">
       <button onClick={() => setOpen(!open)} aria-expanded={open}
         className="flex w-full cursor-pointer items-center justify-between px-4 py-3 text-left">
         <span>

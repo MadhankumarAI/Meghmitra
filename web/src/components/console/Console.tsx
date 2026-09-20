@@ -11,6 +11,7 @@ import Legend from "./Legend";
 import HoverCard from "./HoverCard";
 import BlockPanel from "./BlockPanel";
 import UnderstandPanel from "./UnderstandPanel";
+import Locate from "./Locate";
 import { AnimatePresence } from "motion/react";
 import { loadFrame, loadOrography, loadLiveIndex, era5Key, heatOf, narrate, type Frame, type LiveIndex } from "@/lib/atmos";
 import LiveBar from "./LiveBar";
@@ -137,6 +138,7 @@ export default function Console() {
         : <TimeBar dates={season?.dates ?? []} issued={forecast?.issued ?? date ?? START_DATE} />}
       {shown && blocks && <HoverCard forecast={shown} blocks={blocks} />}
       {shown && blocks && <BlockPanel forecast={shown} blocks={blocks} />}
+      <Locate />
       <DeliveryPanel blocks={blocks} />
       <Intro ready={!!(season && blocks) || !!error} />
       {error && (

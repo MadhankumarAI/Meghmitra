@@ -25,6 +25,7 @@ export default function BlockPanel({ forecast, blocks }: { forecast: ForecastFil
   const setSelected = useConsole((s) => s.setSelected);
   const week = useConsole((s) => s.week);
   const expert = useConsole((s) => s.view) === "expert";
+  const place = useConsole((s) => s.place);
   const b = selected !== null ? blocks[selected] : null;
   const [advFile, setAdvFile] = useState<AdvisoryFile | null | undefined>(undefined);
   useEffect(() => {
@@ -45,12 +46,15 @@ export default function BlockPanel({ forecast, blocks }: { forecast: ForecastFil
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 16, transition: { duration: 0.14 } }}
           transition={{ type: "spring", stiffness: 420, damping: 38 }}
-          className="panel-solid absolute right-3 top-[72px] bottom-33 z-20 flex w-95 flex-col overflow-hidden"
+          className="panel-solid absolute inset-x-0 bottom-0 top-auto z-20 flex max-h-[76%] w-auto flex-col overflow-hidden rounded-t-xl
+            md:inset-x-auto md:right-3 md:top-[72px] md:bottom-33 md:max-h-none md:w-95 md:rounded-none"
         >
           <div className="flex items-start justify-between border-b border-line px-5 py-4">
             <div>
-              <div className="text-[18px] font-semibold leading-tight">{b.name}</div>
-              <div className="text-[12px] text-text-3">{b.district} · {b.state}</div>
+              <div className="text-[18px] font-semibold leading-tight">{place ?? b.name}</div>
+              <div className="text-[12px] text-text-3">
+                {place ? `village in ${b.name} block · ${b.district}` : `${b.district} · ${b.state}`}
+              </div>
             </div>
             <button
               aria-label="Close panel"

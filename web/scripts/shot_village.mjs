@@ -1,0 +1,17 @@
+import { chromium } from "playwright";
+const out = process.argv[2];
+const b = await chromium.launch({ args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader"] });
+const p = await b.newPage({ viewport: { width: 1600, height: 900 } });
+const errs = []; p.on("pageerror", (e) => errs.push(e.message));
+await p.goto("http://localhost:3100/", { waitUntil: "load" });
+await p.waitForTimeout(7000);
+await p.keyboard.press("Control+k");
+await p.waitForTimeout(1500);
+await p.keyboard.type("Kengeri", { delay: 60 });
+await p.waitForTimeout(2500);
+await p.screenshot({ path: `${out}/village_search.png` });
+await p.keyboard.press("Enter");
+await p.waitForTimeout(4000);
+await p.screenshot({ path: `${out}/village_panel.png` });
+console.log(errs.join("\n") || "no errors");
+await b.close();
