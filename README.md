@@ -166,6 +166,8 @@ runtimes. Keep `WHATSAPP_MODE=simulator` unless you intend real messages to reac
 | [docs/ADVICE_SOURCES.md](docs/ADVICE_SOURCES.md) | how advice is grounded in contingency plans, and where it stops |
 | [docs/LIVE.md](docs/LIVE.md) | the real-time path and its failure modes |
 | [docs/DELIVERY_BRIEF.md](docs/DELIVERY_BRIEF.md) | the advisory contract the delivery service accepts |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | components, interfaces, deployment topology and failure modes |
+| [docs/CHARTS.md](docs/CHARTS.md) | the performance numbers, chart by chart |
 | [docs/UI_PLAN.md](docs/UI_PLAN.md) | the console's design rationale |
 | [docs/DEMO.md](docs/DEMO.md) | a guided walkthrough of the built system |
 
