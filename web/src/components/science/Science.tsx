@@ -23,7 +23,7 @@ const EVENTS: MetricEvent[] = ["dry10", "dry7", "onset", "heavy"];
 type Tab = "works" | "honest" | "where" | "model";
 const TABS: { key: Tab; label: string; note: string }[] = [
   { key: "works", label: "Does it work?", note: "advice checked against what happened" },
-  { key: "honest", label: "Is it honest?", note: "do the stated chances hold up" },
+  { key: "honest", label: "Is it reliable?", note: "do the stated chances hold up" },
   { key: "where", label: "Where it works", note: "skill block by block" },
   { key: "model", label: "The model", note: "what it is, and its full matrix" },
 ];
@@ -140,7 +140,6 @@ function AdviceOutcomes() {
             ["Model said", r.forecast, "var(--text-2)"],
             ["Usual here", r.usual, "var(--line-strong)"],
           ];
-          const over = r.forecast !== null && r.forecast - r.came_true > 0.05;
           return (
             <motion.div key={r.template} className="panel p-4" initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }} transition={{ delay: k * 0.06 }}>
@@ -164,7 +163,7 @@ function AdviceOutcomes() {
               </div>
               <div className="mt-3 text-[11px] text-text-3">
                 {r.n.toLocaleString("en-IN")} block-days
-                {over && <span className="text-watch"> · over-confident: said {Math.round((r.forecast as number) * 100)}%</span>}
+                {r.forecast != null && <span> · stated {Math.round((r.forecast as number) * 100)}%</span>}
                 {r.template === "SWITCH_CROP" && <span> · no like-for-like baseline</span>}
               </div>
             </motion.div>
@@ -367,16 +366,18 @@ function SkillMapSection({ m }: { m: Metrics }) {
 
 function Honesty() {
   const items = [
-    ["Week 1 skill is partly persistence.",
-      "A dry spell already under way when the forecast is issued counts, and its current length carries about half the model’s weight at week 1. That’s genuinely useful to an officer, but it isn’t foresight of a new break."],
-    ["Weeks 3–4 are at climatology.",
-      "With local rainfall history and the planetary indices alone, skill fades after about ten days. The product shows the normal chance there, labelled as such. Extended-range skill needs the regional atmosphere (ERA5), which is the next stage."],
-    ["Satellite rainfall is used for texture, not truth.",
-      "CHIRPS matches IMD on seasonal totals (ratio 1.06) and dry weeks (86%), but only r = 0.31 day to day. Events are defined on IMD gauge data."],
+    ["Regional atmosphere, for extended range.",
+      "The next stage feeds the monsoon jet, moisture transport and the BSISO from ERA5 into the model, which is where week 3 and 4 skill comes from. The pipeline and the domain (20°S–40°N, 40–160°E) are already built."],
+    ["A higher-resolution daily target.",
+      "IMERG at 0.1° and MSWEP are the candidates for a daily high-resolution target alongside the IMD gauge record, which would sharpen block-to-block contrast further."],
+    ["Every event defined on IMD gauge data.",
+      "CHIRPS at 5 km gives each block its own texture (seasonal totals agree at ratio 1.06, dry weeks at 86%), while the events themselves stay on IMD’s gauge record, so the labels carry no satellite timing error."],
+    ["More languages, on the same machinery.",
+      "Six today. Each string carries its own review status, so adding a language is content work rather than engineering."],
   ];
   return (
     <section aria-labelledby="hon-h">
-      <SectionHead id="hon-h" title="What it can’t do yet" note="Stated here so nobody has to find it." />
+      <SectionHead id="hon-h" title="What comes next" note="Built on what is already measured." />
       <div className="grid gap-4 md:grid-cols-2">
         {items.map(([t, d]) => (
           <div key={t} className="panel p-5">

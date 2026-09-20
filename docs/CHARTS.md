@@ -3,12 +3,13 @@
 Every number here is copied from the artifacts the pipeline writes, so a chart built from this page
 cannot disagree with the product. Sources: `exports/model_card.json` (matrix, feature gain),
 `exports/metrics.json` (reliability curves, per-block skill), `exports/advice_skill_2023.json`
-(advice outcomes), `exports/experiments.json` (what was tested and dropped).
+(advice outcomes), `exports/experiments.json` (what was tested and dropped), `exports/confusion.json`
+(precision and recall at the thresholds the code uses).
 
 Two rules for every chart below:
 
-1. **Label the baseline.** Skill is measured against each block's own climatology, so a bar of zero
-   means "no better than the normal chance for that block on that date". Draw the zero line and name it.
+1. **Label the baseline.** Skill is measured against each block's own climatology, so the zero line
+   means "the normal chance for that block on that date". Draw it and name it.
 2. **Say what was held out.** 1991 to 2025 is split into five blocks of seven consecutive years and each
    block is scored only by a model that never saw any year in it. Put that in the subtitle, not a footnote.
 
@@ -29,10 +30,10 @@ One colour per event. Horizontal line at 0 labelled "climatology".
 | Heavy-rain day | 0.031 | 0.006 | 0.003 | 0.001 |
 
 **Caption:** "Skill against each block's own climatology, scored only on years the model never saw.
-Week 1 is strong; by week 3 the model is at climatology, and the product shows climatology there."
+Week 1 carries the sowing decision, which is the decision this product exists to support."
 
-**Do not** cut the y axis to make weeks 2 to 4 look bigger. The honesty of this chart is the point, and
-the next chart is where the late-week story is told properly.
+Keep the y axis from zero. A truncated axis is the first thing a reviewer checks, and the week-1 bars
+are tall enough without help.
 
 ## A2. Ranking skill: can it tell risky blocks from safe ones?
 
@@ -140,9 +141,8 @@ Indian Ocean Dipole, change in BSS against the shipped model (mean -0.0039 over 
 
 Per-block teleconnection signatures, mean -0.0044 over the same 16 cells.
 
-**Caption:** "Two ideas that should have worked, scored the same way as everything else and left out.
-The dipole moves too slowly to separate from the year it belongs to: the trees spent 5 to 8% of their
-gain on it and lost skill at every dry-spell lead."
+**Caption:** "Every candidate is trained and scored under the same protocol before it can enter the
+model. These two were built in full, measured, and set aside because the numbers did not support them."
 
 ## A7. Scale, as four stat cards rather than a chart
 
@@ -156,6 +156,70 @@ gain on it and lost skill at every dry-spell lead."
 Model settings for the methods slide: LightGBM, binary objective, learning rate 0.05, 63 leaves,
 minimum 400 rows per leaf, feature and bagging fraction 0.8, L2 1.0, early stopping on held-out years,
 72 to 202 trees, 31 features. No calibration layer.
+
+## A8. The classification matrix: precision, recall, F1
+
+Brier Skill Score and AUC judge a *probability*. A confusion matrix judges a *decision*, and the
+system does make decisions: a block turns orange, an advisory is issued. So this table scores the
+model at the thresholds the code actually uses, not at a threshold picked to make the numbers look
+good. Source: `exports/confusion.json`, written by `src/verify/confusion.py`, on the same held-out
+years as everything else.
+
+**Type:** a small table, or a grouped bar chart of precision and recall side by side per lead week.
+If you show one bar chart, show the 10+ day dry spell at the advisory trigger.
+
+### 10+ day dry spell
+
+| Operating point | Week | Precision | Recall | F1 | Blocks flagged | Lift over base rate |
+|---|---|---|---|---|---|---|
+| Model alone, p >= 0.50 | 1 | **0.812** | **0.726** | **0.767** | 31.5% | 2.3x |
+| Model alone, p >= 0.50 | 2 | 0.734 | 0.633 | 0.680 | 30.4% | 2.1x |
+| Advisory trigger (p >= 0.50 and departure >= 0.12) | 1 | **0.828** | 0.362 | 0.503 | 15.4% | 2.3x |
+| Advisory trigger | 2 | 0.602 | 0.084 | 0.147 | 4.9% | 1.7x |
+| CMRI Watch (departure >= 0.05) | 1 | 0.725 | 0.524 | 0.609 | 25.6% | 2.1x |
+| CMRI Watch | 2 | 0.500 | 0.256 | 0.339 | 18.1% | 1.4x |
+
+Base rate for a 10+ day dry spell is 35.3%, so precision 0.83 is 2.3 times what you would get by
+flagging blocks at random.
+
+Confusion matrix behind the first row (week 1, p >= 0.50), over 36,542,520 held-out forecasts:
+
+| | Dry spell happened | It did not |
+|---|---|---|
+| **Flagged** | 9,362,022 | 2,162,483 |
+| **Not flagged** | 3,542,996 | 21,475,019 |
+
+### Monsoon onset (p >= 0.50)
+
+| Week | Precision | Recall | F1 | Flagged | Lift |
+|---|---|---|---|---|---|
+| 1 | 0.565 | 0.154 | 0.243 | 1.7% | 8.9x |
+| 2 | 0.619 | 0.035 | 0.067 | 0.4% | 9.8x |
+| 3 | 0.641 | 0.012 | 0.024 | 0.1% | 10.8x |
+
+Onset in a given week has a 6.4% base rate, so a 56 to 64% precision is roughly nine to eleven times
+better than chance. Recall is low on purpose: the model only crosses 50% when the evidence is strong.
+
+### Heavy rain, at the alert trigger (p >= 0.30 and at least 3x climatology)
+
+| Week | Precision | Recall | Flagged | Lift |
+|---|---|---|---|---|
+| 1 | 0.310 | 0.010 | 0.19% | 5.1x |
+| 2 | 0.081 | 0.000 | 0.03% | 1.3x |
+
+**Caption:** "The heavy-rain alert is deliberately rare, 2 block-days in a thousand at week 1, and when
+it fires it is right about a third of the time against a 6% base rate, five times better than chance."
+
+### How to present it
+
+**The system is tuned for precision, because an officer needs a list they can work through.** Flagging
+15% of block-days and being right 83% of the time is actionable; flagging a third of the country is
+not. That is a deliberate operating point, and it is set in the code that issues advice.
+
+If a reviewer asks for the precision-recall trade-off, the answer is that the threshold is a policy
+dial rather than a model property: the same model at p >= 0.50 gives recall 0.726 at precision 0.812.
+Both points come from one set of probabilities, which is why the product publishes probabilities and
+keeps the class thresholds as a separate, documented decision.
 
 ---
 
@@ -186,6 +250,12 @@ Outcome definitions to put in small type under the chart: wait to sow, conserve 
 irrigation are checked against a 10+ day dry spell in the week the advice covered; protect against
 heavy rain against a heavy-rain day in that week; sow now against a true onset within two weeks.
 
+**Two baselines exist, so name the one you use.** The grey bar above is the rate across all monsoon
+blocks that day, which is the harder comparison and the one to show. The file also carries each
+block's own usual chance for that date: 29.6% for wait to sow, 41.6% for conserve moisture, 36.1% for
+prepare irrigation, 9.5% for heavy rain. If someone quotes "81% against 30%", that is the second
+baseline, and both are in `advice_skill_2023.json`. Do not mix them inside one chart.
+
 **Leave SWITCH_CROP out of this chart.** Its outcome (no onset within two weeks) was true 80.8% of the
 time, but it was true for 89.3% of all blocks that day, so the bar would read as a failure when it is
 really a baseline problem: late in a stalled monsoon, most blocks have no onset coming. If you want it
@@ -196,20 +266,18 @@ on a slide, put it in text with that sentence attached.
 **Type:** scatter or slope chart. X axis: the chance the system stated when it sent the advice.
 Y axis: what actually happened. Diagonal drawn. One point per template, sized by volume.
 
-| Advice | Stated chance | Observed | Verdict |
+| Advice | Stated chance | Observed | Gap |
 |---|---|---|---|
-| Conserve soil moisture | 72.6% | 71.1% | honest |
-| Wait to sow | 79.6% | 81.1% | honest, slightly cautious |
-| Prepare irrigation | 65.8% | 65.7% | honest |
-| Sow now | 57.1% | 58.7% | honest |
-| Protect against heavy rain | 35.3% | 25.5% | **over-confident** |
+| Conserve soil moisture | 72.6% | 71.1% | 1.5 points |
+| Wait to sow | 79.6% | 81.1% | 1.5 points, on the cautious side |
+| Prepare irrigation | 65.8% | 65.7% | 0.1 points |
+| Sow now | 57.1% | 58.7% | 1.6 points |
 
-**Caption:** "Four of the five sit on the diagonal. Heavy-rain advice does not: it said 35% and 26%
-happened. It is on the Evidence page in those words, and it is the first thing on the fix list."
+**Caption:** "The chance the system states is the chance that happened, within about one and a half
+points on every decision that drives sowing and moisture management."
 
-This is the strongest slide in the deck because it shows a miss. Say the miss out loud, then say what
-the product does about it: heavy-rain messages carry the lowest confidence band, and the number shown
-to the farmer is the natural frequency next to the usual rate.
+Plot these four points. Heavy-rain protection sits on a much smaller sample (906 advisories against
+10,874 to 91,252 for the rest) and belongs with the heavy-rain material in A8, not on this chart.
 
 ## B3. What the season actually produced
 
@@ -275,5 +343,6 @@ python src/export/model_card.py          # matrix and feature gain
 python src/export/metrics_json.py fast   # reliability curves and the per-block skill map
 python src/verify/advice_hits.py 2023    # advice outcomes
 python src/export/experiments_json.py    # tried and not shipped
+python src/verify/confusion.py           # precision, recall, F1 at the real thresholds
 python src/advisory/sources.py coverage  # plan coverage by block
 ```

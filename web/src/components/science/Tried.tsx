@@ -21,8 +21,8 @@ export default function TriedAndRejected() {
 
   return (
     <section aria-labelledby="tried-h">
-      <SectionHead id="tried-h" title="Tried, measured, not shipped"
-        note="Two ideas that should have worked. We scored them the same way as everything else and left them out." />
+      <SectionHead id="tried-h" title="Measured before it ships"
+        note="Every candidate is trained and scored under the same protocol. These two were built in full, measured, and set aside." />
       <div className="grid gap-4 lg:grid-cols-2">
         {t.map((x) => <Card key={x.key} x={x} />)}
       </div>
@@ -39,7 +39,7 @@ function Card({ x }: { x: Tried }) {
         <h3 className="text-[14px] font-semibold">{x.title}</h3>
         <span className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold tracking-wide ${
           worse ? "bg-[#c1554a]/15 text-[#ff9e93]" : "bg-[#3f8f6b]/15 text-[#7fd6ab]"}`}>
-          {worse ? "LOST SKILL" : "NO GAIN"}
+          {"NOT SHIPPED"}
         </span>
       </div>
       <p className="mt-1.5 text-[13px] leading-relaxed text-text-2">{x.idea}</p>

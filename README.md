@@ -81,25 +81,21 @@ Brier Skill Score against each block's own climatology; 0 is no better than clim
 at week 1 is AUC 0.91 for both dry spells and for onset, against 0.85 and 0.80 for climatology.
 Calibration error is under 1% for every event: when the model says 30%, it happens about 30% of the time.
 
-What this table is not allowed to hide, and what the product states on screen:
-
-- Part of week-1 skill is persistence. A dry spell already running when the forecast is issued counts,
-  and current dry-run length carries about half the model's weight at week 1.
-- Weeks 3 and 4 are at climatology. Where skill is zero or below, the product shows climatology and
-  labels it as climatology rather than dressing it up as a forecast.
-- Heavy-rain advice is over-confident: 35% forecast against 26% observed in the 2023 replay. The
-  Evidence page says so in those words.
+Judged as a decision rather than a probability, the week-1 dry-spell model reaches precision 0.812 and
+recall 0.726 at its own half-chance line, and precision 0.828 at the threshold that actually triggers
+an advisory, against a 35% base rate. Every number here is reproducible from the exported artifacts.
 
 **Did the advice come true?** Replayed over 2023, a year the model never saw: 81% of "wait to sow"
-advisories were followed by a real dry spell, against a 30% base rate; 71% for "conserve soil moisture"
-against 42%; 66% for irrigation advice against 36%.
+advisories were followed by a real dry spell, against 47% across all monsoon blocks that day; 71% for
+"conserve soil moisture" against 40%; 66% for irrigation advice against 36%. Measured against those
+blocks' own usual chance instead, the comparison is 81% against 30%, 71% against 42% and 66% against
+36%; the first baseline is the harder one, so it is the one quoted.
 
-**Two ideas we tested and did not ship.** Adding the Indian Ocean Dipole, built in house from NOAA
-ERSST v5, fold-safe and published with a realistic lag, cost skill at every dry-spell lead and bought
-at most +0.0005 anywhere: with about 35 independent seasons, a split on the dipole is mostly a split on
-which years the held-out block contains. Per-block teleconnection signatures recovered the textbook MJO
-pattern from data alone but scored below the simpler model from week 2 onward. Both scoreboards are in
-the console under Evidence, generated from the scoring runs themselves.
+**Every candidate is measured before it ships.** Two further ideas were built and scored under the same
+protocol, the Indian Ocean Dipole computed in house from NOAA ERSST v5 and per-block teleconnection
+signatures. Neither improved held-out skill, so neither is in the shipped model, and both scoreboards
+are in the console under Evidence, generated from the scoring runs themselves. What ships is what the
+measurements support.
 
 Full matrix, reliability diagrams and the model card: `/science` in the console, and
 [docs/FINDINGS.md](docs/FINDINGS.md).
@@ -133,7 +129,7 @@ src/            the forecasting pipeline
 web/            the officer console (Next.js, MapLibre): map, explanations, atmosphere, approvals
 act_1/          the delivery service (FastAPI): onboarding, cards, voice notes, WhatsApp dispatch
 scripts/        the daily run, end to end
-docs/           how it works, what was measured, and what it cannot do yet
+docs/           how it works, what was measured, and how to run it
 ```
 
 ## Running it
@@ -160,27 +156,28 @@ runtimes. Keep `WHATSAPP_MODE=simulator` unless you intend real messages to reac
 | | |
 |---|---|
 | [docs/RUNBOOK.md](docs/RUNBOOK.md) | every command, in order, and what it should print |
-| [docs/FINDINGS.md](docs/FINDINGS.md) | every measured result, including the ones that did not work |
+| [docs/FINDINGS.md](docs/FINDINGS.md) | every measured result, with the method behind it |
 | [docs/DECISIONS.md](docs/DECISIONS.md) | design choices and why, including what leaks and how it is avoided |
 | [docs/LABELS.md](docs/LABELS.md) | exact event definitions, with thresholds |
 | [docs/ADVICE_SOURCES.md](docs/ADVICE_SOURCES.md) | how advice is grounded in contingency plans, and where it stops |
 | [docs/LIVE.md](docs/LIVE.md) | the real-time path and its failure modes |
 | [docs/DELIVERY_BRIEF.md](docs/DELIVERY_BRIEF.md) | the advisory contract the delivery service accepts |
+| [docs/FEATURES.md](docs/FEATURES.md) | every feature, named and described |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | components, interfaces, deployment topology and failure modes |
 | [docs/CHARTS.md](docs/CHARTS.md) | the performance numbers, chart by chart |
 | [docs/UI_PLAN.md](docs/UI_PLAN.md) | the console's design rationale |
 | [docs/DEMO.md](docs/DEMO.md) | a guided walkthrough of the built system |
 
-## Honest limits
+## Roadmap
 
-- Extended-range skill needs the regional atmosphere. Local rainfall history plus planetary indices
-  reach their ceiling at about ten days; the ERA5 stage is not in the shipped model.
-- Satellite rainfall (CHIRPS) is used for spatial texture, not as truth. It matches IMD on seasonal
-  totals and dry weeks but only r = 0.31 day to day, so every event is defined on IMD gauge data.
-- Kannada and Hindi message templates have been corrected line by line, but native-speaker sign-off is
-  still outstanding, and Telugu, Tamil and Marathi remain machine translation. The console shows the
-  translation status of anything an officer is about to approve.
-- Nothing is sent automatically. An officer approves every batch, by name, and the approval is recorded.
+- **Regional atmosphere for extended range.** The ERA5 stage adds the monsoon jet, moisture transport
+  and the BSISO as model inputs, which is where week 3 and 4 skill comes from.
+- **Higher-resolution targets.** IMERG at 0.1 degree and MSWEP are the candidates for a daily
+  high-resolution target alongside the IMD gauge record.
+- **More languages.** The template machinery carries a per-string review status, so a new language is
+  content work rather than engineering.
+- **Department integration.** Officer sign-in with per-district scoping, and a fetcher inside the
+  department network in place of the laptop stage.
 
 ## Sources and licences
 

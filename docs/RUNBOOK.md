@@ -81,6 +81,7 @@ python src/export/explain_json.py 2023                      # per-block "why", w
 python src/export/model_card.py                             # model card + performance matrix
 python src/export/experiments_json.py                       # ideas tested and not shipped (Evidence page)
 python src/verify/advice_hits.py 2023                       # did the advice come true?
+python src/verify/confusion.py                              # precision/recall at the real thresholds
 python src/live/run_live.py                                 # today's outlook
 
 # on the laptop

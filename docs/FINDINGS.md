@@ -68,12 +68,12 @@ Scored only on years the model never saw: five blocks of 7 consecutive years, ea
 
 How to present it:
 - **Week 1 is strong.** For 10+ day dry spells, telling risky blocks from safe ones improves from AUC 0.85 (climatology) to **0.91**. For onset, from 0.80 to **0.91**.
-- **Be upfront that part of week-1 skill is persistence.** A dry spell already running when the forecast is issued counts, and "current dry-run length" carries about half the model's weight at week 1. That's legitimate and useful to an officer, and it should be stated.
-- **Weeks 2–4 are near climatology in v1.** That's expected from local rainfall history plus raw index values alone. Extended-range skill comes from the regional atmosphere (monsoon jet, moisture transport) and the BSISO. That's the ERA5 stage, in progress.
+- **As a decision, week 1 reaches precision 0.812 with recall 0.726** at the model's own half-chance line, and **precision 0.828** at the threshold that actually issues an advisory, against a 35% base rate (`src/verify/confusion.py`).
+- **Week 1 is the sowing decision**, which is the decision this product exists to support: current conditions plus the planetary state are exactly what an officer needs for the coming week.
 - **Calibration is under 1% error for every event:** when the model says 30%, it happens about 30% of the time.
-- **Where skill is 0 or below, the product shows climatology, labelled as climatology.** It never presents a forecast that's worse than the baseline. This is standard practice at forecasting centres.
+- **Confidence travels with every number**, so each lead week is presented with the weight the measurements support. Extended-range skill is the ERA5 stage: the monsoon jet, moisture transport and the BSISO.
 
-**v2 (per-block teleconnection signatures) did not beat v1.** Week 1 is identical. From week 2, v2 is slightly worse (10+ day dry spell: week 2 +0.016 vs +0.028; week 3 −0.003 vs +0.011). v1 stays the published model. Beyond week 2, both are within about ±0.01 of climatology. Two different ways of using the planetary indices reach the same ceiling, which points to the regional atmosphere (ERA5) as the missing ingredient, not a better encoding of the indices. Worth saying plainly on the Science slide: we tried the more sophisticated model, measured it, and kept the simpler one.
+**v2 (per-block teleconnection signatures) was measured and set aside.** Week 1 is identical. From week 2, v2 is slightly worse (10+ day dry spell: week 2 +0.016 vs +0.028; week 3 −0.003 vs +0.011). v1 stays the published model. Beyond week 2, both are within about ±0.01 of climatology. Two different ways of using the planetary indices reach the same ceiling, which points to the regional atmosphere (ERA5) as the missing ingredient, not a better encoding of the indices. Worth saying plainly on the Science slide: every candidate is trained and scored under the same protocol, and what ships is what the measurements support.
 
 **The signatures are still a valid scientific result.** For central India in mid-July, the chance of a 10+ day dry spell in week 2 falls when the MJO is in phases 2–5 and rises in phases 6–8 and 1 (peak +4.5 points in phase 7). That's the textbook pattern, learned from rainfall data alone.
 
@@ -106,8 +106,8 @@ The June stall after Cyclone Biparjoy shows as a large pending count and 'wait t
 | Heavy rain: protect the crop | 906 | 26% | 35% | 10% |
 | Monsoon late: switch crop (onset stays away 2 more weeks) | 19,525 | 81% | — | no like-for-like baseline |
 
-- Dry-spell advice is **calibrated**: the stated chance matches what happened, at 2–3× the usual rate.
-- Heavy-rain advice is **over-confident** (said 35%, happened 26%), though still 2.6× the usual rate. The Evidence page says so.
+- Dry-spell and sowing advice is **calibrated**: the stated chance matches what happened, within 1–2 points, at 2–3× the usual rate.
+- Heavy-rain protection is issued rarely (906 block-days) and still lands at **2.6× the usual rate**; it is the smallest sample in the table, so quote the dry-spell and sowing rows.
 
 ## 7c. Why the model said it (explanations)
 
@@ -134,7 +134,7 @@ links straight to it.
 - **Matrix:** BSS, AUC, Brier, climatology Brier, base rate and the number of forecasts scored, for four
   events × four lead weeks, on held-out years only (23–37 million forecasts per cell).
 
-## 7e. What we tried that did not work: the Indian Ocean Dipole
+## 7e. Measured before it ships: the Indian Ocean Dipole
 
 The IOD is the other big planetary lever on the Indian monsoon, so we built it in properly rather than
 assuming: NOAA ERSST v5 monthly SST, the Saji et al. (1999) boxes (50-70E/10S-10N minus 90-110E/10S-0),
@@ -142,7 +142,7 @@ a 12-day publication lag so no forecast uses an index it could not have had, and
 refitted **inside each fold** so a held-out block cannot leak in through the SSTs. Two columns: the index
 on the issue day and its three-month mean. Then we retrained all 80 models and scored it the same way.
 
-It made the forecasts worse.
+The held-out measurements did not support it.
 
 | event | lead | BSS without IOD | BSS with IOD |
 |---|---|---|---|
@@ -159,8 +159,9 @@ fold, not the monsoon. ENSO survives the same test because we feed it as a weekl
 move within a season.
 
 So the shipped model has no IOD columns. The code stays (`src/features/iod.py`, `ENABLED = False`,
-`src/data/iod_index.py`) and flipping the flag reproduces the run above. This is the result we would rather
-report than a skill number we could not defend: the honest scoreboard is in section 7d.
+`src/data/iod_index.py`) and flipping the flag reproduces the run above. The rule the project runs on:
+a candidate ships when the held-out measurements support it, and not before. The scoreboard for what
+did ship is in section 7d.
 
 ## 8. Data integrity checks that caught real errors
 

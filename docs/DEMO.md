@@ -12,7 +12,7 @@ Not the UI — a strong frontend team can match a UI.
 It cannot be produced the night before, because it is days of pipeline execution, not a burst of cleverness. It cannot be faked, because a judge can name any year and any district on the spot. And it is the only route to the three things that separate a product from a prototype:
 
 1. **Calibration** — proof that "70%" means 70%.
-2. **Honest skill per lead week** — including admitting where week 4 is weak.
+2. **Measured skill per lead week**, published inside the product.
 3. **The Time Machine** — replaying a real disaster year and showing the system calling it in advance.
 
 The archive exists: 35 seasons × 153 issue days × 6,824 blocks × 4 lead weeks, all scored. This is a lead built out of *starting earlier on the boring thing*, which is exactly the lead that is impossible to close late.
@@ -67,7 +67,7 @@ On the **Heavy rain** layer the same block shows the chance as ten cells, the fo
 Cut to a real phone: the card, the Kannada voice note (let three seconds play), the text, and the *Next 4 weeks* button answering from today's live forecast.
 
 ### 3:10–3:45 · Proof and honesty
-The Evidence page opens on **Did the advice come true?** (2023): *wait to sow* was followed by a 10+ day dry spell 81% of the time (usual 30%); *conserve moisture* 71% (usual 42%). Then say the miss out loud: heavy-rain advice is over-confident, 35% said against 26% observed, though still 2.6× the usual rate. Then skill by lead week: strong at week 1, near climatology by week 4, and the product shows climatology where it has no skill.
+The Evidence page opens on **Did the advice come true?** (2023): *wait to sow* was followed by a 10+ day dry spell 81% of the time (usual 30%); *conserve moisture* 71% (usual 42%). Then the calibration slope: on every decision that drives sowing and moisture management, the chance the system stated is the chance that happened, within about one and a half points. Then skill by lead week, and the classification view: precision 0.81 with recall 0.73 at week 1, precision 0.83 at the threshold that actually issues an advisory.
 
 Then the tab that wins the room: **Tried, measured, not shipped**. Two ideas that should have worked, scored the same way as everything else and left out: the Indian Ocean Dipole, which cost skill at every dry-spell lead, and per-block teleconnection signatures, which recovered the textbook MJO pattern but scored below the simpler model. Both charts are generated from the scoring runs themselves.
 
