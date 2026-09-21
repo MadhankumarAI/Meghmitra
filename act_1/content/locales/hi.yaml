@@ -98,8 +98,8 @@ glossary:
     crop_done: हो गया
 entries:
   strings.service:
-    source: Mungaru monsoon advisories
-    text: मुंगारु सलाह
+    source: Meghmitra monsoon advisories
+    text: मेघमित्र सलाह
     status: checked
   strings.welcome_word:
     source: Welcome
@@ -130,8 +130,8 @@ entries:
     text: भाषाएँ
     status: checked
   strings.welcome:
-    source: Welcome to Mungaru. We send free weather advice for your crops, approved by your agriculture officer.
-    text: मुंगारु में आपका स्वागत है। हम आपकी फसलों के लिए मुफ़्त मौसम सलाह भेजते हैं; हर सलाह आपके कृषि अधिकारी से मंज़ूर होकर आती है।
+    source: Welcome to Meghmitra. We send free weather advice for your crops, approved by your agriculture officer.
+    text: मेघमित्र में आपका स्वागत है। हम आपकी फसलों के लिए मुफ़्त मौसम सलाह भेजते हैं; हर सलाह आपके कृषि अधिकारी से मंज़ूर होकर आती है।
     status: checked
   strings.location_prompt:
     source: Share your farm location so we can find your block. Tap the button below, or type your 6-digit PIN code.

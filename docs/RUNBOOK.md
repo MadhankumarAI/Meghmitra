@@ -55,6 +55,45 @@ has actually been sent: top bar → **Delivery**.
 .venv/Scripts/python src/advisory/sources.py show Dharwad cotton
 ```
 
+## 4b. Villages and panchayats (the name a farmer uses)
+
+```bash
+.venv/Scripts/python src/data/villages.py fetch              # geoBoundaries ADM5, 467 MB, once
+.venv/Scripts/python src/data/villages.py build --state Karnataka
+.venv/Scripts/python src/data/villages.py show Kengeri
+.venv/Scripts/python src/export/villages_json.py             # search shards + map cells
+.venv/Scripts/python src/export/villages_geom.py             # village outlines, one file per block
+python src/features/village_clim.py                          # on the server: CHIRPS 5 km normals
+.venv/Scripts/python src/export/villages_clim_json.py        # per-village adjustment, per block
+
+The logo lives in exactly one place, `act_1/dp.png`. After replacing it:
+
+```bash
+.venv/Scripts/python scripts/brand.py --check     # what would change
+.venv/Scripts/python scripts/brand.py             # badge, mark, favicons, WhatsApp profile
+```
+
+It cuts the round badge and the cloud-leaf-rain mark out of that file and writes every size the
+product uses, in `web/public/brand`, `web/src/app` and `act_1/assets/brand`. Cards and banners the
+delivery service has already drawn carry the old logo in their filename hash, so they redraw by
+themselves; `act_1/var/media` can be emptied to reclaim the space.
+
+`villages_geom.py` simplifies each state as one coverage (`shapely.coverage_simplify`), so villages
+keep sharing their borders instead of drifting apart into slivers. Defaults are 0.00025 degrees
+(about 28 m) and five decimals; `--tolerance` and `--precision` override them, and a coarser build
+is a quarter of the size: the national set is about 900 MB at the default and 190 MB at 0.0008 / 4.
+
+`village_clim.py` needs CHIRPS, which lives on the server (`ssh user02@14.143.127.114`, then
+`source ~/morphy/env.sh && cd ~/morphy`). It now writes both events: the dry spell and the
+heavy-rain day. Copy `processed/village_clim.npz` back before running `villages_clim_json.py`; an
+npz without the heavy-rain arrays still exports, dry spell only, and the console then shows no
+village adjustment on the heavy-rain layer.
+```
+
+Building every state takes about 20 minutes and yields 649,309 villages. `villages_json.py` writes two
+things: letter shards for search, and half-degree map cells (1,254 of them, 25 MB in total) that the
+map layer fetches only for what is on screen.
+
 ## 5. Retrain (server, GPU box)
 
 ```bash
@@ -82,6 +121,7 @@ python src/export/model_card.py                             # model card + perfo
 python src/export/experiments_json.py                       # ideas tested and not shipped (Evidence page)
 python src/verify/advice_hits.py 2023                       # did the advice come true?
 python src/verify/confusion.py                              # precision/recall at the real thresholds
+python src/verify/curves.py                                 # ROC, PR and reliability points
 python src/live/run_live.py                                 # today's outlook
 
 # on the laptop
@@ -117,6 +157,9 @@ node scripts/shot_understand.mjs OUT    # the weather animation
 node scripts/shot_delivery.mjs OUT      # Review -> Approve -> Track
 node scripts/shot_dispatch.mjs OUT      # Delivery Centre
 node scripts/shot_labels.mjs OUT        # map labels + model card
+
+# the four performance figures (laptop, matplotlib)
+.venv/Scripts/python scripts/plots.py
 node scripts/shot_tried.mjs OUT         # Evidence: tried, measured, not shipped
 node scripts/shot_toggle.mjs OUT        # atmosphere layers off, streaks coloured by moisture
 ```

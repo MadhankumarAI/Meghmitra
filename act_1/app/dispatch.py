@@ -13,7 +13,7 @@ import threading
 from concurrent.futures import ThreadPoolExecutor
 from zoneinfo import ZoneInfo
 
-from . import db, subscribers
+from . import audience, db, farmers, subscribers
 from .channels.whatsapp import ChannelError
 from .config import get_settings
 from .locales import get_locale
@@ -26,6 +26,16 @@ from .runtime import rt
 log = logging.getLogger(__name__)
 RANK = {"queued": 0, "sent": 1, "delivered": 2, "read": 3}
 _pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="dispatch")
+_pool_lock = threading.Lock()
+
+
+def _submit(fn, *args) -> None:
+    """Background work, on a pool that survives a restart inside the same process (tests do this)."""
+    global _pool
+    with _pool_lock:
+        if getattr(_pool, "_shutdown", False):
+            _pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="dispatch")
+        _pool.submit(fn, *args)
 _status_lock = threading.Lock()
 
 
@@ -100,7 +110,7 @@ def ingest(adv: Advisory) -> dict:
                      ON CONFLICT(advisory_id) DO UPDATE SET payload=excluded.payload, state=excluded.state,
                        received_ts=excluded.received_ts, approved_ts=NULL, approved_by=NULL""",
                   (adv.advisory_id, adv.block.block_id, payload, "pending_approval", db.iso()))
-    _pool.submit(_prerender, adv)
+    _submit(_prerender, adv)
     if not adv.requires_approval:
         return approve(adv.advisory_id, "auto: requires_approval=false", warnings=warnings)
     return summary(adv.advisory_id, warnings=warnings)
@@ -117,7 +127,7 @@ def approve(advisory_id: str, by: str, note: str | None = None, warnings: list[s
                   "WHERE advisory_id=?", (db.iso(), by, note, advisory_id))
     adv = advisory(advisory_id)
     _create_rows(adv)
-    _pool.submit(_run_dispatch, advisory_id)
+    _submit(_run_dispatch, advisory_id)
     return summary(advisory_id, warnings=warnings)
 
 
@@ -136,13 +146,17 @@ def reject(advisory_id: str, by: str, note: str | None = None) -> dict:
 def summary(advisory_id: str, warnings: list[str] | None = None) -> dict:
     rec = get(advisory_id)
     adv = Advisory.model_validate(rec["payload"])
-    tg = subscribers.targets(adv.block.block_id, adv.crop)
+    matched, skipped = audience.select(adv)
+    tg = [m.subscriber for m in matched]
     return {
         "advisory_id": advisory_id, "state": rec["state"], "block_id": adv.block.block_id,
         "requires_approval": adv.requires_approval, "approved_by": rec["approved_by"],
         "approved_ts": rec["approved_ts"], "recipients": len(tg),
         "languages": sorted({s.language for s in tg}),
         "channels": _channel_counts(tg), "warnings": warnings or [],
+        # who this actually reaches, and who it does not: audience.py explains each decision
+        "event": audience.event_of(adv), "not_sent": len(skipped),
+        "left_out": [x.as_dict() for x in skipped[:50]],
     }
 
 
@@ -158,7 +172,7 @@ def _channels(s: Subscriber) -> list[str]:
 
 def _prerender(adv: Advisory) -> None:
     """While the advisory waits for approval: queue voice notes and draw cards for every target language."""
-    langs = {s.language for s in subscribers.targets(adv.block.block_id, adv.crop)} | {"en"}
+    langs = {m.subscriber.language for m in audience.select(adv)[0]} | {"en"}
     for lang in sorted(langs):
         try:
             r = render(adv, lang)
@@ -176,8 +190,14 @@ def preview(adv: Advisory, lang: str) -> tuple[Rendered, str]:
 # --------------------------------------------------------------------------- fan-out
 
 def _create_rows(adv: Advisory) -> None:
+    matched, skipped = audience.select(adv)
+    event = audience.event_of(adv)
+    for x in skipped:
+        farmers.remember(x.subscriber.subscriber_id, "suppressed", event=event,
+                         advisory_id=adv.advisory_id, detail={"reason": x.reason})
     with db.tx() as c:
-        for s in subscribers.targets(adv.block.block_id, adv.crop):
+        for m in matched:
+            s = m.subscriber
             lang = get_locale(s.language).code
             for ch in _channels(s):
                 provider = rt.wa.provider if rt.wa else "?"
@@ -206,6 +226,11 @@ def _run_dispatch(advisory_id: str) -> None:
         try:
             r = render(adv, row["language"])
             _send_whatsapp(row["id"], adv, sub, r)
+            # the farmer's own record: this is what the quiet window reads back next time
+            farmers.remember(sub.subscriber_id, "advisory_sent", event=audience.event_of(adv),
+                             advisory_id=adv.advisory_id,
+                             detail={"cmri_class": adv.cmri_class, "template_id": adv.template_id,
+                                     "crop": adv.crop, "language": row["language"]})
         except ChannelError as e:
             _set_row(row["id"], "failed", str(e)[:500])
         except Exception as e:
@@ -221,7 +246,7 @@ def resume_interrupted() -> list[str]:
         "SELECT DISTINCT a.advisory_id FROM advisories a JOIN dispatch d USING(advisory_id) "
         "WHERE a.state='approved' AND d.status='queued'")]
     for aid in ids:
-        _pool.submit(_run_dispatch, aid)
+        _submit(_run_dispatch, aid)
     return ids
 
 

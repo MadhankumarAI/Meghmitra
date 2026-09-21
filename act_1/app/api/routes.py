@@ -8,10 +8,11 @@ from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
-from .. import db, dispatch, geo, subscribers
+from .. import audience, db, dispatch, farmers, geo, subscribers
 from ..config import get_settings
 from ..locales import load_locales
-from ..models import Advisory, LogRow, SubscriberIn
+from ..models import (Advisory, CropCycle, CropSowing, FarmerProfile, FarmerRegistration,
+                      LogRow, SubscriberIn)
 from ..render import voice
 from ..render.card import render_card
 from ..render.text import TemplateError
@@ -193,6 +194,95 @@ def patch_subscriber(subscriber_id: str, changes: dict) -> dict:
     if not s:
         raise HTTPException(404, "not found")
     return subscribers.upsert(SubscriberIn(**{**s.model_dump(), **changes, "subscriber_id": subscriber_id})).model_dump()
+
+
+# --------------------------------------------------------------------------- farmers
+
+@api.post("/farmers", status_code=201, tags=["farmers"])
+def register_farmer(reg: FarmerRegistration, registered_by: str | None = None) -> dict:
+    """Panchayat registration. One form: the person, the land, and what is sown this season.
+
+    Re-posting the same phone updates the record and keeps the subscriber id."""
+    if not geo.block(reg.block_id):
+        raise HTTPException(422, f"unknown block_id {reg.block_id}")
+    if reg.language not in load_locales():
+        raise HTTPException(422, f"unknown language {reg.language!r}")
+    return farmers.register(reg, by=registered_by)
+
+
+@api.get("/farmers", tags=["farmers"])
+def list_farmers(block_id: str | None = None, village: str | None = None) -> list[dict]:
+    """The register, by block or by village. One row per farmer with the crops standing now."""
+    import datetime as _dt
+    today = _dt.date.today()
+    out = []
+    for p in farmers.profiles(block_id, village):
+        crops = farmers.standing(p.subscriber_id)
+        out.append({**p.model_dump(),
+                    "crops": [{"crop": c.crop, "sown_on": c.sown_on,
+                               "stage": farmers.stage_on(c.sown_on, c.crop, today)} for c in crops]})
+    return out
+
+
+@api.get("/farmers/{subscriber_id}", tags=["farmers"])
+def get_farmer(subscriber_id: str) -> dict:
+    """Everything we know about one farmer: the land record, the crops, and every message we sent."""
+    ctx = farmers.context(subscriber_id)
+    if not ctx:
+        raise HTTPException(404, "not found")
+    return ctx
+
+
+@api.patch("/farmers/{subscriber_id}", tags=["farmers"])
+def patch_farmer(subscriber_id: str, changes: dict, changed_by: str | None = None) -> dict:
+    if subscribers.get(subscriber_id) is None:
+        raise HTTPException(404, "not found")
+    cur = farmers.profile(subscriber_id) or FarmerProfile(subscriber_id=subscriber_id)
+    farmers.save_profile(FarmerProfile(**{**cur.model_dump(), **changes,
+                                          "subscriber_id": subscriber_id}), by=changed_by)
+    return farmers.context(subscriber_id)
+
+
+@api.post("/farmers/{subscriber_id}/crops", status_code=201, tags=["farmers"])
+def record_sowing(subscriber_id: str, sowing: CropSowing, source: str = "panchayat") -> dict:
+    """Record what went into the ground and when. The sowing date is what makes an alert specific."""
+    if subscribers.get(subscriber_id) is None:
+        raise HTTPException(404, "not found")
+    if source not in ("panchayat", "farmer", "officer"):
+        raise HTTPException(422, "source must be panchayat, farmer or officer")
+    farmers.save_cycle(CropCycle(subscriber_id=subscriber_id, crop=sowing.crop, season=farmers.season_of(),
+                                 sown_on=sowing.sown_on, area_ha=sowing.area_ha,
+                                 irrigation=sowing.irrigation, source=source))
+    return farmers.context(subscriber_id)
+
+
+@api.post("/farmers/{subscriber_id}/notes", status_code=201, tags=["farmers"])
+def add_note(subscriber_id: str, note: dict) -> dict:
+    """An officer's note on this farmer, kept with everything else we know."""
+    if subscribers.get(subscriber_id) is None:
+        raise HTTPException(404, "not found")
+    text = str(note.get("text") or "").strip()
+    if not text:
+        raise HTTPException(422, "note needs text")
+    farmers.remember(subscriber_id, "note", detail={"text": text[:2000], "by": note.get("by")})
+    return {"ok": True, "history": farmers.history(subscriber_id, 10)}
+
+
+# --------------------------------------------------------------------------- who an alert reaches
+
+@api.get("/advisories/{advisory_id}/audience", tags=["advisories"])
+def advisory_audience(advisory_id: str) -> dict:
+    """Who this advisory would reach and why, and who it leaves out and why, before approving it."""
+    try:
+        return audience.plan(dispatch.advisory(advisory_id))
+    except dispatch.AdvisoryError as e:
+        raise _err(e)
+
+
+@api.post("/audience", tags=["advisories"])
+def audience_preview(adv: Advisory) -> dict:
+    """The same answer for an advisory that has not been submitted yet: who would be affected."""
+    return audience.plan(adv)
 
 
 # --------------------------------------------------------------------------- status

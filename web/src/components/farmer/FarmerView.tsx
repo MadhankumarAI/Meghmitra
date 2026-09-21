@@ -17,7 +17,7 @@ const ICON: Record<string, typeof Sun> = {
   DRY_SPELL_CONSERVE_MOISTURE: Sun, HEAVY_RAIN_PROTECT: CloudLightning, NONE: ShieldCheck,
 };
 
-const CACHE_KEY = (id: string, date: string) => `mungaru:${id}:${date}`;
+const CACHE_KEY = (id: string, date: string) => `meghmitra:${id}:${date}`;
 
 export default function FarmerView({ blockId, lang: lang0, crop: crop0, date }: {
   blockId: string; lang: Lang; crop?: string; date: string;

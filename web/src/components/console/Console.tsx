@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useConsole } from "@/lib/store";
 import { loadBlocks, loadForecast, loadSeason, layerValues, type ForecastFile, type SeasonIndex } from "@/lib/data";
 import type { BlockMeta } from "@/lib/store";
@@ -12,6 +12,8 @@ import HoverCard from "./HoverCard";
 import BlockPanel from "./BlockPanel";
 import UnderstandPanel from "./UnderstandPanel";
 import Locate from "./Locate";
+import HomeMarker from "../map/HomeMarker";
+import VillageLayer from "../map/VillageLayer";
 import { AnimatePresence } from "motion/react";
 import { loadFrame, loadOrography, loadLiveIndex, era5Key, heatOf, narrate, type Frame, type LiveIndex } from "@/lib/atmos";
 import LiveBar from "./LiveBar";
@@ -29,6 +31,12 @@ const MapView = dynamic(() => import("@/components/map/MapView"), {
 const SEASON_YEAR = 2023;
 const START_DATE = "2023-06-01";
 const PREFETCH = 4;
+
+const doyOf = (d: string | null) => {
+  if (!d) return 152;
+  const t = new Date(d + "T00:00:00Z");
+  return Math.floor((t.getTime() - Date.UTC(t.getUTCFullYear(), 0, 0)) / 86400000);
+};
 
 export default function Console() {
   const event = useConsole((s) => s.event);
@@ -107,6 +115,22 @@ export default function Console() {
     return n ? arrived / n : null;
   }, [forecast]);
 
+  // their own place, remembered between visits; a phone opens on it rather than on all of India
+  const restored = useRef(false);
+  useEffect(() => {
+    if (restored.current || !blocks) return;
+    restored.current = true;
+    let home: { i: number; lon: number; lat: number; name: string } | null = null;
+    try { home = JSON.parse(localStorage.getItem("meghmitra.home") ?? "null"); } catch { home = null; }
+    if (!home || !blocks[home.i]) return;
+    const s = useConsole.getState();
+    s.setHome(home);
+    if (window.matchMedia("(max-width: 767px)").matches) {
+      s.setSelected(home.i);
+      s.setFocus(blocks[home.i].bb);
+    }
+  }, [blocks]);
+
   // one reading of the atmosphere, shared by the map (axis label, heat) and the panel (words)
   const heat = frame ? heatOf(frame, elev) : null;
   const reading = frame ? narrate(frame.diag, mode === "live" ? null : coverage, frame.t, heat) : null;
@@ -123,6 +147,8 @@ export default function Console() {
     <main className="relative h-full w-full overflow-hidden">
       <MapView values={values} />
       <MapLabels blocks={blocks} />
+      <VillageLayer blocks={blocks} values={values} doy={doyOf(shown?.issued ?? date)} />
+      <HomeMarker blocks={blocks} />
       {understand && <AtmosLayer frame={frame} elev={elev} phase={reading?.phase ?? null} />}
       <TopBar forecast={shown} blocks={blocks} />
       {mode === "live" && liveFc === null && (

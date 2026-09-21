@@ -1,7 +1,9 @@
 "use client";
 
 import { useConsole, type EventKey, type BlockMeta } from "@/lib/store";
+import PhoneMenu from "./PhoneMenu";
 import type { ForecastFile } from "@/lib/data";
+import { useState } from "react";
 import Link from "next/link";
 import { Wind, Send } from "lucide-react";
 import Search from "./Search";
@@ -28,22 +30,24 @@ export default function TopBar({ forecast, blocks }: { forecast: ForecastFile | 
   const mode = useConsole((s) => s.mode);
   const setMode = useConsole((s) => s.setMode);
   const setDelivery = useConsole((s) => s.setDelivery);
+  const [menu, setMenu] = useState(false);
 
   return (
-    <header className="no-scrollbar pointer-events-auto absolute inset-x-0 top-0 z-20 flex items-start gap-2 overflow-x-auto p-2
-      md:pointer-events-none md:justify-between md:gap-4 md:overflow-visible md:p-3">
-      <div className="flex shrink-0 items-start gap-2">
-        <div className="panel pointer-events-auto flex items-center gap-3 px-3 py-2 md:px-4 md:py-2.5">
-          <BrandMark size={34} />
-          <div className="leading-tight">
+    <header className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-start gap-2 p-2
+      md:justify-between md:gap-4 md:p-3">
+      <div className="flex min-w-0 flex-1 items-start gap-2 md:flex-none">
+        <div className="panel pointer-events-auto flex shrink-0 items-center gap-3 px-2.5 py-2 md:px-4 md:py-2.5">
+          <BrandMark size={30} />
+          <div className="hidden leading-tight md:block">
             <Wordmark className="block text-[16px]" />
             <div className="hidden whitespace-nowrap text-[11px] text-text-3 min-[1500px]:block">Monsoon Risk Observatory · India</div>
           </div>
         </div>
         {blocks && <Search blocks={blocks} />}
+        <PhoneMenu open={menu} onOpen={() => setMenu(true)} onClose={() => setMenu(false)} />
       </div>
 
-      {forecast ? <nav aria-label="Map layer" className="panel pointer-events-auto flex shrink-0 p-1">
+      {forecast ? <nav aria-label="Map layer" className="panel pointer-events-auto hidden shrink-0 p-1 md:flex">
         {EVENTS.map((e) => (
           <button
             key={e.key}
@@ -59,7 +63,7 @@ export default function TopBar({ forecast, blocks }: { forecast: ForecastFile | 
         ))}
       </nav> : <div />}
 
-      <div className="flex shrink-0 items-start gap-2">
+      <div className="hidden shrink-0 items-start gap-2 md:flex">
         <div className="panel pointer-events-auto flex p-1" role="group" aria-label="Data mode">
           {([["replay", "2023 replay"], ["live", "Live"]] as const).map(([m, label]) => (
             <button key={m} aria-pressed={mode === m} onClick={() => setMode(m)}

@@ -1,4 +1,4 @@
-# Mungaru WhatsApp bot: what was built, how to run it, what's left
+# Meghmitra WhatsApp bot: what was built, how to run it, what's left
 
 *Status as of 19 September 2026. For the full technical reference (API contracts, languages, voice, licences),
 see `README.md`.*
@@ -7,10 +7,10 @@ see `README.md`.*
 
 ## 1. What this is
 
-The last stage of the Mungaru monsoon early-warning system. The forecasting pipeline decides
+The last stage of the Meghmitra monsoon early-warning system. The forecasting pipeline decides
 **what** warning to send. This service **delivers it to farmers on WhatsApp**, in their own language, as:
 
-- a **picture card**: alert colour, verdict, 4-week outlook tiles, 3 steps, the Mungaru logo;
+- a **picture card**: alert colour, verdict, 4-week outlook tiles, 3 steps, the Meghmitra logo;
 - a **text message** with buttons;
 - a **voice note** reading it aloud.
 
@@ -27,7 +27,7 @@ Farmers sign up by **tapping**, not typing, like the Namma Metro WhatsApp bot.
 These were tested on the Meta test number **+1 555-143-2024**, with the phone +91 90194 10439.
 
 - **Sign-up by taps:**
-  1. Mungaru welcome picture, then language list (6 languages).
+  1. Meghmitra welcome picture, then language list (6 languages).
   2. Share location, and a **map of your block** appears.
   3. Pick crops, then **Done**.
   4. You get a "You're subscribed" card, and the main menu.
@@ -37,7 +37,7 @@ These were tested on the Meta test number **+1 555-143-2024**, with the phone +9
 - **STOP / START** to unsubscribe and resubscribe, and "hi", "menu" or "ನಮಸ್ಕಾರ" to bring up the menu, in any language.
 - **Advisories:** posted, **held for officer approval**, then delivered as card, voice note, text and buttons.
   The log showed `sent → delivered → read`.
-- **WhatsApp profile:** the Mungaru logo, plus the "About" and description text.
+- **WhatsApp profile:** the Meghmitra logo, plus the "About" and description text.
 - **Fixed public address** through ngrok (free): `https://unmixed-mollusk-puppy.ngrok-free.dev`.
   Meta's webhook points here permanently.
 
@@ -71,7 +71,7 @@ The bot only answers while **this laptop is on** and two things are running.
 
 **Step 1: check the Meta token (every 24 h).**
 The current token is temporary and **expires at 19:30 on 19 Sept**. When it expires:
-1. Open developers.facebook.com → Mungaru app → WhatsApp → API Setup.
+1. Open developers.facebook.com → Meghmitra app → WhatsApp → API Setup.
 2. Click **Generate access token**.
 3. Paste it into `.env` as `META_ACCESS_TOKEN=...`.
 
@@ -145,10 +145,10 @@ You can also do all of this by clicking, at `http://127.0.0.1:8000/docs`.
 |---|---|---|---|
 | 1 | **Record the demo video** | You | Android Quick Settings → Screen record, with device audio on. Record sign-up, then an approved advisory arriving (card, voice note, text). |
 | 2 | **Permanent Meta token** | You (I can guide) | Meta Business Settings → System users → generate a token with `whatsapp_business_messaging` and `whatsapp_business_management`. Put it in `.env` as `META_ACCESS_TOKEN`. |
-| 3 | **App Secret** in `.env` as `WA_APP_SECRET` | You | Mungaru app → App settings → Basic → App secret. Lets the bot verify messages really come from Meta. |
+| 3 | **App Secret** in `.env` as `WA_APP_SECRET` | You | Meghmitra app → App settings → Basic → App secret. Lets the bot verify messages really come from Meta. |
 | 4 | **Native-speaker sign-off** of translations | Reviewers per language | `scripts\review_sheet.py export kn` gives a spreadsheet; `import kn --reviewer "Name"` saves it back. Kannada and Hindi are now `checked` (read against English and corrected in a model review); a native speaker still signs off. Telugu, Tamil and Marathi are still raw machine output. |
 | 5 | **Listen to the voice notes** | You | Check the Kannada pronunciation (`var\media\voice\*.ogg`). |
-| 6 | Add **+91 93472 23699** as a Meta recipient | You | Mungaru app → API Setup → "To" → Manage phone number list, then enter the code sent to that phone. |
+| 6 | Add **+91 93472 23699** as a Meta recipient | You | Meghmitra app → API Setup → "To" → Manage phone number list, then enter the code sent to that phone. |
 | 7 | **Security clean-up** | You | Revoke the Hugging Face token and reset the ngrok token (both were exposed in chat), then update `.env`. |
 | 8 | Connect the **officer console** | Console team | They call `/dispatch/log`, `/dispatch/summary` and `/advisories/{id}/preview` with the `X-API-Key` header. The contract is in README §2. |
 | 9 | Connect the **forecast pipeline** | Forecast team | They `POST /advisories` in the agreed format and overwrite `forecast/latest.json`. |
@@ -162,10 +162,10 @@ You can also do all of this by clicking, at `http://127.0.0.1:8000/docs`.
 
 | Setting | What it is | Where it comes from |
 |---|---|---|
-| `META_ACCESS_TOKEN` | Lets the bot send WhatsApp messages | Meta → Mungaru app → API Setup (expires in 24 h) |
+| `META_ACCESS_TOKEN` | Lets the bot send WhatsApp messages | Meta → Meghmitra app → API Setup (expires in 24 h) |
 | `WA_PHONE_ID` | The test number's ID (`1297589720105464`) | Meta → API Setup |
 | `WA_WABA_ID` | WhatsApp Business Account ID (`1063021786708762`) | Meta → API Setup |
-| `WA_VERIFY_TOKEN` | `mungaru2026`, the same value as in Meta's webhook settings | Chosen by us |
+| `WA_VERIFY_TOKEN` | `meghmitra2026`, the same value as in Meta's webhook settings | Chosen by us |
 | `WHATSAPP_MODE` | `cloud` for real WhatsApp, `simulator` for the laptop-only demo | |
 | `ADMIN_API_KEY` | Password for the approve and log APIs | Generated |
 | `NGROK_AUTH_TOKEN`, `NGROK_DOMAIN` | The fixed public address | dashboard.ngrok.com |
@@ -174,7 +174,7 @@ You can also do all of this by clicking, at `http://127.0.0.1:8000/docs`.
 | `ALLOW_EXPIRED_ADVISORIES` | `true` so the June–July example advisories can be sent | |
 
 Meta webhook, set once: callback `https://unmixed-mollusk-puppy.ngrok-free.dev/whatsapp/webhook`, verify token
-`mungaru2026`, with the **messages** field subscribed.
+`meghmitra2026`, with the **messages** field subscribed.
 
 ---
 
@@ -203,7 +203,7 @@ act/
   content/locales/     all wording, one file per language
   fixtures/advisories/ example advisories (04 = your phone's block)
   forecast/latest.json dummy 4-week forecast (the forecast team replaces it)
-  assets/brand/        Mungaru logo
+  assets/brand/        Meghmitra logo
   scripts/             run.ps1, tunnel.ps1, doctor.py, seed.py, review_sheet.py, translate_content.py, tts_worker.py
   tools/ngrok.exe      tunnel program
   var/                 database, rendered cards, voice notes (created automatically)

@@ -33,6 +33,55 @@ CREATE TABLE IF NOT EXISTS subscribers (
     updated_ts    TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS ix_sub_block ON subscribers(block_id);
+-- What the panchayat knows about a farmer, kept between conversations. The phone number lives in
+-- subscribers; everything here is the farm itself, and it is the same record an officer reads.
+CREATE TABLE IF NOT EXISTS farmers (
+    subscriber_id TEXT PRIMARY KEY REFERENCES subscribers(subscriber_id),
+    name          TEXT,
+    village       TEXT,              -- ADM5 name, as the map spells it
+    panchayat     TEXT,
+    district      TEXT,
+    land_ha       REAL,
+    soil          TEXT,              -- red | black | alluvial | laterite | sandy | clay | loam
+    irrigation    TEXT,              -- rainfed | borewell | canal | tank | mixed
+    plots         TEXT NOT NULL DEFAULT '[]',   -- JSON, survey numbers from the panchayat register
+    registered_by TEXT,              -- the panchayat official who entered it
+    registered_ts TEXT,
+    confirmed_ts  TEXT,              -- when the farmer themselves confirmed it on WhatsApp
+    updated_ts    TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS ix_farmers_village ON farmers(village);
+-- One row per crop a farmer has in the ground. The sowing date is what turns a block forecast into
+-- advice for this farm: it says which growth stage the crop is in when the weather arrives.
+CREATE TABLE IF NOT EXISTS crop_cycles (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    subscriber_id TEXT NOT NULL REFERENCES subscribers(subscriber_id),
+    crop          TEXT NOT NULL,
+    season        TEXT NOT NULL,     -- kharif-2026, rabi-2026
+    sown_on       TEXT,
+    area_ha       REAL,
+    irrigation    TEXT,              -- overrides the farm default for this crop
+    harvested_on  TEXT,
+    source        TEXT NOT NULL,     -- panchayat | farmer | officer
+    updated_ts    TEXT NOT NULL,
+    UNIQUE (subscriber_id, crop, season)
+);
+CREATE INDEX IF NOT EXISTS ix_cycles_sub ON crop_cycles(subscriber_id);
+-- The farmer's own history: every registration, every tap, every advisory, every alert. Read back
+-- when we decide whether to send again, and shown to the officer before they approve.
+CREATE TABLE IF NOT EXISTS farmer_events (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    subscriber_id TEXT NOT NULL,
+    ts            TEXT NOT NULL,
+    kind          TEXT NOT NULL,     -- registered | subscribed | crops_changed | language_changed |
+                                     -- asked_outlook | asked_officer | asked_farm | advisory_sent |
+                                     -- suppressed | opted_out | opted_in | note
+    event         TEXT,              -- dry_spell | heavy_rain | onset, where the row is about one
+    advisory_id   TEXT,
+    detail        TEXT NOT NULL DEFAULT '{}'
+);
+CREATE INDEX IF NOT EXISTS ix_events_sub ON farmer_events(subscriber_id, id DESC);
+CREATE INDEX IF NOT EXISTS ix_events_recent ON farmer_events(subscriber_id, kind, ts);
 CREATE TABLE IF NOT EXISTS dispatch (
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
     advisory_id   TEXT NOT NULL,
@@ -136,6 +185,9 @@ def init_db() -> None:
     conn = _connect()
     try:
         conn.executescript(SCHEMA)
+        cols = {r["name"] for r in conn.execute("PRAGMA table_info(farmers)")}
+        if cols and "confirmed_ts" not in cols:
+            conn.execute("ALTER TABLE farmers ADD COLUMN confirmed_ts TEXT")
         cols = {r["name"] for r in conn.execute("PRAGMA table_info(tts_jobs)")}
         if "priority" not in cols:  # databases created before the column existed
             conn.execute("ALTER TABLE tts_jobs ADD COLUMN priority INTEGER NOT NULL DEFAULT 0")

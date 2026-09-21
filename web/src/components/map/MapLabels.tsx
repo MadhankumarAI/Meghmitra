@@ -16,6 +16,8 @@ type Tier = "state" | "district" | "block";
 const ZOOM_DISTRICT = 5.6;      // above this, districts instead of states
 const ZOOM_BLOCK = 7.4;         // above this, block names
 const MAX_LABELS = { state: 26, district: 44, block: 70 };
+// a phone has a fraction of the width and of the GPU: draw what fits, not what exists
+const MAX_LABELS_PHONE = { state: 10, district: 12, block: 14 };
 const CHAR_PX = 6.2;            // rough half-width per character at our label size
 
 /** One point per place, from the union of its blocks' bounding boxes. */
@@ -54,6 +56,7 @@ export default function MapLabels({ blocks }: { blocks: BlockMeta[] | null }) {
     const draw = () => {
       const z = map.getZoom();
       const tier: Tier = z >= ZOOM_BLOCK ? "block" : z >= ZOOM_DISTRICT ? "district" : "state";
+      const cap = (map.getContainer().clientWidth < 768 ? MAX_LABELS_PHONE : MAX_LABELS)[tier];
       const b = map.getBounds();
       const out: { name: string; x: number; y: number; tier: Tier }[] = [];
       // panels float over the map and are translucent: don't put names underneath them
@@ -65,7 +68,7 @@ export default function MapLabels({ blocks }: { blocks: BlockMeta[] | null }) {
         .filter((p) => p.lon >= b.getWest() && p.lon <= b.getEast() && p.lat >= b.getSouth() && p.lat <= b.getNorth())
         .sort((p, q) => q.weight - p.weight);
       for (const p of cands) {
-        if (out.length >= MAX_LABELS[tier]) break;
+        if (out.length >= cap) break;
         const { x, y } = map.project([p.lon, p.lat]);
         const hw = p.name.length * CHAR_PX * (tier === "state" ? 0.62 : 0.5), hh = tier === "state" ? 11 : 9;
         const box: [number, number, number, number] = [x - hw, y - hh, x + hw, y + hh];

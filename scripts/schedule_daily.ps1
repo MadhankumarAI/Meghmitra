@@ -9,7 +9,7 @@
 param([switch]$Deploy, [switch]$Remove, [string]$At = "07:30")
 
 $ErrorActionPreference = "Stop"
-$name = "Mungaru daily forecast"
+$name = "Meghmitra daily forecast"
 $root = Split-Path -Parent $PSScriptRoot
 
 if ($Remove) {

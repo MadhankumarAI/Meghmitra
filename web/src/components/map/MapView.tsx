@@ -13,7 +13,7 @@ import { RAMPS, rampExpression, cmriExpression, onsetFrontExpression } from "@/l
 const INDIA_BOUNDS: [[number, number], [number, number]] = [[67.5, 6.2], [97.8, 37.2]];
 const SRC = "india";
 
-function baseStyle(origin: string): StyleSpecification {
+function baseStyle(origin: string, light: boolean): StyleSpecification {
   return {
     version: 8,
     sources: {
@@ -24,26 +24,27 @@ function baseStyle(origin: string): StyleSpecification {
       },
     },
     layers: [
-      { id: "ocean", type: "background", paint: { "background-color": "#04070d" } },
+      { id: "ocean", type: "background", paint: { "background-color": light ? "#e8edf4" : "#04070d" } },
       {
         id: "land", type: "fill", source: SRC, "source-layer": "states",
-        paint: { "fill-color": "#0c1320" },
+        paint: { "fill-color": light ? "#f6f8fc" : "#0c1320" },
       },
       // Two stacked fills for the week crossfade: "base" holds the current values,
       // "fade" receives new values and fades in over it (see the values effect).
       {
         id: "blocks-fill", type: "fill", source: SRC, "source-layer": "blocks",
-        paint: { "fill-color": "#0f1726", "fill-opacity": 0.95 },
+        paint: { "fill-color": light ? "#dfe5ee" : "#0f1726", "fill-opacity": 0.95 },
       },
       {
         id: "blocks-fade", type: "fill", source: SRC, "source-layer": "blocks",
-        paint: { "fill-color": "#0f1726", "fill-opacity": 0, "fill-opacity-transition": { duration: 0, delay: 0 } },
+        paint: { "fill-color": light ? "#dfe5ee" : "#0f1726", "fill-opacity": 0,
+                 "fill-opacity-transition": { duration: 0, delay: 0 } },
       },
       // boundaries recede: hairlines that only firm up as you zoom in
       {
         id: "blocks-line", type: "line", source: SRC, "source-layer": "blocks", minzoom: 6,
         paint: {
-          "line-color": "#04070d",
+          "line-color": light ? "#ffffff" : "#04070d",
           "line-width": ["interpolate", ["linear"], ["zoom"], 6, 0.2, 10, 0.7],
           "line-opacity": ["interpolate", ["linear"], ["zoom"], 6, 0.15, 9, 0.35],
         },
@@ -51,7 +52,7 @@ function baseStyle(origin: string): StyleSpecification {
       {
         id: "districts-line", type: "line", source: SRC, "source-layer": "districts", minzoom: 4.5,
         paint: {
-          "line-color": "#04070d",
+          "line-color": light ? "#ffffff" : "#04070d",
           "line-width": ["interpolate", ["linear"], ["zoom"], 4.5, 0.3, 8, 1.1],
           "line-opacity": ["interpolate", ["linear"], ["zoom"], 4.5, 0.25, 8, 0.55],
         },
@@ -59,7 +60,7 @@ function baseStyle(origin: string): StyleSpecification {
       {
         id: "states-line", type: "line", source: SRC, "source-layer": "states",
         paint: {
-          "line-color": "#8ea3c4",
+          "line-color": light ? "#94a2b6" : "#8ea3c4",
           "line-width": ["interpolate", ["linear"], ["zoom"], 3, 0.5, 8, 1.6],
           "line-opacity": 0.55,
         },
@@ -67,7 +68,7 @@ function baseStyle(origin: string): StyleSpecification {
       {
         id: "blocks-hover", type: "line", source: SRC, "source-layer": "blocks",
         paint: {
-          "line-color": "#e8eef8",
+          "line-color": light ? "#17212e" : "#e8eef8",
           "line-width": 1.6,
           "line-opacity": ["case", ["boolean", ["feature-state", "hover"], false], 0.9, 0],
         },
@@ -75,9 +76,18 @@ function baseStyle(origin: string): StyleSpecification {
       {
         id: "blocks-selected", type: "line", source: SRC, "source-layer": "blocks",
         paint: {
-          "line-color": "#5cc8ff",
+          "line-color": light ? "#1f5fa8" : "#5cc8ff",
           "line-width": 2.6,
           "line-opacity": ["case", ["boolean", ["feature-state", "sel"], false], 1, 0],
+        },
+      },
+      {
+        // the user's own block stays marked whatever else they look at
+        id: "blocks-home", type: "line", source: SRC, "source-layer": "blocks",
+        paint: {
+          "line-color": light ? "#1f5fa8" : "#5cc8ff",
+          "line-width": 1.6,
+          "line-opacity": ["case", ["boolean", ["feature-state", "home"], false], 0.75, 0],
         },
       },
     ],
@@ -111,6 +121,8 @@ export default function MapView({ values, expr, padRight }: MapViewProps) {
   const storeEvent = useConsole((s) => s.event);
   const event: EventKey = expr ? "cmri" : storeEvent;   // a fixed scale when overridden
   const selected = useConsole((s) => s.selected);
+  const home = useConsole((s) => s.home);
+  const prevHome = useRef<number | null>(null);
   const prevHover = useRef<number | null>(null);
   const prevSel = useRef<number | null>(null);
   // MapLibre 6 needs WebGL2 and has no fallback. Check once (this component only renders
@@ -126,12 +138,12 @@ export default function MapView({ values, expr, padRight }: MapViewProps) {
     addProtocol("pmtiles", protocol.tile);
     const map = new MLMap({
       container: el.current!,
-      style: baseStyle(window.location.origin),
+      style: baseStyle(window.location.origin, window.matchMedia("(max-width: 767px)").matches),
       bounds: INDIA_BOUNDS,
       // generous: a tight box clamps the zoom and stops India fitting beside the panels
       maxBounds: [[40, -16], [125, 50]],
       minZoom: 3,
-      maxZoom: 11,
+      maxZoom: 14,        // far enough to read one panchayat: the village outlines are vectors
       attributionControl: { compact: true },
       dragRotate: false,
       pitchWithRotate: false,
@@ -244,7 +256,8 @@ export default function MapView({ values, expr, padRight }: MapViewProps) {
       padding: phone
         ? { top: 130, bottom: 430, left: 24, right: 24 }
         : { top: 120, bottom: 140, left: wide ? 320 : 24, right: wide ? 420 : 24 },
-      maxZoom: 9.5,
+      // a block fills the screen, which is where the village outlines start carrying the map
+      maxZoom: 11.5,
       duration: 1400,
       essential: false,           // skipped under prefers-reduced-motion
     });
@@ -261,6 +274,16 @@ export default function MapView({ values, expr, padRight }: MapViewProps) {
       map.setFeatureState({ source: SRC, sourceLayer: "blocks", id: selected }, { sel: true });
     prevSel.current = selected;
   }, [selected]);
+
+  // the user's own block, marked in the same way whether they found it by location or by name
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !loaded.current) return;
+    if (prevHome.current !== null && prevHome.current !== home?.i)
+      map.setFeatureState({ source: SRC, sourceLayer: "blocks", id: prevHome.current }, { home: false });
+    if (home) map.setFeatureState({ source: SRC, sourceLayer: "blocks", id: home.i }, { home: true });
+    prevHome.current = home?.i ?? null;
+  }, [home]);
 
   // MapLibre's unlayered CSS sets `position: relative` on its container, which beats
   // Tailwind's layered utilities. Position a wrapper; let the container fill it.

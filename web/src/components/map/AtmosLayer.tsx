@@ -139,6 +139,8 @@ export default function AtmosLayer({ frame, elev, phase }: { frame: Frame | null
 /* ------------------------------------------------------------------ wind particles */
 
 const N_PARTICLES = 3200, MAX_AGE = 90, SPEED = 0.0028;   // deg per (m/s) per animation step
+// a phone has a fraction of the pixels and of the GPU, so it draws a fraction of the streaks
+const particleCount = (w: number) => (w < 768 ? 900 : w < 1200 ? 2000 : N_PARTICLES);
 
 function runParticles(map: MLMap, cv: HTMLCanvasElement, getFrame: () => Frame | null,
                       getShown: () => { layers: { wind: boolean }; windBy: "speed" | "moisture" }) {
@@ -151,7 +153,7 @@ function runParticles(map: MLMap, cv: HTMLCanvasElement, getFrame: () => Frame |
     cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   };
   resize();
-  const ps = Array.from({ length: N_PARTICLES }, () => spawn({ lon: 0, lat: 0, age: 0 }));
+  const ps = Array.from({ length: particleCount(cv.clientWidth || W) }, () => spawn({ lon: 0, lat: 0, age: 0 }));
   function spawn(p: { lon: number; lat: number; age: number }) {
     const b = map.getBounds();
     p.lon = Math.max(40, Math.min(110, b.getWest() + Math.random() * (b.getEast() - b.getWest())));

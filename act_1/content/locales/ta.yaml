@@ -80,8 +80,8 @@ glossary:
     btn_add_crop: இன்னொரு பயிர்
 entries:
   strings.service:
-    source: Mungaru monsoon advisories
-    text: முங்காரு ஆலோசனை
+    source: Meghmitra monsoon advisories
+    text: மேகமித்ரா ஆலோசனை
     status: machine
   strings.welcome_word:
     source: Welcome
@@ -112,8 +112,8 @@ entries:
     text: மொழிகள்
     status: machine
   strings.welcome:
-    source: Welcome to Mungaru. We send free weather advice for your crops, approved by your agriculture officer.
-    text: முங்காருவிற்கு வரவேற்கிறோம். உங்கள் விவசாய அதிகாரியின் ஒப்புதலுடன் உங்கள் பயிர்களுக்கு இலவச வானிலை ஆலோசனையை அனுப்புகிறோம்.
+    source: Welcome to Meghmitra. We send free weather advice for your crops, approved by your agriculture officer.
+    text: மேகமித்ராவிற்கு வரவேற்கிறோம். உங்கள் விவசாய அதிகாரியின் ஒப்புதலுடன் உங்கள் பயிர்களுக்கு இலவச வானிலை ஆலோசனையை அனுப்புகிறோம்.
     status: machine
   strings.location_prompt:
     source: Share your farm location so we can find your block. Tap the button below, or type your 6-digit PIN code.

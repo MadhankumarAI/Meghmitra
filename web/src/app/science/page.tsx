@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Science from "@/components/science/Science";
 
 export const metadata: Metadata = {
-  title: "Evidence — Mungaru",
+  title: "Evidence — Meghmitra",
   description: "How good the outlook is, scored only on years the model never saw.",
 };
 

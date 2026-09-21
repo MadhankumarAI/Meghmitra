@@ -27,8 +27,13 @@ keywords:
   language:
   - language
   - lang
+  farm:
+  - farm
+  - my farm
+  - my details
+  - profile
 strings:
-  service: Mungaru monsoon advisories
+  service: Meghmitra monsoon advisories
   welcome_word: Welcome
   tagline: Monsoon advice for your farm
   your_block: Your block
@@ -36,7 +41,7 @@ strings:
   outlook_usual: usually {usual}
   lang_word: Language
   lang_list_button: Languages
-  welcome: Welcome to Mungaru. We send free weather advice for your crops, approved by your agriculture officer.
+  welcome: Welcome to Meghmitra. We send free weather advice for your crops, approved by your agriculture officer.
   location_prompt: Share your farm location so we can find your block. Tap the button below, or type your 6-digit PIN code.
   block_found: Your block is {block}, {district} district. Is this correct?
   btn_yes: Yes, correct
@@ -56,6 +61,43 @@ strings:
   crop_need_one: Please choose at least one crop.
   subscribed: You are subscribed. We will send advice for {crops} in {block} when there is something you need to know. Send STOP at any time to stop.
   crops_updated: 'Your crops are now: {crops}.'
+  confirm_intro: 'Namaskara. {panchayat} registered you with Meghmitra, the free monsoon advice service. Before we start, please check what they wrote.'
+  confirm_intro_plain: 'Namaskara. Your panchayat registered you with Meghmitra, the free monsoon advice service. Before we start, please check what they wrote.'
+  confirm_name: 'Name: {name}'
+  confirm_question: Is this correct?
+  btn_confirm_yes: Yes, that is me
+  btn_confirm_fix: Something is wrong
+  btn_confirm_notme: This is not me
+  confirm_thanks: 'Thank you, {name}. You will get free weather advice for your crops, approved by your agriculture officer. Send STOP at any time to stop.'
+  confirm_thanks_plain: Thank you. You will get free weather advice for your crops, approved by your agriculture officer. Send STOP at any time to stop.
+  confirm_fix_intro: Thank you for telling us. What should we correct?
+  btn_fix_place: My village or block
+  btn_fix_crops: My crops
+  btn_fix_other: My name or land
+  confirm_fix_noted: We have told your panchayat and your agriculture officer. They will correct the register. Until then we will keep sending advice for the block below.
+  confirm_notme: 'Sorry for the message. We have removed this number and told the panchayat. You will not hear from us again.'
+  officer_dispute: 'A registered farmer says their record is wrong ({what}). Phone: {phone}. Village: {village}.'
+  sowing_prompt: 'When did you sow {crops}? This tells us which stage your crop is in, so we only warn you when the weather can actually hurt it.'
+  btn_sow_recent: In the last 2 weeks
+  btn_sow_mid: 2 to 6 weeks ago
+  btn_sow_old: More than 6 weeks ago
+  btn_sow_none: Not sown yet
+  sowing_saved: 'Noted: {crops} sown around {when}.'
+  sowing_skipped: 'Noted. Tell us when you sow, and we can warn you at the stages that matter.'
+  farm_title: Your farm
+  farm_line_place: 'Village: {village}'
+  farm_line_block: 'Block: {block}, {district}'
+  farm_line_land: 'Land: {land} hectares, {soil} soil, {irrigation}'
+  farm_line_crop: '{crop}, sown {sown} ({stage})'
+  farm_line_crop_nodate: '{crop}'
+  farm_stage_sowing: just sown
+  farm_stage_vegetative: growing
+  farm_stage_flowering: flowering
+  farm_stage_filling: filling grain
+  farm_stage_maturity: near harvest
+  farm_stage_harvested: harvested
+  farm_none: We only have your block and your crops. Ask your panchayat to add your land details.
+  farm_footer: To correct anything, tell your panchayat or your agriculture officer.
   menu_prompt: What would you like to do?
   menu_footer: Send STOP to unsubscribe
   btn_outlook: 4-week outlook
@@ -197,7 +239,7 @@ mt_hints:
   strings.crop_done: Done
   strings.btn_officer: Call officer
   strings.share_again: Send location
-  strings.service: Mungaru advice
+  strings.service: Meghmitra advice
   strings.btn_outlook: Next 4 weeks
   strings.ev_onset: Monsoon rain starts
   strings.ev_heavy_rain: Heavy rainfall

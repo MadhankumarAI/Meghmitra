@@ -33,6 +33,15 @@ export const REGIMES = {
   },
 } as const;
 export type RegimeCode = keyof typeof REGIMES;
+
+/** True on a phone, where the console runs in the light theme (globals.css). */
+export const lightTheme = () =>
+  typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches;
+
+/** The two regime greys and the "no value" grey, in whichever theme is running. */
+const regimeColor = (k: RegimeCode) =>
+  lightTheme() ? ({ [-1]: "#c8d2de", [-2]: "#d5dbe4" } as const)[k] : REGIMES[k].color;
+const noValue = () => (lightTheme() ? "#dfe5ee" : "#0f1726");
 export const isRegime = (cls: number): cls is RegimeCode => cls === -1 || cls === -2;
 
 /** Sequential ramps as [probability, colour] stops. */
@@ -74,20 +83,20 @@ export const RAMPS: Record<"onset" | "dry10" | "heavy", [number, string][]> = {
 export function rampExpression(stops: [number, string][], key = "p"): ExpressionSpecification {
   const interp: unknown[] = ["interpolate", ["linear"], ["feature-state", key]];
   for (const [v, c] of stops) interp.push(v, c);
-  return ["case", ["==", ["feature-state", key], null], "#0f1726", interp] as unknown as ExpressionSpecification;
+  return ["case", ["==", ["feature-state", key], null], noValue(), interp] as unknown as ExpressionSpecification;
 }
 
 export function cmriExpression(key = "c"): ExpressionSpecification {
   return [
     "match",
     ["feature-state", key],
-    -2, REGIMES[-2].color,
-    -1, REGIMES[-1].color,
+    -2, regimeColor(-2),
+    -1, regimeColor(-1),
     0, CMRI[0].color,
     1, CMRI[1].color,
     2, CMRI[2].color,
     3, CMRI[3].color,
-    "#0f1726",
+    noValue(),
   ] as ExpressionSpecification;
 }
 
@@ -113,10 +122,39 @@ export function onsetFrontExpression(key = "c"): ExpressionSpecification {
   return m as unknown as ExpressionSpecification;
 }
 
+/**
+ * The colour the map is already painting a block, evaluated in JavaScript, so a village can be
+ * filled with the same scale as the block it belongs to. `v` is the CMRI class for "cmri", the
+ * onset-front class for "onset", and a probability 0..1 otherwise.
+ */
+export function colorForValue(event: "cmri" | "onset" | "dry10" | "heavy", v: number): string | null {
+  if (!Number.isFinite(v)) return null;
+  if (event === "cmri") {
+    if (isRegime(v)) return REGIMES[v as RegimeCode].color;
+    return (CMRI[v] ?? CMRI[0]).color;
+  }
+  if (event === "onset") return (ONSET_FRONT[v] ?? ONSET_FRONT[6]).color;
+  return rampColor(RAMPS[event], v);
+}
+
 /** "7 in 10" style natural frequency, the format farmers read most reliably. */
 export function inTen(p: number): string {
   const n = Math.round(p * 10);
   if (n <= 0) return "less than 1 in 10";
   if (n >= 10) return "almost certain";
   return `${n} in 10`;
+}
+
+/** The same sequential ramp as the map layer, evaluated in JavaScript. */
+export function rampColor(stops: [number, string][], p: number): string {
+  const hex = (c: string) => [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16));
+  if (p <= stops[0][0]) return stops[0][1];
+  for (let i = 1; i < stops.length; i++) {
+    if (p > stops[i][0]) continue;
+    const [p0, c0] = stops[i - 1], [p1, c1] = stops[i];
+    const t = (p - p0) / Math.max(p1 - p0, 1e-6);
+    const a = hex(c0), b = hex(c1);
+    return `rgb(${a.map((v, k) => Math.round(v + (b[k] - v) * t)).join(",")})`;
+  }
+  return stops[stops.length - 1][1];
 }

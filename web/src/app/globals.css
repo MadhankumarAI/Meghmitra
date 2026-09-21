@@ -221,3 +221,83 @@ body {
 /* A swipeable control strip on a phone should not show a scrollbar over the map. */
 .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* "Your place": one quiet dot where the farmer is, in the accent colour, with a soft halo.
+   No pulsing, no label sitting on the map: the name is already in the panel. */
+.home-mark { display: block; cursor: pointer; }
+.home-dot { position: relative; display: block; width: 12px; height: 12px; border-radius: 999px;
+  background: var(--focus); box-shadow: 0 0 0 3px var(--surface-solid), 0 1px 6px rgba(0, 0, 0, 0.45); }
+.home-dot::after { content: ""; position: absolute; inset: -9px; border-radius: 999px;
+  background: color-mix(in oklab, var(--focus) 22%, transparent); }
+.home-name { display: none; }
+
+/* A card inside an already-elevated sheet is one box too many on a phone. On small screens the
+   same content is a flat section; from md up it is the bordered card the desktop panel expects.
+   (Material 3, Cards: do not force content into cards when spacing, headlines and dividers
+   create a simpler hierarchy.) */
+.sheet-card { border: 0; border-radius: 0; background: transparent; padding: 0; }
+@media (min-width: 768px) {
+  .sheet-card { border: 1px solid var(--line); border-radius: 0.5rem;
+    background: color-mix(in oklab, var(--surface-2) 50%, transparent); padding: 1rem; }
+}
+/* Sections in the phone sheet are separated by a hairline and space, not by frames. */
+.sheet-flow > * + * { border-top: 1px solid var(--line); padding-top: 1.15rem; }
+@media (min-width: 768px) { .sheet-flow > * + * { border-top: 0; padding-top: 0; } }
+/* The grab handle a bottom sheet is expected to have. */
+.sheet-grip { width: 36px; height: 4px; border-radius: 999px; background: var(--line-strong); }
+
+/* On a phone the sheet is the screen, not an overlay: make it opaque so the map cannot show
+   through the type, and lift it with a shadow instead of a border. */
+@media (max-width: 767px) {
+  .panel-solid { background: #070c16; backdrop-filter: none; -webkit-backdrop-filter: none;
+    box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.55); border-color: transparent; }
+}
+
+/* ------------------------------------------------------------------------
+   Phone: the light theme. A farmer reads this outdoors on a cheap screen,
+   so the surfaces go white and the ink goes dark. The data colours (CMRI
+   green/yellow/orange/red) are unchanged: they are the only colour here.
+   ------------------------------------------------------------------------ */
+@media (max-width: 767px) {
+  :root {
+    --bg: #eef2f7;
+    --ocean: #e4eaf2;
+    --land: #f7f9fc;
+    --surface: rgba(255, 255, 255, 0.94);
+    --surface-solid: #ffffff;
+    --surface-2: #f1f4f9;
+    --line: #dde3ec;
+    --line-strong: #c3ccda;
+    --text: #0f1720;
+    --text-2: #46586e;
+    --text-3: #6b7c93;
+    --focus: #1f5fa8;
+    --ink: #0f1720;
+    --ink-2: #46586e;
+    --ink-3: #6b7c93;
+    --shadow: 0 6px 22px rgba(16, 24, 40, 0.10), 0 0 0 1px var(--line);
+  }
+  .panel { backdrop-filter: blur(10px) saturate(1.05); -webkit-backdrop-filter: blur(10px) saturate(1.05); }
+  .panel-solid { background: #ffffff; backdrop-filter: none; -webkit-backdrop-filter: none;
+    box-shadow: 0 -10px 30px rgba(16, 24, 40, 0.14); border-color: transparent; }
+  .map-label { color: rgba(23, 33, 46, 0.86); text-shadow: 0 1px 2px rgba(255, 255, 255, 0.95), 0 0 6px rgba(255, 255, 255, 0.85); }
+  .map-label.state { color: rgba(23, 33, 46, 0.62); }
+  .map-label.block { color: rgba(23, 33, 46, 0.78); }
+  .sheet-grip { background: #c3ccda; }
+  .home-dot { box-shadow: 0 0 0 3px #ffffff, 0 1px 6px rgba(16, 24, 40, 0.3); }
+}
+
+/* Villages and panchayats, drawn only once the map is inside a block. */
+/* A village name sits on top of its own colour, so it is drawn like a place name on a printed
+   map: no marker, no box, just letters with enough halo to survive any fill under them. */
+.village-mark { position: absolute; display: block; transform: translate(-50%, -50%);
+  cursor: pointer; white-space: nowrap; }
+.village-name { font: 600 10.5px/1 var(--font-inter), sans-serif; color: #f2f6fb;
+  letter-spacing: 0.01em;
+  text-shadow: 0 0 2px rgba(6, 12, 22, 0.95), 0 0 6px rgba(6, 12, 22, 0.8), 0 1px 2px rgba(6, 12, 22, 0.9); }
+.village-mark:hover .village-name { color: #ffffff; text-decoration: underline; text-underline-offset: 3px; }
+@media (max-width: 767px) {
+  .village-name { color: #16202e;
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.95), 0 0 6px rgba(255, 255, 255, 0.9); }
+  .village-mark:hover .village-name { color: #000000; }
+}

@@ -12,6 +12,7 @@ const TITLE = {
 /** Compact key under the briefing; the full meaning of each class is in its tooltip. */
 export default function Legend() {
   const event = useConsole((s) => s.event);
+  const band = useConsole((s) => s.villageRange);
 
   return (
     <aside aria-label="Legend" className="panel pointer-events-auto absolute bottom-[190px] left-2 right-2 z-10 w-auto px-3 py-2
@@ -55,18 +56,34 @@ export default function Legend() {
             </>
           ) : (
             <>
-              <div className="mb-2 text-[12px] font-semibold">{TITLE[event]}</div>
+              <div className="mb-2 text-[12px] font-semibold">
+                {TITLE[event]}
+                {band && <span className="font-normal text-text-3"> · village by village</span>}
+              </div>
               <div className="h-2.5 w-full rounded-sm"
                 style={{
                   background: `linear-gradient(90deg, ${RAMPS[event]
                     .map(([v, c]) => `${c} ${(v / RAMPS[event].at(-1)![0]) * 100}%`)
                     .join(",")})`,
                 }} />
-              <div className="num mt-1 flex justify-between text-[10px] text-text-3">
-                <span>0%</span>
-                <span>{Math.round(RAMPS[event].at(-1)![0] * 50)}%</span>
-                <span>{Math.round(RAMPS[event].at(-1)![0] * 100)}%+</span>
-              </div>
+              {band ? (
+                <>
+                  <div className="num mt-1 flex justify-between text-[10px] text-text-3">
+                    <span>{band[0]}%</span>
+                    <span>{band[1]}%</span>
+                  </div>
+                  <p className="mt-1.5 text-[10.5px] leading-snug text-text-3">
+                    Zoomed in, the whole view sits between {band[0]}% and {band[1]}%, so the scale is
+                    stretched across that band to show how villages differ inside a block.
+                  </p>
+                </>
+              ) : (
+                <div className="num mt-1 flex justify-between text-[10px] text-text-3">
+                  <span>0%</span>
+                  <span>{Math.round(RAMPS[event].at(-1)![0] * 50)}%</span>
+                  <span>{Math.round(RAMPS[event].at(-1)![0] * 100)}%+</span>
+                </div>
+              )}
             </>
           )}
         </motion.div>

@@ -4,7 +4,7 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { BRAND, Wordmark } from "@/components/Brand";
 
-const SEEN = "mungaru.intro";
+const SEEN = "meghmitra.intro";
 const MIN_MS = 1600;
 const noop = () => () => {};
 const seenThisSession = () => { try { return sessionStorage.getItem(SEEN) === "1"; } catch { return false; } };
@@ -23,7 +23,7 @@ export default function Intro({ ready }: { ready: boolean }) {
     <AnimatePresence>
       {show && (
         <motion.div key="intro" className="fixed inset-0 z-[60] grid place-items-center overflow-hidden bg-(--bg)"
-          exit={{ opacity: 0, transition: { duration: skip ? 0 : 0.55, ease: "easeInOut" } }} aria-label="Loading Mungaru" role="status">
+          exit={{ opacity: 0, transition: { duration: skip ? 0 : 0.55, ease: "easeInOut" } }} aria-label="Loading Meghmitra" role="status">
           {/* monsoon light: a slow warm-to-cool sky behind the mark */}
           <motion.div aria-hidden className="absolute inset-0"
             style={{ background: "radial-gradient(60% 50% at 50% 42%, rgba(92,200,255,0.16), transparent 70%), radial-gradient(40% 35% at 62% 70%, rgba(240,170,90,0.10), transparent 70%)" }}

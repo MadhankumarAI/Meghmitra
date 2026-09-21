@@ -26,6 +26,8 @@ export default function BlockPanel({ forecast, blocks }: { forecast: ForecastFil
   const week = useConsole((s) => s.week);
   const expert = useConsole((s) => s.view) === "expert";
   const place = useConsole((s) => s.place);
+  const placeChance = useConsole((s) => s.placeChance);
+  const layer = useConsole((s) => s.event);
   const b = selected !== null ? blocks[selected] : null;
   const [advFile, setAdvFile] = useState<AdvisoryFile | null | undefined>(undefined);
   useEffect(() => {
@@ -49,23 +51,28 @@ export default function BlockPanel({ forecast, blocks }: { forecast: ForecastFil
           className="panel-solid absolute inset-x-0 bottom-0 top-auto z-20 flex max-h-[76%] w-auto flex-col overflow-hidden rounded-t-xl
             md:inset-x-auto md:right-3 md:top-[72px] md:bottom-33 md:max-h-none md:w-95 md:rounded-none"
         >
-          <div className="flex items-start justify-between border-b border-line px-5 py-4">
+          <div aria-hidden className="flex justify-center pt-2.5 pb-1 md:hidden"><span className="sheet-grip" /></div>
+          <div className="flex items-start justify-between px-5 pb-3.5 pt-1 md:border-b md:border-line md:py-4">
             <div>
-              <div className="text-[18px] font-semibold leading-tight">{place ?? b.name}</div>
-              <div className="text-[12px] text-text-3">
+              <div className="text-[21px] font-semibold leading-tight tracking-[-0.01em] md:text-[18px]">{place ?? b.name}</div>
+              <div className="mt-0.5 text-[12.5px] text-text-3 md:mt-0 md:text-[12px]">
                 {place ? `village in ${b.name} block · ${b.district}` : `${b.district} · ${b.state}`}
               </div>
             </div>
             <button
               aria-label="Close panel"
               onClick={() => setSelected(null)}
-              className="grid h-9 w-9 cursor-pointer place-items-center rounded-md text-text-2 hover:bg-surface-2 hover:text-text"
+              className="-mr-1.5 grid h-11 w-11 cursor-pointer place-items-center rounded-md text-text-2 hover:bg-surface-2 hover:text-text md:-mr-0 md:h-9 md:w-9"
             >
-              <X size={18} />
+              <X size={20} />
             </button>
           </div>
 
-          <div className="flex-1 space-y-5 overflow-y-auto px-5 py-4">
+          <div className="sheet-flow flex-1 space-y-5 overflow-y-auto px-5 pb-6 pt-1 md:py-4">
+            {place && placeChance !== null && (layer === "dry10" || layer === "heavy") && (
+              <VillageChance name={place} chance={placeChance} event={layer}
+                block={forecast.events[layer].p[week - 1][selected]} blockName={b.name} />
+            )}
             <Headline forecast={forecast} i={selected} week={week} advice={advice} />
             <WhyPanel forecast={forecast} i={selected} preferred={eventOf(advice)} />
 
@@ -104,6 +111,37 @@ export default function BlockPanel({ forecast, blocks }: { forecast: ForecastFil
           advice={advice} block={b} forecast={forecast} />
       )}
     </AnimatePresence>
+  );
+}
+
+const VILLAGE_EVENT = {
+  dry10: { what: "a 10+ day dry spell", more: "drier", less: "wetter" },
+  heavy: { what: "a heavy-rain day", more: "wetter", less: "drier" },
+} as const;
+
+/** A village's own chance: its block's forecast, moved by how this village's rainfall normal
+ *  differs from its block's at this time of year (CHIRPS 5 km, src/export/villages_clim_json.py). */
+function VillageChance({ name, chance, block, blockName, event }: {
+  name: string; chance: number; block: number; blockName: string; event: "dry10" | "heavy";
+}) {
+  const d = chance - block;
+  const w = VILLAGE_EVENT[event];
+  return (
+    <section className="sheet-card md:bg-surface-2/50">
+      <div className="text-[11px] font-semibold uppercase tracking-wider text-text-3">This village</div>
+      <p className="mt-1 text-[14px] leading-snug">
+        <span className="font-semibold">{chance}%</span> chance of {w.what} in {name}
+        <span className="text-text-3">
+          {Math.abs(d) >= 1
+            ? `, against ${block}% across ${blockName} block: normally ${d > 0 ? w.more : w.less} here by ${Math.abs(d)} point${Math.abs(d) === 1 ? "" : "s"}.`
+            : `, the same as ${blockName} block as a whole: its rainfall normal sits on the block average.`}
+        </span>
+      </p>
+      <p className="mt-1.5 text-[11px] leading-relaxed text-text-3">
+        The forecast is issued for the block. The village difference is its own rainfall normal at 5 km,
+        measured from the same record as the block’s.
+      </p>
+    </section>
   );
 }
 
@@ -154,7 +192,7 @@ function Advisories({ file, rows, onReview }: {
       </div>
       {file === undefined && <div className="h-16 animate-pulse rounded-lg bg-surface-2/60" />}
       {file !== undefined && rows.length === 0 && (
-        <p className="rounded-lg border border-line px-3 py-3 text-[12px] text-text-3">
+        <p className="sheet-card text-[12px] text-text-3 md:px-3 md:py-3">
           No action needed this week beyond normal practice.
         </p>
       )}
@@ -163,7 +201,7 @@ function Advisories({ file, rows, onReview }: {
           const { title, body } = renderAdvice(a);
           const tone = a[2] >= 3 ? "var(--cmri-alert)" : "var(--cmri-warning)";
           return (
-            <li key={k} className="rounded-lg border border-line bg-surface-2/40 py-2.5 pl-3 pr-3"
+            <li key={k} className="rounded-lg border border-line bg-surface-2/40 py-3 pl-3 pr-3"
               style={{ boxShadow: `inset 3px 0 0 ${tone}` }}>
               <div className="text-[13px] font-semibold">{title}</div>
               <p className="mt-0.5 text-[12px] leading-snug text-text-2">{body}</p>
@@ -211,7 +249,7 @@ function Headline({ forecast, i, week, advice }: {
   if (isRegime(cls)) {
     const r = REGIMES[cls];
     return (
-      <section className="rounded-lg border border-line bg-surface-2/50 p-4">
+      <section className="sheet-card">
         <div className="mb-1.5 text-[12px] font-semibold">{r.label}</div>
         <p className="text-[13px] leading-snug text-text-2">{r.detail}</p>
       </section>
@@ -230,7 +268,7 @@ function Headline({ forecast, i, week, advice }: {
   if (top) {
     const { title, body } = renderAdvice(top);
     return (
-      <section className="rounded-lg border border-line bg-surface-2/50 p-4">
+      <section className="sheet-card">
         <div className="mb-1.5 flex items-center gap-2">
           <span className="rounded px-1.5 py-0.5 text-[11px] font-semibold text-[#08101c]" style={{ background: c.color }}>
             {c.label.toUpperCase()}
@@ -245,7 +283,7 @@ function Headline({ forecast, i, week, advice }: {
     );
   }
   return (
-    <section className="rounded-lg border border-line bg-surface-2/50 p-4">
+    <section className="sheet-card">
       <div className="mb-1.5 flex items-center gap-2">
         <span className="rounded px-1.5 py-0.5 text-[11px] font-semibold text-[#08101c]" style={{ background: c.color }}>
           {c.label.toUpperCase()}

@@ -93,6 +93,9 @@ export const audience = (blockId: string) => call<Audience>(`subscribers?block_i
 export interface Summary {
   advisory_id: string; state: "pending_approval" | "approved" | "rejected" | string;
   recipients: number; languages: string[]; approved_by: string | null; approved_ts: string | null; warnings: string[];
+  /** Who the service deliberately left out, and why: a crop already harvested, an irrigated farm,
+   *  a village the advisory does not cover, or a farmer told the same thing days ago. */
+  event?: string; not_sent?: number; left_out?: { subscriber_id: string; reason: string }[];
 }
 export const submit = (a: ContractAdvisory) => call<Summary>("advisories", a);
 export const preview = (id: string, lang: string) =>

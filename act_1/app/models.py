@@ -112,3 +112,80 @@ def normalise_phone(v: str) -> str:
     if len(digits) < 8 or len(digits) > 15:
         raise ValueError(f"not a phone number: {v!r}")
     return "+" + digits
+
+
+# --------------------------------------------------------------------------- the farmer's own record
+# Additive to the brief: the panchayat register behind a subscriber. A subscriber can exist without
+# one (someone who signed up on WhatsApp alone), so nothing in the delivery path requires these.
+
+Soil = Literal["red", "black", "alluvial", "laterite", "sandy", "clay", "loam", "unknown"]
+Irrigation = Literal["rainfed", "borewell", "canal", "tank", "mixed", "unknown"]
+
+
+class Plot(BaseModel):
+    """One parcel as the village register records it."""
+
+    survey_no: str | None = None
+    area_ha: float | None = Field(default=None, ge=0, le=10000)
+    soil: Soil | None = None
+    irrigation: Irrigation | None = None
+    village: str | None = None
+
+
+class FarmerProfile(BaseModel):
+    subscriber_id: str
+    name: str | None = None
+    village: str | None = None          # ADM5 name, spelled as the map spells it
+    panchayat: str | None = None
+    district: str | None = None
+    land_ha: float | None = Field(default=None, ge=0, le=10000)
+    soil: Soil | None = None
+    irrigation: Irrigation | None = None
+    plots: list[Plot] = Field(default_factory=list)
+    registered_by: str | None = None    # the panchayat official who entered it
+    registered_ts: dt.datetime | None = None
+    confirmed_ts: dt.datetime | None = None   # when the farmer confirmed it themselves
+
+
+class CropCycle(BaseModel):
+    """One crop in the ground. The sowing date is what makes advice specific to this farm."""
+
+    subscriber_id: str
+    crop: str
+    season: str
+    sown_on: dt.date | None = None
+    area_ha: float | None = Field(default=None, ge=0, le=10000)
+    irrigation: Irrigation | None = None
+    harvested_on: dt.date | None = None
+    source: Literal["panchayat", "farmer", "officer"] = "panchayat"
+
+
+class CropSowing(BaseModel):
+    crop: str
+    sown_on: dt.date | None = None
+    area_ha: float | None = None
+    irrigation: Irrigation | None = None
+
+
+class FarmerRegistration(BaseModel):
+    """What panchayat staff submit for one farmer: the person, the land, and what is sown."""
+
+    phone: str
+    language: str = "en"
+    block_id: str
+    name: str | None = None
+    village: str | None = None
+    panchayat: str | None = None
+    district: str | None = None
+    land_ha: float | None = None
+    soil: Soil | None = None
+    irrigation: Irrigation | None = None
+    plots: list[Plot] = Field(default_factory=list)
+    crops: list[CropSowing] = Field(default_factory=list)
+    role: Literal["farmer", "officer"] = "farmer"
+    registered_by: str | None = None
+
+    @field_validator("phone")
+    @classmethod
+    def _e164(cls, v: str) -> str:
+        return normalise_phone(v)

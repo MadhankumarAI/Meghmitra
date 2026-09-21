@@ -97,8 +97,8 @@ glossary:
     btn_officer: ಅಧಿಕಾರಿಗೆ ಕರೆ
 entries:
   strings.service:
-    source: Mungaru monsoon advisories
-    text: ಮುಂಗಾರು ಸಲಹೆ
+    source: Meghmitra monsoon advisories
+    text: ಮೇಘಮಿತ್ರ ಸಲಹೆ
     status: checked
   strings.welcome_word:
     source: Welcome
@@ -129,8 +129,8 @@ entries:
     text: ಭಾಷೆಗಳು
     status: checked
   strings.welcome:
-    source: Welcome to Mungaru. We send free weather advice for your crops, approved by your agriculture officer.
-    text: ಮುಂಗಾರು ಸೇವೆಗೆ ಸ್ವಾಗತ. ನಿಮ್ಮ ಬೆಳೆಗಳಿಗೆ ಉಚಿತ ಹವಾಮಾನ ಸಲಹೆಯನ್ನು ನಾವು ಕಳುಹಿಸುತ್ತೇವೆ; ಪ್ರತಿ ಸಲಹೆಗೂ ನಿಮ್ಮ ಕೃಷಿ ಅಧಿಕಾರಿಯ ಅನುಮೋದನೆ ಇರುತ್ತದೆ.
+    source: Welcome to Meghmitra. We send free weather advice for your crops, approved by your agriculture officer.
+    text: ಮೇಘಮಿತ್ರ ಸೇವೆಗೆ ಸ್ವಾಗತ. ನಿಮ್ಮ ಬೆಳೆಗಳಿಗೆ ಉಚಿತ ಹವಾಮಾನ ಸಲಹೆಯನ್ನು ನಾವು ಕಳುಹಿಸುತ್ತೇವೆ; ಪ್ರತಿ ಸಲಹೆಗೂ ನಿಮ್ಮ ಕೃಷಿ ಅಧಿಕಾರಿಯ ಅನುಮೋದನೆ ಇರುತ್ತದೆ.
     status: checked
   strings.location_prompt:
     source: Share your farm location so we can find your block. Tap the button below, or type your 6-digit PIN code.

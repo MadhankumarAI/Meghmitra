@@ -78,8 +78,8 @@ glossary:
     tomato: टोमॅटो
 entries:
   strings.service:
-    source: Mungaru monsoon advisories
-    text: मुंगारूचा सल्ला
+    source: Meghmitra monsoon advisories
+    text: मेघमित्रचा सल्ला
     status: machine
   strings.welcome_word:
     source: Welcome
@@ -110,8 +110,8 @@ entries:
     text: भाषा
     status: machine
   strings.welcome:
-    source: Welcome to Mungaru. We send free weather advice for your crops, approved by your agriculture officer.
-    text: मुंगारूमध्ये आपले स्वागत आहे. तुमच्या कृषी अधिकाऱ्याने मान्यता दिलेल्या तुमच्या पिकांसाठी आम्ही विनामूल्य हवामानाचा सल्ला पाठवतो.
+    source: Welcome to Meghmitra. We send free weather advice for your crops, approved by your agriculture officer.
+    text: मेघमित्रमध्ये आपले स्वागत आहे. तुमच्या कृषी अधिकाऱ्याने मान्यता दिलेल्या तुमच्या पिकांसाठी आम्ही विनामूल्य हवामानाचा सल्ला पाठवतो.
     status: machine
   strings.location_prompt:
     source: Share your farm location so we can find your block. Tap the button below, or type your 6-digit PIN code.

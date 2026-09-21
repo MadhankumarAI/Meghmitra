@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Search as SearchIcon } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useConsole, type BlockMeta } from "@/lib/store";
-import { loadVillages, type Village } from "@/lib/villages";
+import { villagesFor, type Village } from "@/lib/villages";
 
 const norm = (s: string) =>
   s.normalize("NFKD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -33,19 +33,19 @@ function rank(blocks: BlockMeta[], q: string): Row[] {
 }
 
 /** Villages and panchayats: the name a farmer uses, resolved to the block that forecasts it. */
-function rankVillages(villages: Village[], byId: Map<string, BlockMeta>, q: string): Row[] {
+function rankVillages(villages: Village[], blocks: BlockMeta[], q: string): Row[] {
   const t = norm(q.trim());
   if (t.length < 3) return [];
   const out: Row[] = [];
-  for (const v of villages) {
-    const n = norm(v.name);
+  for (const [name, i] of villages) {
+    const n = norm(name);
     let score = -1;
     if (n === t) score = 90;
     else if (n.startsWith(t)) score = 70 - n.length / 100;
     else if (n.split(/[\s-]/).some((w) => w.startsWith(t))) score = 50;
     if (score < 0) continue;
-    const b = byId.get(v.blockId);
-    if (b) out.push({ b, score, village: v.name });
+    const b = blocks[i];
+    if (b) out.push({ b, score, village: name });
     if (out.length > 400) break;
   }
   return out.sort((a, z) => z.score - a.score).slice(0, 5);
@@ -55,15 +55,21 @@ export default function Search({ blocks }: { blocks: BlockMeta[] }) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState("");
   const [cur, setCur] = useState(0);
+  // only the shard for the letter being typed is fetched, and only once
   const [villages, setVillages] = useState<Village[]>([]);
-  const byId = useMemo(() => new Map(blocks.map((b) => [b.id, b])), [blocks]);
-  useEffect(() => { if (open && !villages.length) loadVillages().then(setVillages); }, [open, villages.length]);
+  const letter = q.trim().length >= 3 ? q.trim()[0].toLowerCase() : "";
+  useEffect(() => {
+    if (!letter) return;
+    let live = true;
+    villagesFor(letter).then((v) => { if (live) setVillages(v); });
+    return () => { live = false; };
+  }, [letter]);
   const results = useMemo(() => {
     const hits = rank(blocks, q);
     const seen = new Set(hits.map((r) => r.b.i));
-    const vs = rankVillages(villages, byId, q).filter((r) => !seen.has(r.b.i) || r.score >= 70);
+    const vs = rankVillages(villages, blocks, q).filter((r) => !seen.has(r.b.i) || r.score >= 70);
     return [...hits, ...vs].sort((a, z) => z.score - a.score).slice(0, 8);
-  }, [blocks, villages, byId, q]);
+  }, [blocks, villages, q]);
 
   // reset in the same event that opens it, not in an effect afterwards
   const openSearch = () => { setQ(""); setCur(0); setOpen(true); };
@@ -85,6 +91,10 @@ export default function Search({ blocks }: { blocks: BlockMeta[] }) {
     s.setSelected(b.i);
     s.setFocus(b.bb);
     s.setPlace(village ?? null);
+    // on a phone, looking up a village is how a farmer says where they are: keep it marked
+    if (village && window.matchMedia("(max-width: 767px)").matches) {
+      s.setHome({ i: b.i, lon: (b.bb[0] + b.bb[2]) / 2, lat: (b.bb[1] + b.bb[3]) / 2, name: village });
+    }
     setOpen(false);
   };
 

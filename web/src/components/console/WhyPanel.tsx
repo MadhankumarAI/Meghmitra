@@ -67,7 +67,7 @@ export default function WhyPanel({ forecast, i, preferred }: { forecast: Forecas
         style={{ gridTemplateColumns: `repeat(${Math.max(1, available.length)}, minmax(0, 1fr))` }}>
         {available.map((e) => (
           <button key={e.key} role="tab" aria-selected={ev === e.key} onClick={() => setPicked(e.key)}
-            className={`min-h-7 cursor-pointer whitespace-nowrap rounded px-2 text-[12px] transition-colors ${ev === e.key ? "bg-surface text-text shadow-[0_0_0_1px_var(--line-strong)]" : "text-text-3 hover:text-text"}`}>
+            className={`min-h-10 cursor-pointer whitespace-nowrap rounded px-2 text-[13px] transition-colors md:min-h-7 md:text-[12px] ${ev === e.key ? "bg-surface text-text shadow-[0_0_0_1px_var(--line-strong)]" : "text-text-3 hover:text-text"}`}>
             {e.label}
           </button>
         ))}
@@ -76,7 +76,7 @@ export default function WhyPanel({ forecast, i, preferred }: { forecast: Forecas
       {f === undefined || !x ? (
         <div className="h-40 animate-pulse rounded-lg bg-surface-2/60" />
       ) : (
-        <div key={key} className="rounded-lg border border-line bg-surface-2/35 p-3.5">
+        <div key={key} className="sheet-card md:bg-surface-2/35 md:p-3.5">
           <p className="text-[13px] leading-snug text-text-2">
             Chance of a {noun} in week 1: usually <b className="text-text">{tenth(x.start)}</b> here at this time of year;
             this week <motion.b className="text-text" initial={{ opacity: 0 }} animate={{ opacity: 1 }}

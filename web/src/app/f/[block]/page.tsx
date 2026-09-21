@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import FarmerView from "@/components/farmer/FarmerView";
 import type { Lang } from "@/lib/i18n";
 
-export const metadata: Metadata = { title: "Mungaru — advice for your field" };
+export const metadata: Metadata = { title: "Meghmitra — advice for your field" };
 export const viewport: Viewport = { themeColor: "#ffffff" };
 
 // The page a WhatsApp/SMS advisory links to: /f/<block_id>?lang=kn&crop=ragi&date=2023-06-22

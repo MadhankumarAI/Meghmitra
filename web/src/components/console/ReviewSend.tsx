@@ -31,7 +31,7 @@ const STEP_LIST: { key: Step; label: string; hint: string }[] = [
 ];
 const DELIVERY = ["queued", "sent", "delivered", "read"] as const;
 const CLASS = ["normal", "watch", "warning", "alert"] as const;
-const OFFICER_KEY = "mungaru.officer";
+const OFFICER_KEY = "meghmitra.officer";
 
 const ok = (s?: Sub): s is Summary => !!s && !("error" in s);
 const isSent = (s?: Sub) => ok(s) && (s.state === "approved" || s.state === "dispatched");
@@ -416,6 +416,26 @@ function StateTag({ s, recipients }: { s?: Sub; recipients?: boolean }) {
   ) : null;
 }
 
+/** The farmers this advisory skips. Each one has a reason from the farmer's own record, so the
+ *  officer can see that the gap is deliberate rather than a delivery failure. */
+function LeftOut({ n, rows }: { n: number; rows: { subscriber_id: string; reason: string }[] }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button type="button" onClick={() => setOpen((v) => !v)}
+              className="rounded-full border border-line px-1.5 py-0.5 hover:text-text-2">
+        {n} not sent
+      </button>
+      {open && (
+        <ul className="mt-1 w-full space-y-0.5 text-[11px] text-text-3">
+          {rows.slice(0, 8).map((r) => <li key={r.subscriber_id}>· {r.reason}</li>)}
+          {rows.length > 8 && <li>· and {rows.length - 8} more</li>}
+        </ul>
+      )}
+    </>
+  );
+}
+
 function ReviewStep({ advice, items, subs, conn, sel, setSel, chosen, setChosen, langName }: {
   advice: Advice[]; items: ReturnType<typeof toContract>[]; subs: Record<string, Sub>; conn: Health | null | undefined;
   sel: number; setSel: (k: number) => void; chosen: Set<string>; setChosen: (s: Set<string>) => void;
@@ -457,6 +477,7 @@ function ReviewStep({ advice, items, subs, conn, sel, setSel, chosen, setChosen,
                     <span>valid {dmy(it.valid_from)} – {dmy(it.valid_to)}</span>
                     {ok(s) && s.languages.map((l) => <span key={l} className="rounded-full border border-line px-1.5 py-0.5">{langName(l)}</span>)}
                     {ok(s) && s.recipients === 0 && <span>· no subscriber grows {cropName(it.crop).toLowerCase()} here yet</span>}
+                    {ok(s) && !!s.not_sent && <LeftOut n={s.not_sent} rows={s.left_out ?? []} />}
                   </div>
                 </div>
               </div>
@@ -668,7 +689,7 @@ function WhatsAppPreview({ pv, waiting }: { pv: { data: Preview | null; error?: 
           <img src="/brand/mark.png" alt="" className="h-6 w-6" />
         </div>
         <div className="leading-tight">
-          <div className="text-[14px] font-semibold">Mungaru</div>
+          <div className="text-[14px] font-semibold">Meghmitra</div>
           <div className="text-[11px] opacity-80">Monsoon advice for your block</div>
         </div>
       </div>

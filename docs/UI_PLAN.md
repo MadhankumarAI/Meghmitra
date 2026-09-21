@@ -1,6 +1,6 @@
 # UI / UX plan: the officer console
 
-Working name: **Mungaru** (ಮುಂಗಾರು — "monsoon"). Change freely; nothing depends on it.
+Working name: **Meghmitra** (ಮುಂಗಾರು — "monsoon"). Change freely; nothing depends on it.
 
 Who judges this: MoES is the parent ministry of IMD, IITM and NCMRWF. Assume at least one evaluator is a meteorologist. They will recognise an MJO phase diagram and a reliability curve on sight, and they will distrust any screen that shows a forecast without showing its skill. The UI is designed to earn that person's trust *and* look better than anything else in the room.
 

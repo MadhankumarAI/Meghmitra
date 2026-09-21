@@ -1,6 +1,6 @@
 # Advisory delivery service: WhatsApp, in Indian languages
 
-This is the last stage of the Mungaru block-level monsoon early-warning system. The
+This is the last stage of the Meghmitra block-level monsoon early-warning system. The
 advisory engine upstream decides *what* to say and *when*. This service **renders, translates, delivers,
 logs**, and answers farmers' questions from the latest forecast. It sends nothing until an officer approves.
 
@@ -116,6 +116,62 @@ Summary: `{total, by_status, by_channel, by_language, by_block, by_provider}`, w
 
 Fields as in the brief. `channel_pref` is always `whatsapp` (see §4), and `phone` is stored as E.164.
 WhatsApp onboarding creates subscribers itself, recording consent time. STOP sets `opted_out`; START clears it.
+
+### 2e. The farmer's record: `POST /farmers`, `GET /farmers/{id}`
+
+Additive to the brief. A subscriber is a phone number in a block; a farmer is a person with land.
+Registration happens at the panchayat office, where the land and soil details already live, so the
+register comes to us in one form and the farmer confirms it later on WhatsApp.
+
+```bash
+curl -X POST localhost:8000/farmers -H "X-API-Key: $ADMIN_API_KEY" -H 'Content-Type: application/json' -d '{
+  "phone": "9876543210", "language": "kn", "block_id": "7132399B30508081289508",
+  "name": "Ramesh", "village": "Yettinhatti", "panchayat": "Yettinhatti gram panchayat",
+  "land_ha": 1.2, "soil": "red", "irrigation": "rainfed",
+  "plots": [{"survey_no": "114/2", "area_ha": 1.2}],
+  "crops": [{"crop": "ragi", "sown_on": "2026-07-12"}]
+}'
+```
+
+| Route | What it does |
+|---|---|
+| `POST /farmers` | register or update one farmer. The same phone keeps the same subscriber id |
+| `GET /farmers?block_id=&village=` | the register, by block or village, with the crops standing now |
+| `GET /farmers/{id}` | the whole record: land, crops with growth stage, and every message we sent |
+| `PATCH /farmers/{id}` | correct the land record |
+| `POST /farmers/{id}/crops` | record a sowing. `source` is panchayat, farmer or officer |
+| `POST /farmers/{id}/notes` | an officer's note, kept with everything else |
+
+Re-posting the same phone updates the record in place, so a farmer who sows again or moves village
+does not become a second person in the database.
+
+**Confirming it.** A record entered at the panchayat office is somebody else's account of a farmer.
+The first time that farmer reaches us on WhatsApp, we do not ask them to onboard: we read the record
+back in their own language and ask. *Yes, that is me* records consent and opens the menu. *Something
+is wrong* lets them fix what is theirs to fix (village, block, crops) and sends the rest to the
+panchayat and the officer, because a land record is not ours to change from a chat message. *This is
+not me* stops the messages at once and tells the officer. Any farmer can send `FARM` at any time to
+see what we hold.
+
+### 2f. Who an alert reaches: `GET /advisories/{id}/audience`, `POST /audience`
+
+The block is where the forecast is made. It is not who the warning is for. `app/audience.py` turns one
+advisory into a list of farmers with a reason against each name, and a second list of the people it
+deliberately left out, so the officer sees both before signing off. It decides on what the farmer or
+the panchayat told us, and nothing else:
+
+| Rule | Effect |
+|---|---|
+| in the block | the forecast applies here at all |
+| in the village | when the advisory carries `villages`, and we know where the farmer is |
+| grows the crop | the advisory's crop, or every crop when it has none |
+| growth stage | from the sowing date: a dry spell at flowering scores 3, at maturity 0 and is not sent |
+| irrigation | a dry spell is one step less serious on canal, borewell or tank land |
+| not repeating | nobody hears about the same kind of weather twice inside `QUIET_DAYS` (5) |
+
+A red (`alert`) advisory skips the last three: at that point everyone in the area hears it. Every send
+and every skip is written to the farmer's own history, which is what the quiet window reads back next
+time. `POST /audience` answers the same question for an advisory that has not been submitted yet.
 
 ### Auth (flagged)
 
@@ -326,7 +382,7 @@ Kannada voice note is captured.
 
 ## 10. Known limitations (as of this build)
 
-- **Tested live on the Meta test number** (Mungaru app, 19 Sept 2026), on one phone:
+- **Tested live on the Meta test number** (Meghmitra app, 19 Sept 2026), on one phone:
   - onboarding by taps in Kannada: welcome picture, language, location, block map, crops, including a typed
     "Other crop";
   - the 4-week outlook with its tile picture, and STOP and START;
@@ -371,6 +427,7 @@ Kannada voice note is captured.
 
 ```
 app/            service: main.py (wiring), bot.py (conversation), dispatch.py (lifecycle), geo.py, forecast.py
+                farmers.py (the farmer's record and memory), audience.py (who an alert reaches, and why)
   channels/     whatsapp.py (Cloud + simulator, picture headers, button icons)
   render/       text.py (templates → text/speech), card.py + banner.py + templates/, voice.py (TTS queue)
   api/          routes.py (contract endpoints), dev.py (simulator)   static/phone.html

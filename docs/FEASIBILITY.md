@@ -41,6 +41,7 @@ the panchayat is accountable for the list.
 | Survey number and area | land records held at the panchayat | field-level reference on the advisory |
 | Soil type and Soil Health Card details | the SHC already issued for that holding | irrigation and moisture advice, and future soil-aware advice |
 | Crops this season | the farmer | advice is issued per crop, from the district contingency plan |
+| Sowing date per crop | the farmer | the growth stage the crop will be in when the weather arrives, which decides who is warned |
 | Preferred language | the farmer | six languages available |
 | Consent, with timestamp | signed at registration | lawful basis for messaging, and the record of it |
 
@@ -49,9 +50,18 @@ the panchayat is accountable for the list.
 1. The panchayat secretary or Krishi Sakhi opens the registration page, which works on a phone.
 2. They pick the village from the list (29,803 villages already loaded for the pilot state, from the
    Census village directory), then enter the farmer's details from the records in front of them.
-3. The farmer receives one WhatsApp message and taps once to confirm. That tap is the opt-in.
-4. From then on the farmer can change crops, ask for the four-week outlook or reach an officer, all by
-   tapping buttons in WhatsApp. STOP unsubscribes instantly.
+3. The farmer receives one WhatsApp message that reads their record back in their own language, and
+   taps once to confirm. That tap is the opt-in. If something is wrong they say so: what is theirs to
+   change they change by tapping, and the rest goes to the panchayat and the agriculture officer,
+   because a land record is not ours to edit from a chat message. If it is the wrong number, the
+   messages stop at once and the officer is told.
+4. From then on the farmer can change crops, record a sowing, ask for the four-week outlook, see
+   everything we hold about their farm, or reach an officer, all by tapping buttons in WhatsApp. STOP
+   unsubscribes instantly.
+
+**This part is built, not planned.** `POST /farmers` takes the panchayat's form, `GET /farmers/{id}`
+returns the whole record including every message ever sent to that farmer, and the confirmation
+conversation is in `act_1/app/bot.py`. See act_1/README.md §2e.
 
 **Effort.** India has roughly 2.55 lakh gram panchayats. A panchayat with 40 registered farmers, at two
 minutes of data entry each, is about 80 minutes of one-time work, spread across the enrolment drive the
@@ -60,6 +70,13 @@ department already runs for schemes. Corrections afterwards are a single field e
 **Why it is robust.** A list built by the panchayat is a list somebody owns. Phone numbers change,
 farmers lease land, crops change mid-season: all of that is maintained where the information lives,
 rather than depending on the farmer to update an app.
+
+**What the register buys, beyond delivery.** Once a farmer's village, irrigation and sowing dates are
+known, an advisory stops being a broadcast to a block. A ten-day dry spell reaches the rainfed farmer
+whose crop is about to flower, is softened for the neighbour on canal water, and is not sent at all to
+a farm already harvested or to a farmer told the same thing four days ago. Each of those decisions
+carries its reason, and the officer sees both the recipients and the omissions before approving
+(`act_1/app/audience.py`). That is the difference between a register and a mailing list.
 
 ## 3. Human in the loop
 

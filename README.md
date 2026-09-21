@@ -2,7 +2,7 @@
   <img src="web/public/brand/mark.png" alt="" width="84" />
 </p>
 
-<h1 align="center">Mungaru</h1>
+<h1 align="center">Meghmitra</h1>
 
 <p align="center">
   <b>Block-level monsoon risk for India, and crop advice a farmer can act on.</b><br />
@@ -27,7 +27,7 @@ farmer sows, and then it stops. Across 45 years of IMD gridded rainfall, between
 India's monsoon farmland has a false onset in a given year, averaging 29%. That is roughly a third
 of the country every year, not only in drought years.
 
-Mungaru forecasts the events behind that decision, for every block, every day of the season:
+Meghmitra forecasts the events behind that decision, for every block, every day of the season:
 
 | | |
 |---|---|

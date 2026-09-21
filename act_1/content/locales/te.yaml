@@ -82,8 +82,8 @@ glossary:
     btn_no: కాదు, మార్చండి
 entries:
   strings.service:
-    source: Mungaru monsoon advisories
-    text: ముంగారుకు సలహా
+    source: Meghmitra monsoon advisories
+    text: మేఘమిత్రకు సలహా
     status: machine
   strings.welcome_word:
     source: Welcome
@@ -114,8 +114,8 @@ entries:
     text: భాషలు
     status: machine
   strings.welcome:
-    source: Welcome to Mungaru. We send free weather advice for your crops, approved by your agriculture officer.
-    text: ముంగారుకు స్వాగతం. మీ వ్యవసాయ అధికారి ఆమోదించిన మీ పంటలకు మేము ఉచిత వాతావరణ సలహాలను పంపుతాము.
+    source: Welcome to Meghmitra. We send free weather advice for your crops, approved by your agriculture officer.
+    text: మేఘమిత్రకు స్వాగతం. మీ వ్యవసాయ అధికారి ఆమోదించిన మీ పంటలకు మేము ఉచిత వాతావరణ సలహాలను పంపుతాము.
     status: machine
   strings.location_prompt:
     source: Share your farm location so we can find your block. Tap the button below, or type your 6-digit PIN code.

@@ -41,6 +41,10 @@ class Settings(BaseSettings):
     wa_session_hours: int = 24         # customer-service window for free-form messages
 
 
+    # --- who gets an advisory ---
+    quiet_days: int = 5                # do not repeat the same kind of warning inside this many days
+    always_send_alert: bool = True     # a red (alert) advisory ignores quiet_days and crop stage
+
     # --- voice notes ---
     voice_wait_seconds: int = 900      # how long dispatch waits for a pending voice note
     kisan_call_centre: str = "18001801551"

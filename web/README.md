@@ -1,6 +1,6 @@
 # The officer console
 
-The web front end of [Mungaru](../README.md): a block-level monsoon risk map for India, the
+The web front end of [Meghmitra](../README.md): a block-level monsoon risk map for India, the
 explanation behind every number, the atmosphere that produced it, and the approval queue an
 agriculture officer works through before anything reaches a farmer.
 

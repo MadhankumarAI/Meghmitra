@@ -1,0 +1,22 @@
+import { chromium, devices } from "playwright";
+const out = process.argv[2];
+const b = await chromium.launch({ args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader"] });
+const d = await b.newPage({ viewport: { width: 1600, height: 900 } });
+const errs = []; d.on("pageerror", (e) => errs.push(e.message));
+await d.goto("http://localhost:3100/", { waitUntil: "load" });
+await d.waitForTimeout(8000);
+// a dry-spell day in Karnataka, zoomed inside one block
+await d.evaluate(() => { const s = window.__console.getState(); s.setDate("2023-07-20"); s.setEvent("dry10"); });
+await d.waitForTimeout(3000);
+await d.evaluate(() => window.__console.getState().setFocus([75.9, 15.2, 76.3, 15.5]));
+await d.waitForTimeout(7000);
+await d.screenshot({ path: `${out}/villages_forecast.png` });
+const p = await b.newPage({ ...devices["Pixel 7"], isMobile: true, hasTouch: true });
+p.on("pageerror", (e) => errs.push(e.message));
+await p.goto("http://localhost:3100/", { waitUntil: "load" });
+await p.waitForTimeout(8000);
+await p.evaluate(() => { const s = window.__console.getState(); s.setDate("2023-07-20"); s.setEvent("dry10"); s.setFocus([75.95, 15.25, 76.2, 15.45]); });
+await p.waitForTimeout(7000);
+await p.screenshot({ path: `${out}/villages_forecast_phone.png` });
+console.log(errs.join("\n") || "no errors");
+await b.close();

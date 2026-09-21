@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import { useConsole } from "@/lib/store";
 import type { BlockMeta } from "@/lib/store";
 import { onsetFront, doyLabel, ONSET, type ForecastFile } from "@/lib/data";
@@ -7,12 +8,35 @@ import { CMRI, REGIMES, isRegime, ONSET_FRONT } from "@/lib/colors";
 
 const NAME = { dry10: "10+ day dry spell", heavy: "Heavy-rain day" } as const;
 
-/** "What's here?": plain-language answer for the block under the cursor. */
+const W = 248, H = 104, GAP = 18;
+
+/** "What's here?": plain-language answer for the block under the cursor.
+ *
+ *  It follows the pointer instead of docking to a corner, because a fixed card lands on top of
+ *  whichever panel is open on the left and both become unreadable. Near an edge it flips to the
+ *  other side of the cursor so it is never clipped. */
 export default function HoverCard({ forecast, blocks }: { forecast: ForecastFile; blocks: BlockMeta[] }) {
   const hovered = useConsole((s) => s.hovered);
   const event = useConsole((s) => s.event);
   const week = useConsole((s) => s.week);
-  if (hovered === null) return null;
+  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
+  const raf = useRef(0);
+
+  useEffect(() => {
+    const move = (e: PointerEvent) => {
+      cancelAnimationFrame(raf.current);
+      raf.current = requestAnimationFrame(() => {
+        const flipX = e.clientX + GAP + W > window.innerWidth;
+        const flipY = e.clientY + GAP + H > window.innerHeight;
+        setPos({ x: flipX ? e.clientX - GAP - W : e.clientX + GAP,
+                 y: flipY ? e.clientY - GAP - H : e.clientY + GAP });
+      });
+    };
+    window.addEventListener("pointermove", move, { passive: true });
+    return () => { window.removeEventListener("pointermove", move); cancelAnimationFrame(raf.current); };
+  }, []);
+
+  if (hovered === null || !pos) return null;
   const b = blocks[hovered];
   if (!b) return null;
   const w = week - 1;
@@ -20,7 +44,8 @@ export default function HoverCard({ forecast, blocks }: { forecast: ForecastFile
   return (
     <div
       aria-live="polite"
-      className="panel pointer-events-none absolute left-3 top-[72px] z-20 w-72 px-4 py-3"
+      style={{ left: pos.x, top: pos.y, width: W }}
+      className="panel pointer-events-none fixed z-30 px-3.5 py-2.5"
     >
       <div className="text-[14px] font-semibold leading-tight">{b.name}</div>
       <div className="mb-2 text-[11px] text-text-3">{b.district} · {b.state}</div>

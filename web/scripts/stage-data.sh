@@ -18,7 +18,13 @@ DEST="public/data"
 
 rm -rf "$DEST.tmp"
 mkdir -p "$DEST.tmp/forecast" "$DEST.tmp/advisory" "$DEST.tmp/explain"
-cp -r "$SRC/villages" "$DEST.tmp/" 2>/dev/null || true   # village and panchayat lookup
+# Village and panchayat data. The outlines are a few hundred MB, which a static host will not
+# take, so they stay out of a deployment unless VILLAGE_GEOM=1 says otherwise. Search, the map
+# points and the per-village adjustments are small and always go.
+mkdir -p "$DEST.tmp/villages"
+cp "$SRC/villages/"*.json "$DEST.tmp/villages/" 2>/dev/null || true
+cp -r "$SRC/villages/cells" "$SRC/villages/clim" "$DEST.tmp/villages/" 2>/dev/null || true
+[ "${VILLAGE_GEOM:-0}" = "1" ] && cp -r "$SRC/villages/geom" "$DEST.tmp/villages/" 2>/dev/null || true
 cp "$SRC/india.pmtiles" "$SRC/blocks_index.json" "$SRC/crops.json" "$SRC/metrics.json" "$DEST.tmp/"
 cp "$SRC/advice_skill_$YEAR.json" "$SRC/model_card.json" "$SRC/experiments.json" "$DEST.tmp/" 2>/dev/null || true
 cp "$SRC/forecast/season_$YEAR.json" "$DEST.tmp/forecast/"

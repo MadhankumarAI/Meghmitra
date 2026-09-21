@@ -1,6 +1,6 @@
 """Picture headers for the WhatsApp conversation (1200x630, WhatsApp's header shape).
 
-welcome     Mungaru banner with "welcome" in every language (first message)
+welcome     Meghmitra banner with "welcome" in every language (first message)
 block       mini-map: the farmer's block highlighted among its neighbours, drawn from the real boundaries
 subscribed  tick, block and crop chips (sign-up done)
 outlook     four week tiles with icons (the 4-week outlook)

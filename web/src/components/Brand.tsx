@@ -1,11 +1,12 @@
 /**
- * Mungaru brand: the cloud-leaf-rain mark from the logo (public/brand, cut from act_1/dp.png)
+ * Meghmitra brand: the cloud-leaf-rain mark from the logo (public/brand, cut from act_1/dp.png
+ * by scripts/brand.py, which regenerates every brand image from that one file)
  * on its cream tile, and the wordmark. One place, so every surface shows the same identity.
  */
 /* eslint-disable @next/next/no-img-element -- small static brand assets */
 
 export const BRAND = {
-  name: "Mungaru",
+  name: "Meghmitra",
   tagline: "Rain · Resilient · Rural",
   promise: "Forecast. Advise. Farm better.",
   cream: "#f7efe0",

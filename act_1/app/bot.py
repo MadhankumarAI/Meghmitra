@@ -6,6 +6,7 @@ Typed "menu"/"hi"/"help" in any supported language -> main menu. "STOP" -> opt o
 """
 from __future__ import annotations
 
+import datetime as dt
 import json
 import logging
 import re
@@ -13,12 +14,12 @@ import threading
 from collections import defaultdict
 from dataclasses import dataclass
 
-from . import db, dispatch, forecast, geo, subscribers
+from . import db, dispatch, farmers, forecast, geo, subscribers
 from .config import get_settings
 from .locales import Locale, get_locale, load_locales, match_keyword, template_spec
-from .models import SubscriberIn
+from .models import CropCycle, SubscriberIn
 from .render import banner
-from .render.text import crop_name
+from .render.text import crop_name, fmt_date
 from .channels.whatsapp import Row
 from .runtime import rt
 
@@ -123,6 +124,16 @@ class Conversation:
     # ---- dispatcher
     def run(self) -> None:
         ev, p = self.ev, self.ev.payload or ""
+        # A farmer the panchayat registered has not yet said the record is theirs. Nothing else
+        # happens until they have seen it and answered; STOP still works, as it always must.
+        if (self.sub and not self.sub.opted_out
+                and farmers.needs_confirmation(self.sub.subscriber_id)
+                and match_keyword(ev.text or "") != "stop"):
+            if p in ("id:yes", "id:fix", "id:notme"):
+                return self.on_confirm_id()
+            if self.state == "FIX":
+                return self.on_fix()
+            return self.ask_identity()
         if ev.kind == "text" and ev.text:
             kw = match_keyword(ev.text)
             if kw == "stop":
@@ -136,19 +147,22 @@ class Conversation:
                 return self.ask_language()
             if kw == "menu":
                 return self.menu() if self.sub else self.ask_language()
+            if kw == "farm" and self.sub:
+                return self.my_farm()
         if p == "kw:start":
             return self.start()
         if self.sub and self.sub.opted_out:
             return rt.wa.buttons(self.phone, self.t("opted_out_hint"), [("kw:start", "START")])
 
         # Buttons that work from anywhere once subscribed (they also sit under every advisory).
-        if self.sub and p in ("outlook", "officer", "menu", "change_crop"):
+        if self.sub and p in ("outlook", "officer", "menu", "change_crop", "farm"):
             return {"outlook": self.outlook, "officer": self.officer, "menu": self.menu,
-                    "change_crop": self.change_crop}[p]()
+                    "change_crop": self.change_crop, "farm": self.my_farm}[p]()
 
         handler = {
             "LANG": self.on_language, "LOCATION": self.on_location, "CONFIRM": self.on_confirm,
             "PICK": self.on_pick, "CROPS": self.on_crops, "CROP_TYPE": self.on_crop_type,
+            "SOWN": self.on_sown, "CONFIRM_ID": self.on_confirm_id, "FIX": self.on_fix,
         }.get(self.state)
         if handler:
             return handler()
@@ -164,7 +178,7 @@ class Conversation:
         locs = list(load_locales().values())
         body = " · ".join(dict.fromkeys(l.t("strings.lang_word") for l in locs))
         rows = [Row(f"lang:{l.code}", l.name, l.meta.get("english_name")) for l in locs][:10]
-        if self.data.get("mode") == "onboarding":   # first contact: the Mungaru welcome picture
+        if self.data.get("mode") == "onboarding":   # first contact: the Meghmitra welcome picture
             pic = _picture(banner.welcome)
             if pic:
                 rt.wa.image(self.phone, pic)
@@ -179,6 +193,7 @@ class Conversation:
         self.loc = get_locale(p[5:])
         if self.data.get("mode") == "change_lang" and self.sub:
             self.sub = subscribers.upsert(SubscriberIn(**{**self.sub.model_dump(), "language": self.loc.code}))
+            farmers.remember(self.sub.subscriber_id, "language_changed", detail={"language": self.loc.code})
             self.say(self.t("language_changed"))
             return self.menu()
         self.ask_location(lead=self.t("welcome"))
@@ -308,6 +323,7 @@ class Conversation:
         crops = self.data["crops"]
         if self.data.get("mode") == "change_crop" and self.sub:
             self.sub = subscribers.upsert(SubscriberIn(**{**self.sub.model_dump(), "crops": crops}))
+            farmers.remember(self.sub.subscriber_id, "crops_changed", detail={"crops": crops})
             lead = self.t("crops_updated", crops=self.crops_text(crops))
             pic = _picture(banner.subscribed, self.sub.block_id, crops, self.loc)
         else:
@@ -319,10 +335,167 @@ class Conversation:
                 consent_ts=db.now(), opted_out=False,
             ))
             b = geo.block(self.data["block_id"])
+            farmers.remember(self.sub.subscriber_id, "subscribed",
+                             detail={"block_id": self.data["block_id"], "crops": crops})
             lead = self.t("subscribed", crops=self.crops_text(crops), block=b["name"])
             pic = _picture(banner.subscribed, self.data["block_id"], crops, self.loc)
-        self.data = {"lang": self.loc.code}
-        self.menu(lead, image=pic)
+        self.data = {"lang": self.loc.code, "crops": crops}
+        self.ask_sowing(lead, image=pic)
+
+    # ---- the one question that makes a warning specific: when did this go in the ground?
+    def ask_sowing(self, lead: str | None = None, image=None) -> None:
+        """A sowing date turns a block forecast into advice for this farm: it says which growth
+        stage the crop is in when the weather arrives. Four taps, no typing, and skippable."""
+        crops = self.data.get("crops") or (self.sub.crops if self.sub else [])
+        body = self.t("sowing_prompt", crops=self.crops_text(crops))
+        if lead and len(lead) + len(body) < 900:
+            body = f"{lead}\n\n{body}"
+        elif lead:
+            self.say(lead)
+        if image:
+            rt.wa.image(self.phone, image)
+        rows = [Row("sow:recent", self.t("btn_sow_recent")), Row("sow:mid", self.t("btn_sow_mid")),
+                Row("sow:old", self.t("btn_sow_old")), Row("sow:none", self.t("btn_sow_none"))]
+        rt.wa.list(self.phone, body, self.t("btn_sow_recent")[:20], rows)
+        self.goto("SOWN")
+
+    def on_sown(self) -> None:
+        p = self.ev.payload or ""
+        if not p.startswith("sow:"):
+            return self.ask_sowing()
+        days = {"recent": 7, "mid": 28, "old": 56}.get(p[4:])
+        crops = self.data.get("crops") or (self.sub.crops if self.sub else [])
+        sown = dt.date.today() - dt.timedelta(days=days) if days else None
+        for crop in crops:
+            farmers.save_cycle(CropCycle(subscriber_id=self.sub.subscriber_id, crop=crop,
+                                        season=farmers.season_of(), sown_on=sown, source="farmer"))
+        if sown:
+            word = {"recent": self.t("btn_sow_recent"), "mid": self.t("btn_sow_mid"),
+                    "old": self.t("btn_sow_old")}[p[4:]].lower()
+            self.menu(self.t("sowing_saved", crops=self.crops_text(crops), when=word))
+        else:
+            self.menu(self.t("sowing_skipped"))
+
+    # ---- confirming the panchayat register
+    def ask_identity(self) -> None:
+        """First contact with a farmer the panchayat registered: read their record back and ask.
+
+        Somebody else filled this in at the panchayat office. Until the farmer confirms it, we do
+        not treat it as theirs, and nothing about their land can be changed from a chat message."""
+        prof = farmers.profile(self.sub.subscriber_id)
+        lead = (self.t("confirm_intro", panchayat=prof.panchayat) if prof and prof.panchayat
+                else self.t("confirm_intro_plain"))
+        lines = [lead, ""]
+        if prof and prof.name:
+            lines.append(self.t("confirm_name", name=prof.name))
+        lines += self.farm_lines()
+        lines += ["", self.t("confirm_question")]
+        rt.wa.buttons(self.phone, "\n".join(lines),
+                      [("id:yes", self.t("btn_confirm_yes")), ("id:fix", self.t("btn_confirm_fix")),
+                       ("id:notme", self.t("btn_confirm_notme"))],
+                      image=_picture(banner.block_map, self.sub.block_id, self.loc))
+        self.goto("CONFIRM_ID")
+
+    def on_confirm_id(self) -> None:
+        p = self.ev.payload or ""
+        prof = farmers.profile(self.sub.subscriber_id)
+        if p == "id:yes":
+            farmers.mark_confirmed(self.sub.subscriber_id)
+            self.sub = subscribers.set_opted_out(self.phone, False)   # consent, from the farmer themselves
+            name = prof.name if prof and prof.name else None
+            lead = self.t("confirm_thanks", name=name) if name else self.t("confirm_thanks_plain")
+            if not farmers.standing(self.sub.subscriber_id):
+                return self.ask_sowing(lead)
+            return self.menu(lead)
+        if p == "id:notme":
+            farmers.flag_wrong(self.sub.subscriber_id, "wrong number")
+            subscribers.set_opted_out(self.phone, True)
+            self.alert_officer("wrong number")
+            self.say(self.t("confirm_notme"))
+            return self.goto("STOPPED")
+        if p == "id:fix":
+            rt.wa.buttons(self.phone, self.t("confirm_fix_intro"),
+                          [("fix:place", self.t("btn_fix_place")), ("fix:crops", self.t("btn_fix_crops")),
+                           ("fix:other", self.t("btn_fix_other"))])
+            return self.goto("FIX")
+        self.ask_identity()
+
+    def on_fix(self) -> None:
+        """What the farmer can change themselves, they change now. The land record is not one of
+        those things: that is the panchayat's, so it goes to them and to the officer instead."""
+        p = self.ev.payload or ""
+        sid = self.sub.subscriber_id
+        if p == "fix:place":
+            farmers.mark_confirmed(sid, {"corrected": "place"})
+            self.data = {"lang": self.loc.code, "mode": "onboarding"}
+            return self.ask_location()
+        if p == "fix:crops":
+            farmers.mark_confirmed(sid, {"corrected": "crops"})
+            return self.change_crop()
+        if p == "fix:other":
+            farmers.flag_wrong(sid, "name or land details")
+            farmers.mark_confirmed(sid, {"disputed": "name or land"})
+            self.alert_officer("name or land details")
+            return self.menu(self.t("confirm_fix_noted"))
+        self.on_confirm_id()
+
+    def alert_officer(self, what: str) -> None:
+        """Tell the block's officers that a register entry is disputed. Never blocks the farmer."""
+        prof = farmers.profile(self.sub.subscriber_id)
+        for o in subscribers.targets(self.sub.block_id, "all"):
+            if o.role != "officer" or o.phone == self.phone:
+                continue
+            try:
+                rt.wa.text(o.phone, get_locale(o.language).t(
+                    "strings.officer_dispute", what=what, phone=self.phone,
+                    village=(prof.village if prof and prof.village else "?")))
+            except Exception as e:
+                log.warning("could not alert officer %s: %s", o.subscriber_id, e)
+
+    # ---- what we hold about this farmer, read back to them
+    def farm_lines(self) -> list[str]:
+        """Place, land and standing crops, in the farmer's own language. Used by the confirmation
+        message and by "my farm"; it is exactly what an officer sees on their screen."""
+        sid = self.sub.subscriber_id
+        prof = farmers.profile(sid)
+        b = geo.block(self.sub.block_id) or {"name": self.sub.block_id, "district": ""}
+        lines = []
+        if prof and prof.village:
+            lines.append(self.t("farm_line_place", village=prof.village))
+        lines.append(self.t("farm_line_block", block=b["name"], district=b.get("district", "")))
+        if prof and prof.land_ha:
+            lines.append(self.t("farm_line_land", land=f"{prof.land_ha:g}", soil=prof.soil or "",
+                                irrigation=prof.irrigation or ""))
+        today = dt.date.today()
+        standing = farmers.standing(sid)
+        for c in standing:
+            stage = farmers.stage_on(c.sown_on, c.crop, today)
+            if c.sown_on and stage:
+                lines.append("• " + self.t("farm_line_crop", crop=crop_name(c.crop, self.loc),
+                                           sown=fmt_date(c.sown_on, self.loc),
+                                           stage=self._stage_word(stage)))
+            else:
+                lines.append("• " + self.t("farm_line_crop_nodate", crop=crop_name(c.crop, self.loc)))
+        if not standing:
+            for c in self.sub.crops:
+                lines.append("• " + self.t("farm_line_crop_nodate", crop=crop_name(c, self.loc)))
+        return lines
+
+    def my_farm(self) -> None:
+        """Everything on record for this farmer. They correct it through the panchayat; we never
+        change a land record from a chat message."""
+        farmers.remember(self.sub.subscriber_id, "asked_farm")
+        lines = [f"*{self.t('farm_title')}*", ""] + self.farm_lines()
+        if not farmers.profile(self.sub.subscriber_id):
+            lines += ["", self.t("farm_none")]
+        lines += ["", f"_{self.t('farm_footer')}_"]
+        self.menu("\n".join(lines))
+
+    def _stage_word(self, stage: str) -> str:
+        try:
+            return self.t(f"farm_stage_{stage}")
+        except Exception:
+            return stage.replace("_", " ")
 
     def change_crop(self) -> None:
         self.data.update(mode="change_crop", crops=list(self.sub.crops))
@@ -344,11 +517,13 @@ class Conversation:
         self.goto("READY")
 
     def outlook(self) -> None:
+        farmers.remember(self.sub.subscriber_id, "asked_outlook")
         b = geo.block(self.sub.block_id) or {"name": self.sub.block_id}
         self.menu(forecast.outlook_text(self.sub.block_id, b["name"], self.loc),
                   image=_picture(banner.outlook, self.sub.block_id, self.loc))
 
     def officer(self) -> None:
+        farmers.remember(self.sub.subscriber_id, "asked_officer")
         off = dispatch.officer_for_block(self.sub.block_id)
         if off:
             self.say(self.t("officer_intro"))
@@ -375,6 +550,7 @@ class Conversation:
     def stop(self) -> None:
         if self.sub:
             subscribers.set_opted_out(self.phone, True)
+            farmers.remember(self.sub.subscriber_id, "opted_out")
         self.say(self.t("stop_confirm"))
         self.data = {"lang": self.loc.code}
         self.goto("STOPPED")
@@ -382,6 +558,7 @@ class Conversation:
     def start(self) -> None:
         if self.sub:
             self.sub = subscribers.set_opted_out(self.phone, False)
+            farmers.remember(self.sub.subscriber_id, "opted_in")
             self.say(self.t("start_confirm"))
             return self.menu()
         self.data = {"mode": "onboarding"}

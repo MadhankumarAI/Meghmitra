@@ -188,9 +188,56 @@ not a guess, so week 4 never looks as solid as week 1.
 
 ### Search by the name a farmer uses
 Villages and gram panchayats are searchable by name, not just blocks: typing Kengeri finds it and opens
-the outlook for the block that forecasts it, saying which block that is. 29,803 villages in the pilot
-state, from the 2011 Census village directory, each placed inside its block by geometry. Blocks,
+the outlook for the block that forecasts it, saying which block that is. **649,309 villages across all
+36 states and union territories**, from the 2011 Census village directory, each placed inside its block
+by geometry. The index is sharded by first letter so a search fetches only the shard it needs. Blocks,
 districts and states are searchable too, with Ctrl+K and local-language names where available.
+
+### Villages and panchayats on the map, with their own boundaries
+Zoom inside a block and the village outlines appear, named and tappable: 649,309 of them from the 2011
+Census village directory. The boundaries are cut one file per block and only the blocks actually on
+screen are fetched, so panning the country costs nothing and a village view loads a few tens of
+kilobytes.
+
+### Boundaries that tile, not boundaries that nearly tile
+The 649,309 village outlines are simplified as a coverage, one state at a time, so a border shared
+by two villages moves once rather than twice. Simplifying polygon by polygon, which is the usual
+shortcut, leaves slivers and doubled lines wherever neighbours disagree, and that is what makes a
+boundary layer look homemade. Coordinates keep five decimals, about a metre, so the rounding cannot
+reopen a seam that simplification just closed.
+
+### Zoom to one panchayat
+The map now runs to zoom 14 and a block fills the screen when you open it, which is the scale at
+which village outlines carry the map rather than decorate it. Names appear from zoom 9.2, a handful
+at a time and more as you go in, placed around the centre of the view and never on top of a panel.
+
+### Shading that works inside one block
+A national colour ramp paints every village in a block the same colour, because inside a block they
+differ by a few points, not fifty. When the whole view sits in a narrow band the map stretches the
+same ramp across that band instead, and the legend says which band, so the colours are never
+unexplained. Zoom out and the national scale comes back.
+
+### A dry-spell chance per village, not just per block
+The model forecasts a block, which is the scale it was trained and validated at. CHIRPS at 5 km then
+says how much drier or wetter each village normally is than its own block at that time of year, and
+that difference, and only that difference, moves the number:
+
+    chance for this village = chance for the block + (village normal - block normal)
+
+Both normals come from the same rainfall record, so the correction carries no cross-dataset bias.
+Across India the median adjustment is 2 percentage points and the 90th percentile is 5, so villages
+inside one block visibly differ without the map pretending to a precision the model does not have.
+The panel states the block number, the village number and where the difference came from.
+
+### Where I am, down to the village
+One tap on any screen, phone or desktop, asks the browser for a location, flies to it and opens the
+outlook for the village the point falls in, with that village's own number, falling back to the
+block only when no outline covers it.
+
+### Your place, kept marked
+Once a farmer locates themselves or looks up their village, their block is outlined in amber and the
+point carries a pulsing marker with the name. It stays there at every zoom, so they can zoom out to see
+the rest of the state and still find their way back, and it is remembered on the next visit.
 
 ### Block panel
 One block's full picture: the four-week outlook, the onset status, the advice, the evidence behind the
@@ -366,6 +413,24 @@ waiting for the next advisory.
 A button hands over the local officer's contact card and the Kisan Call Centre number, and notifies
 the officers registered for that block that a farmer asked for them.
 
+### The panchayat registers the farmer, the farmer confirms it
+Registration happens at the panchayat office, where the land and soil details already sit in the
+village register: name, village, survey numbers, area, soil, irrigation and what is sown. The first
+time that farmer reaches us on WhatsApp we do not make them onboard again. We read the record back in
+their own language and ask. Yes records their consent and opens the menu. Something is wrong lets them
+correct what is theirs to correct, and sends the rest to the panchayat and the officer. This is not me
+stops the messages at once. A land record is never changed from a chat message.
+
+### One question that makes every later warning specific
+A farmer who signs up on their own is asked one thing, in four taps: when did you sow. That single
+date is what separates a warning that matters from noise, because it says which growth stage the crop
+will be in when the weather arrives.
+
+### A memory per farmer, not per message
+Every registration, tap, advisory and alert is kept in that farmer's own history. It is read back
+before we send again, shown to the officer before they approve, and returned by FARM to the farmer
+themselves, so nobody has to remember what they told us last month.
+
 ### Crop changes any time
 A farmer can change their registered crops from the menu, and subsequent advice follows.
 
@@ -373,9 +438,25 @@ A farmer can change their registered crops from the menu, and subsequent advice 
 Opting out is instant and recorded with a timestamp; START brings them back. Consent is stored per
 subscriber.
 
+### An alert finds the farms it can hurt
+A block forecast is not a warning for everyone in the block. One dry-spell advisory reaches the
+rainfed farmer whose ragi is about to flower, notes that the neighbour on canal water is one step less
+exposed, and skips the farm that was harvested a fortnight ago, the village the advisory does not
+cover, and anyone already told the same thing this week. Each decision carries its reason from the
+farmer's own record, and the officer sees the recipients and the skips side by side before signing
+off. A red alert overrides all of it: at that point everyone in the area hears it.
+
 ### Web farmer view
 The same content as a public web page per block, in the same languages, for sharing in a WhatsApp
 group or projecting at a village meeting.
+
+### Works on the phone they already have
+A phone gets the light theme, because it is read outdoors on a cheap screen: white surfaces, dark ink,
+a daylight map, and the risk colours untouched because they carry the meaning. Every control except
+search moves into one menu, panels become bottom sheets with a grab handle, and the time bar splits
+into rows that fit. A locate button opens the outlook for the block the farmer is standing in, and
+marks it. Label density and the wind animation are budgeted down on small screens, so it stays smooth
+on a mid-range handset. The desktop console is unchanged: dark, wide, and built to be watched.
 
 ---
 

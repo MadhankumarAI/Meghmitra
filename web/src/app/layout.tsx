@@ -13,12 +13,12 @@ const description =
   "Block-level 1–4 week monsoon outlook for India: onset, dry spells and heavy rain, turned into crop advice farmers receive on WhatsApp in their own language.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://mungaru.vercel.app"),
-  title: { default: "Mungaru — Monsoon Risk Observatory", template: "%s · Mungaru" },
+  metadataBase: new URL("https://meghmitra.vercel.app"),
+  title: { default: "Meghmitra — Monsoon Risk Observatory", template: "%s · Meghmitra" },
   description,
-  applicationName: "Mungaru",
-  openGraph: { title: "Mungaru — Rain · Resilient · Rural", description, images: ["/brand/badge-640.png"], type: "website" },
-  twitter: { card: "summary", title: "Mungaru — Monsoon Risk Observatory", description, images: ["/brand/badge-640.png"] },
+  applicationName: "Meghmitra",
+  openGraph: { title: "Meghmitra — Rain · Resilient · Rural", description, images: ["/brand/badge-640.png"], type: "website" },
+  twitter: { card: "summary", title: "Meghmitra — Monsoon Risk Observatory", description, images: ["/brand/badge-640.png"] },
 };
 
 export const viewport: Viewport = {

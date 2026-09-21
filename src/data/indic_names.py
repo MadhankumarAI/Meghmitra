@@ -21,7 +21,7 @@ MAX_KM = 40.0
 BATCH = 120
 URL = "https://query.wikidata.org/sparql"
 HEADERS = {"Accept": "application/sparql-results+json",
-           "User-Agent": "MungaruSIH/0.1 (monsoon advisory research prototype; Smart India Hackathon)"}
+           "User-Agent": "MeghmitraSIH/0.1 (monsoon advisory research prototype; Smart India Hackathon)"}
 
 
 def query(names: list[str]) -> list[dict]:

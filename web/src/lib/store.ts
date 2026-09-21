@@ -30,6 +30,16 @@ interface ConsoleState {
   /** the village or panchayat the user searched for, if they searched by that name */
   place: string | null;
   setPlace: (p: string | null) => void;
+  /** that village's own chance of a 10+ day dry spell, where CHIRPS gives it one */
+  placeChance: number | null;
+  /** [low, high] the village shading is stretched across at this zoom, or null when the map is
+   *  painting the national scale. The legend reads this: the colours must never be unexplained. */
+  villageRange: [number, number] | null;
+  setVillageRange: (r: [number, number] | null) => void;
+  setPlaceChance: (p: number | null) => void;
+  /** the user's own place: their block, and the point they were located at or searched for */
+  home: { i: number; lon: number; lat: number; name: string } | null;
+  setHome: (h: { i: number; lon: number; lat: number; name: string } | null) => void;
   /** which atmosphere fields are drawn, and what colours the wind streaks */
   layers: { wind: boolean; moist: boolean; heat: boolean; press: boolean };
   toggleLayer: (k: "wind" | "moist" | "heat" | "press") => void;
@@ -67,7 +77,19 @@ export const useConsole = create<ConsoleState>((set) => ({
   understand: false,
   setUnderstand: (understand) => set({ understand }),
   place: null,
-  setPlace: (place) => set({ place }),
+  setPlace: (place) => set({ place, placeChance: null }),   // the number is set right after, if there is one
+  placeChance: null,
+  setPlaceChance: (placeChance) => set({ placeChance }),
+  villageRange: null,
+  setVillageRange: (villageRange) => set({ villageRange }),
+  home: null,
+  setHome: (home) => {
+    set({ home });
+    try {                                   // it should still be their place tomorrow
+      if (home) localStorage.setItem("meghmitra.home", JSON.stringify(home));
+      else localStorage.removeItem("meghmitra.home");
+    } catch { /* private window, or storage blocked */ }
+  },
   layers: { wind: true, moist: true, heat: true, press: true },
   toggleLayer: (k) => set((s) => ({ layers: { ...s.layers, [k]: !s.layers[k] } })),
   windBy: "speed",

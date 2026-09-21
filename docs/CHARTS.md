@@ -336,6 +336,23 @@ its own rule and says so.
 - Every chart needs the held-out sentence in the subtitle. If a chart cannot carry it, it is the wrong
   chart for this deck.
 
+## The four figures, already drawn
+
+`scripts/plots.py` renders them from the files below, so they can be regenerated after any retrain
+and never disagree with the product:
+
+| Figure | File | What it shows |
+|---|---|---|
+| ROC curves | `docs/img/perf_roc.png` | AUC 0.911 dry spell, 0.909 onset, 0.799 heavy rain, week 1 |
+| Precision-recall curves | `docs/img/perf_pr.png` | AP 0.867 / 0.396 / 0.257 against each event's base rate, with the advisory operating point marked |
+| Reliability diagram | `docs/img/perf_reliability.png` | all three events on the diagonal, error 0.26 to 0.71 points |
+| Performance matrix | `docs/img/perf_matrix.png` | AUC for four events across four lead weeks |
+
+```bash
+.venv/Scripts/python src/verify/curves.py      # on the server: ROC, PR and reliability points
+.venv/Scripts/python scripts/plots.py          # then draw the four figures
+```
+
 ## Regenerating these numbers
 
 ```bash

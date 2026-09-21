@@ -67,11 +67,11 @@
 {% if kind == "welcome" %}
   <div class="rain"></div>
   <div class="welcome">
-    <h1>Mungaru</h1>
+    <h1>Meghmitra</h1>
     <div class="tag">{{ tagline }}</div>
     <div class="words">{% for w in words %}<span class="chip">{{ w }}</span>{% endfor %}</div>
   </div>
-  <img class="hero-logo" src="{{ logo }}" alt="Mungaru">
+  <img class="hero-logo" src="{{ logo }}" alt="Meghmitra">
 
 {% elif kind == "block" %}
   <div class="map">
@@ -85,7 +85,7 @@
     <div class="label">{{ icons['map-pin'] | safe }} {{ your_block }}</div>
     <div class="big">{{ block }}</div>
     <div class="sub">{{ district }}, {{ state }}</div>
-    <div class="brand"><img class="logo" src="{{ logo }}" alt="">Mungaru</div>
+    <div class="brand"><img class="logo" src="{{ logo }}" alt="">Meghmitra</div>
   </div>
 
 {% elif kind == "subscribed" %}
@@ -97,7 +97,7 @@
     <div class="label">{{ icons['map-pin'] | safe }} {{ block }}</div>
     <div class="crops">{% for c in crops %}<span class="chip">{{ icons['sprout'] | safe }} {{ c }}</span>{% endfor %}</div>
   </div>
-  <div class="brand"><img class="logo" src="{{ logo }}" alt="">Mungaru <small>· {{ tagline }}</small></div>
+  <div class="brand"><img class="logo" src="{{ logo }}" alt="">Meghmitra <small>· {{ tagline }}</small></div>
 
 {% elif kind == "outlook" %}
   <div class="ol-title">{{ title }}</div>
@@ -113,7 +113,7 @@
     </div>
     {% endfor %}
   </div>
-  <div class="brand" style="left: auto; right: 44px; top: 40px; bottom: auto"><img class="logo" src="{{ logo }}" alt="">Mungaru</div>
+  <div class="brand" style="left: auto; right: 44px; top: 40px; bottom: auto"><img class="logo" src="{{ logo }}" alt="">Meghmitra</div>
 {% endif %}
 </body>
 </html>

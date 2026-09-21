@@ -36,8 +36,8 @@ Then the map fades up underneath: the 45-year false-onset record, with 2002 and 
 
 *Why it opens the video:* it is a measured fact from ministry data, produced by our pipeline, and it states the problem and our competence in one stroke.
 
-### 0:25–0:40 · Mungaru
-The intro plays once: the Mungaru badge, *Rain · Resilient · Rural*, then the all-India block map fades up with the **briefing** (Alert / Warning / blocks with advice, where it concentrates, which blocks to act on first).
+### 0:25–0:40 · Meghmitra
+The intro plays once: the Meghmitra badge, *Rain · Resilient · Rural*, then the all-India block map fades up with the **briefing** (Alert / Warning / blocks with advice, where it concentrates, which blocks to act on first).
 
 Voiceover: forecasts exist at subdivision scale; decisions happen at block scale, for 6,824 blocks. This is the gap we close.
 

@@ -71,6 +71,10 @@ def test_onboarding_by_taps(c):
     say(c, kind="list", payload="crop:greengram")
 
     out = say(c, kind="button", payload="crop:done")
+    ask = out[-1]                                     # when did it go in the ground?
+    assert ask["kind"] == "list" and [r["id"] for r in ask["payload"]["rows"]][0] == "sow:recent"
+
+    out = say(c, kind="list", payload="sow:mid")
     menu = out[-1]
     assert menu["kind"] == "buttons"
     assert [b["id"] for b in menu["payload"]["buttons"]] == ["outlook", "change_crop", "officer"]
@@ -206,6 +210,8 @@ def test_typed_done_finishes_crops(c):
     s(kind="text", text="hi"); s(kind="list", payload="lang:en"); s(kind="location", lat=15.2566, lon=75.2486)
     s(kind="button", payload="blk:yes"); s(kind="list", payload="crop:ragi")
     m = s(kind="text", text="Done")
+    assert m["kind"] == "list" and m["payload"]["rows"][0]["id"] == "sow:recent"
+    m = s(kind="list", payload="sow:none")            # a farmer who has not sown yet can skip
     assert m["kind"] == "buttons" and [b["id"] for b in m["payload"]["buttons"]][0] == "outlook"
 
 
@@ -222,5 +228,6 @@ def test_other_crop_typed(c):
     s(kind="button", payload="crop:more"); s(kind="list", payload="crop:other")
     s(kind="text", text="Brinjal")                       # unknown crop: kept as typed
     s(kind="button", payload="crop:done")
+    s(kind="list", payload="sow:recent")
     sub = next(x for x in c.get("/subscribers", headers=H).json() if x["phone"] == p)
     assert sub["crops"] == ["horsegram", "Brinjal"]
